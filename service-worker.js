@@ -1,4 +1,4 @@
-const CACHE='ivtc-v3.2.0';
+const CACHE='ivtc-v3.2.1';
 const CORE=[
   "./.gitignore",
   "./BOSPHORUS-MAP-FIX.txt",
@@ -70,6 +70,7 @@ const CORE=[
   "./istanbul/explorer.html",
   "./istanbul/index.html",
   "./istanbul/itinerary.html",
+  "./istanbul/to-viking.html",
   "./istanbul/maps.html",
   "./istanbul/practical.html",
   "./istanbul/restaurants.html",

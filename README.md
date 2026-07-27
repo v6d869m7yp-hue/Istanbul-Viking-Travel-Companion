@@ -1,3 +1,3 @@
-# Istanbul–Viking Travel Companion v3.2.0
+# Istanbul–Viking Travel Companion v3.2.1
 
-Venice Premium Edition, disembarkation guide, maps, photography and Northern Italy handoff.
+Istanbul-to-Viking journey integration, fixed Istanbul Ports of Call card, embarkation handoff, and bidirectional navigation.

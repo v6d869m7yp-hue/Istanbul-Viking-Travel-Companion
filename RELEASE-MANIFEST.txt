@@ -1,3 +1,6 @@
-Istanbul Viking Travel Companion v3.2.0
-Files: 154
-Venice Premium Edition + Northern Italy handoff
+v3.2.1
+- Fixed Istanbul card on Ports of Call
+- Added From Istanbul to Viking transition chapter
+- Added bidirectional journey navigation
+- Added Northern Italy continuation card
+- Updated offline PWA cache
