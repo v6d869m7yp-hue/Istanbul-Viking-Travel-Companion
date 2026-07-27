@@ -1,0 +1,16 @@
+Istanbul–Viking Travel Companion
+Release: v1.5.0 Istanbul Maps PWA — CORRECTED
+
+This package is based on the complete corrected v1.4.0 visual framework and retains:
+- assets/data
+- assets/img/photos
+- all existing Istanbul chapters
+- PWA manifest and service worker
+
+New in v1.5.0:
+- istanbul/maps.html
+- Istanbul Maps & Routes navigation link
+- map-specific styles
+- updated offline cache
+
+Installation: copy the CONTENTS of this folder into the existing repository root.
