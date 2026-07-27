@@ -1,10 +1,9 @@
-Istanbul–Viking Travel Companion v2.2.2 — Bosphorus & Markets Photo Essays
+Istanbul-Viking-Travel-Companion v2.3.0
+Maps & Navigation Edition
 
-Changes
-- Expanded Bosphorus chapter with four-image editorial photo story
-- Expanded Spice Bazaar chapter with four-image editorial photo story
-- Added captions and responsive photo layouts
-- Added complete Wikimedia Commons credit entries
-- Updated central version and PWA cache to v2.2.2
-
-Photography is loaded from Wikimedia Commons and cached at runtime by the PWA after viewing.
+New:
+- 7 offline custom SVG maps
+- Maps hub with Google Maps and Apple Maps launch links
+- Embedded route diagrams in relevant day guides
+- PWA cache regenerated for all map assets
+- Central version standardized to v2.3.0
