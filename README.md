@@ -1,16 +1,13 @@
-# Istanbul · Viking Travel Companion v2.0.0
+# Istanbul · Viking Travel Companion
 
-A data-driven, GitHub Pages-ready Progressive Web App for John and Lyla’s 2026 trip.
+Version 2.1.0 expands the v2 shared application architecture into the first genuinely street-usable Istanbul destination experience.
 
-## Architecture
-- Shared application shell rendered by `assets/js/app.js`
-- Single version source in `data/trip.json`
-- Trip timeline and excursion data stored as JSON
-- Reusable Istanbul chapter navigation
-- PWA manifest and generated offline cache
+## Highlights
+- Central version and navigation data
+- PWA application shell and offline cache
+- Adaptive Istanbul Explorer page
+- Rich Old City and Bosphorus day guides
+- Data-driven travel intelligence cards
+- Responsive route strips, checklists and scenario cards
 
-## Publish
-Copy the contents of this folder into the repository root, commit, and push. GitHub Pages should deploy from `main` and `/(root)`.
-
-## Privacy
-Do not place original confirmations, PINs, payment data, passport details, or full booking numbers in a public repository.
+Publish the repository root through GitHub Pages.

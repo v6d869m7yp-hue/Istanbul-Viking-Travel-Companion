@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.0.0';
+const CACHE='ivtc-v2.1.0';
 const ASSETS=[
   "./assets/css/app.css",
   "./assets/icons/icon.svg",
@@ -28,7 +28,9 @@ const ASSETS=[
   "./manifest.webmanifest",
   "./ports/index.html",
   "./reservations.html",
-  "./timeline.html"
+  "./timeline.html",
+  './data/attractions.json',
+  './istanbul/explorer.html'
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));

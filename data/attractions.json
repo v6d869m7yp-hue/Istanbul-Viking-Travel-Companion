@@ -1,0 +1,62 @@
+{
+  "oldCity": [
+    {
+      "name": "Blue Mosque",
+      "time": "45–60 min",
+      "best": "Early morning",
+      "effort": "Easy",
+      "dress": "Shoulders and knees covered",
+      "note": "Pause in the outer courtyard before entering; the cascading domes are easiest to understand from here."
+    },
+    {
+      "name": "Hagia Sophia",
+      "time": "60–90 min",
+      "best": "Morning or late afternoon",
+      "effort": "Easy–moderate",
+      "dress": "Modest dress",
+      "note": "Look upward before focusing on individual details—the scale and layered history are the main event."
+    },
+    {
+      "name": "Basilica Cistern",
+      "time": "45–60 min",
+      "best": "Midday heat",
+      "effort": "Easy",
+      "dress": "No special requirement",
+      "note": "The Medusa bases are memorable, but the changing reflections and forest of columns define the experience."
+    },
+    {
+      "name": "Topkapı Palace",
+      "time": "2–3 hrs",
+      "best": "Opening time",
+      "effort": "Moderate",
+      "dress": "Sun protection",
+      "note": "Treat it as a sequence of courtyards and viewpoints rather than a single European-style palace."
+    }
+  ],
+  "bosphorus": [
+    {
+      "name": "Spice Bazaar",
+      "time": "45–75 min",
+      "best": "Before late-morning crowds",
+      "effort": "Easy",
+      "dress": "Comfortable shoes",
+      "note": "Walk through once before buying. Compare freshness, packaging and price away from the busiest entrances."
+    },
+    {
+      "name": "Public ferry",
+      "time": "60–120 min",
+      "best": "Morning or golden hour",
+      "effort": "Easy",
+      "dress": "Light layer for breeze",
+      "note": "Outdoor seating provides the most useful city orientation; keep the phone secure near railings."
+    },
+    {
+      "name": "Waterfront pause",
+      "time": "30–60 min",
+      "best": "Late afternoon",
+      "effort": "Easy",
+      "dress": "Sun protection",
+      "note": "Leave unscheduled time to watch ferries and cargo traffic—the strait is part of the city’s daily rhythm."
+    }
+  ]
+}

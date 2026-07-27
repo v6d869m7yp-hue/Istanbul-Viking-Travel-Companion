@@ -69,6 +69,11 @@
       "href": "/istanbul/restaurants.html"
     },
     {
+      "key": "explorer",
+      "label": "The Explorer",
+      "href": "/istanbul/explorer.html"
+    },
+    {
       "label": "Practical",
       "href": "/istanbul/practical.html"
     }
