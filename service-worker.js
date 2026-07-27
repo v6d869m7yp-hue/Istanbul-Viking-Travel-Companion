@@ -1,1 +1,7 @@
-const CACHE='ivtc-v1.1.0';const ASSETS=['./','./index.html','./timeline.html','./reservations.html','./cruise.html','./ports/index.html','./istanbul/index.html','./assets/css/styles.css','./assets/js/app.js','./assets/img/hero.svg','./assets/icons/icon.svg'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return res}).catch(()=>caches.match('./index.html'))))});
+const CACHE='ivtc-v1.2.0';const ASSETS=['./','./index.html','./timeline.html','./reservations.html','./cruise.html','./ports/index.html','./istanbul/index.html',
+  './istanbul/practical.html',
+  './istanbul/food.html',
+  './istanbul/bosphorus.html',
+  './istanbul/old-city.html',
+  './istanbul/arrival.html',
+  './istanbul/itinerary.html','./assets/css/styles.css','./assets/js/app.js','./assets/img/hero.svg','./assets/icons/icon.svg'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return res}).catch(()=>caches.match('./index.html'))))});
