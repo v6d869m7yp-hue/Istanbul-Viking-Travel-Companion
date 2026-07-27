@@ -1,0 +1,2 @@
+v2.8.3
+Replaced the Troy placeholder illustration on the Ports of Call page with a real licensed photograph of the ancient walls of Troy.

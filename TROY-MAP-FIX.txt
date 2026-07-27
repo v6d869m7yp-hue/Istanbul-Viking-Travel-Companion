@@ -1,4 +1,4 @@
-Troy Map Fix — v2.8.2
+Troy Map Fix — v2.8.3
 
 - Corrected invalid XML ampersands in the Troy site-route SVG.
 - Added a local PNG fallback for Safari.

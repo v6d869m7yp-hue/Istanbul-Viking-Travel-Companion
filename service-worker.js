@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.8.2';
+const CACHE='ivtc-v2.8.3';
 const CORE=[
   "./README.md",
   "./VERSION.txt",
