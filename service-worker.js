@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.2.0';
+const CACHE='ivtc-v2.2.1';
 const ASSETS=[
   "./assets/css/app.css",
   "./assets/icons/icon.svg",
@@ -35,8 +35,17 @@ const ASSETS=[
   "./timeline.html",
   './data/attractions.json',
   './istanbul/explorer.html',
-  './istanbul/visuals.html'
+  './istanbul/visuals.html',
+  './photo-credits.html'
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))))});
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  const isPhoto=e.request.destination==='image' && new URL(e.request.url).origin!==self.location.origin;
+  if(isPhoto){
+    e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request,{mode:'no-cors'}).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match('./assets/img/hero.svg'))));
+    return;
+  }
+  e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));
+});
