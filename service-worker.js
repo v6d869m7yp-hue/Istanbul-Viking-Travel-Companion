@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.4.1';
+const CACHE='ivtc-v2.4.2';
 const CORE=[
   "./README.md",
   "./VERSION.txt",
@@ -17,6 +17,7 @@ const CORE=[
   "./assets/js/app.js",
   "./assets/maps/blue-mosque-plan.svg",
   "./assets/maps/bosphorus-ferry.svg",
+  "./assets/maps/bosphorus-ferry.png",
   "./assets/maps/cistern-plan.svg",
   "./assets/maps/cruise-route.svg",
   "./assets/maps/embarkation-transfer.svg",

@@ -1,0 +1,2 @@
+v2.4.2
+Fixes invalid SVG markup in the Bosphorus map (an unescaped ampersand), which caused Safari to render the preview as blank.

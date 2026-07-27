@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v2.4.1
+Istanbul–Viking Travel Companion v2.4.2
 Map Consistency Fix
 
 Changes:
