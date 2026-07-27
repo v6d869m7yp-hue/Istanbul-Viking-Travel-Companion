@@ -1,10 +1,3 @@
-# Istanbul · Viking Travel Companion v2.8.0
+# Istanbul · Viking Travel Companion v2.8.1
 
-Cruise Experience Foundation release. Adds embarkation, ship essentials, onboard routine, tomorrow-in-port briefings, and disembarkation guidance while preserving the Sultanahmet Premium and interactive map work.
-
-## v2.8.0
-Adds the Ephesus Premium Edition with seven field-guide pages, an offline site-route map, galleries and excursion-specific guidance.
-
-
-## v2.8.0
-Adds the Rhodes Premium Edition for both booked August 22 excursions.
+Troy Real Photography Edition. Adds actual Wikimedia Commons JPEG photography to the Troy hub, route, museum and photography chapters while preserving the full offline-capable PWA application. Remote photographs are cached after first viewing.

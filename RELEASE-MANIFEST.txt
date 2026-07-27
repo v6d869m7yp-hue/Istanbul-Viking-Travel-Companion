@@ -1,18 +1,12 @@
-Istanbul–Viking Travel Companion v2.8.0
-Troy Premium Edition
+Release: v2.8.1 — Troy Real Photography Edition
+Base: v2.8.0 Troy Premium Edition
 
 Added:
-- 8 linked Troy chapters
-- Troy archaeological route map
-- Nine Cities of Troy visual diagram
-- Myth vs. History comparison
-- Museum and photography guidance
-- Ancient World context linking Troy, Ephesus and Athens
-- Offline PWA cache entries for all new pages and maps
+- Real JPEG hero photography across all Troy pages
+- Troy photo essay on destination hub
+- Museum exterior/interior gallery
+- Route landmark gallery
+- Six-image photography story
+- Expanded image credits and responsive lightbox styling
 
-Base preserved:
-- Istanbul Premium sections
-- Interactive map/lightbox system
-- Cruise Experience Foundation
-- Ephesus Premium Edition
-- Rhodes Premium Edition
+Note: licensed JPEG files load from Wikimedia Commons and are cached after first viewing.
