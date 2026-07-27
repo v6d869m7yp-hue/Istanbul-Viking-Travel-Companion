@@ -379,5 +379,35 @@
       "label": "Photography",
       "href": "/ports/split/photography.html"
     }
+  ],
+  "venice": [
+    {
+      "label": "Venice Overview",
+      "href": "/ports/venice/index.html"
+    },
+    {
+      "label": "St. Mark’s Square",
+      "href": "/ports/venice/st-marks.html"
+    },
+    {
+      "label": "Doge’s Palace",
+      "href": "/ports/venice/doges-palace.html"
+    },
+    {
+      "label": "Maps & Routes",
+      "href": "/ports/venice/maps.html"
+    },
+    {
+      "label": "Disembarkation & Hotel",
+      "href": "/ports/venice/disembarkation.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/venice/photography.html"
+    },
+    {
+      "label": "Northern Italy Handoff",
+      "href": "/ports/venice/handoff.html"
+    }
   ]
 }

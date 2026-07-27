@@ -1,7 +1,8 @@
-const CACHE='ivtc-v3.1.2';
+const CACHE='ivtc-v3.2.0';
 const CORE=[
   "./.gitignore",
   "./BOSPHORUS-MAP-FIX.txt",
+  "./DUBROVNIK-PHOTO-FIX.txt",
   "./README.md",
   "./RELEASE-MANIFEST.txt",
   "./TROY-MAP-FIX.txt",
@@ -46,6 +47,8 @@ const CORE=[
   "./assets/maps/troy-layers.svg",
   "./assets/maps/troy-site-route.png",
   "./assets/maps/troy-site-route.svg",
+  "./assets/maps/venice-day-map.svg",
+  "./assets/maps/venice-transfer-map.svg",
   "./cruise/daily-life.html",
   "./cruise/disembarkation.html",
   "./cruise/embarkation.html",
@@ -141,6 +144,13 @@ const CORE=[
   "./ports/troy/myth-history.html",
   "./ports/troy/photography.html",
   "./ports/troy/route.html",
+  "./ports/venice/disembarkation.html",
+  "./ports/venice/doges-palace.html",
+  "./ports/venice/handoff.html",
+  "./ports/venice/index.html",
+  "./ports/venice/maps.html",
+  "./ports/venice/photography.html",
+  "./ports/venice/st-marks.html",
   "./reservations.html",
   "./timeline.html"
 ];
