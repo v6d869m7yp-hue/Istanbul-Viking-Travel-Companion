@@ -1,6 +1,6 @@
 # Istanbul–Viking Travel Companion
 
-Version **v1.0.0 Foundation**
+Version **v1.1.0 Dashboard & Navigation**
 
 A static, Git-ready personal travel companion for:
 
@@ -40,3 +40,11 @@ Do **not** commit original reservation emails, booking PINs, full confirmation n
 ## Next release
 
 v1.0.1: verify and integrate flight segments, exact embarkation details, and port arrival/all-aboard times.
+
+
+## v1.1.0 additions
+- Redesigned personalized home dashboard
+- Dynamic countdown, trip status, today briefing, and upcoming milestones
+- Refined responsive navigation
+- Progressive Web App manifest and offline application shell
+- Adventure timeline ribbon and privacy-conscious public build
