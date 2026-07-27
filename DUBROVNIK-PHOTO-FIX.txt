@@ -1,0 +1,2 @@
+v3.1.1
+Corrected invalid Dubrovnik city-wall image filename and replaced unreliable Old Port reference with verified Wikimedia Commons files.
