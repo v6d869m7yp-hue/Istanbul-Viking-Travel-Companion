@@ -11,3 +11,10 @@ Version 2.1.0 expands the v2 shared application architecture into the first genu
 - Responsive route strips, checklists and scenario cards
 
 Publish the repository root through GitHub Pages.
+
+## v2.2.0 Visual Istanbul
+
+- Adds a dedicated visual guide chapter.
+- Adds four new offline editorial illustrations.
+- Adds visual landmark cards and immersive image breaks to the Old City, Bosphorus, markets, and restaurant chapters.
+- Keeps all visuals local and available through the PWA cache.
