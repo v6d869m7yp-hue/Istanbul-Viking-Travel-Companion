@@ -1,4 +1,4 @@
-const CACHE='ivtc-v3.1.1';
+const CACHE='ivtc-v3.1.2';
 const CORE=[
   "./.gitignore",
   "./BOSPHORUS-MAP-FIX.txt",
