@@ -1,0 +1,6 @@
+Troy Map Fix — v2.8.2
+
+- Corrected invalid XML ampersands in the Troy site-route SVG.
+- Added a local PNG fallback for Safari.
+- Updated the Troy hub and route page to use the reliable PNG preview while retaining the SVG source.
+- Added both map assets to the PWA cache.

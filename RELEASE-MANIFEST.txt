@@ -1,4 +1,4 @@
-Release: v2.8.1 — Troy Real Photography Edition
+Release: v2.8.2 — Troy Real Photography Edition
 Base: v2.8.0 Troy Premium Edition
 
 Added:
