@@ -1,4 +1,3 @@
-Istanbul · Viking Travel Companion
-Release: v1.4.0
-Name: Visual Framework PWA — Corrected Package
-Build date: 2026-07-27
+Istanbul–Viking Travel Companion
+Version: v1.5.0
+Release: Istanbul Maps PWA
