@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.2.1';
+const CACHE='ivtc-v2.2.2';
 const ASSETS=[
   "./assets/css/app.css",
   "./assets/icons/icon.svg",

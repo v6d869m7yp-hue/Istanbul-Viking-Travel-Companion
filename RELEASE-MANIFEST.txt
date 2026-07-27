@@ -1,8 +1,10 @@
-Istanbul–Viking Travel Companion v2.2.1 — Real Photography Edition
+Istanbul–Viking Travel Companion v2.2.2 — Bosphorus & Markets Photo Essays
 
-- Replaces Istanbul illustration placeholders with nine real photographs
-- Uses Wikimedia Commons CC/public-domain sources
-- Adds photo-credits.html with author and license details
-- Adds runtime PWA caching for cross-origin photographs after first view
-- Keeps local SVG art only as offline fallback and for non-Istanbul sections
-- Central version: v2.2.1
+Changes
+- Expanded Bosphorus chapter with four-image editorial photo story
+- Expanded Spice Bazaar chapter with four-image editorial photo story
+- Added captions and responsive photo layouts
+- Added complete Wikimedia Commons credit entries
+- Updated central version and PWA cache to v2.2.2
+
+Photography is loaded from Wikimedia Commons and cached at runtime by the PWA after viewing.
