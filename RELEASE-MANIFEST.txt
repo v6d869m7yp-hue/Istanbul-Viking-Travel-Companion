@@ -1,9 +1,12 @@
-Istanbul-Viking-Travel-Companion v2.3.0
-Maps & Navigation Edition
+v2.4.0 — Sultanahmet Premium + Interactive Maps
 
-New:
-- 7 offline custom SVG maps
-- Maps hub with Google Maps and Apple Maps launch links
-- Embedded route diagrams in relevant day guides
-- PWA cache regenerated for all map assets
-- Central version standardized to v2.3.0
+- Sultanahmet premium hub
+- Hagia Sophia field guide
+- Blue Mosque field guide
+- Basilica Cistern field guide
+- Topkapi Palace field guide
+- Click-to-enlarge maps across the application
+- Full-screen pan and wheel/pinch zoom viewer
+- Interactive schematic orientation diagrams
+- Photo lightbox galleries
+- Central version and offline cache updated
