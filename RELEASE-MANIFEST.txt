@@ -1,10 +1,5 @@
-Istanbul Viking Travel Companion v2.9.0
-Heraklion + Athens Premium Edition
+Istanbul–Viking Travel Companion v3.0.0
+Olympia + Corfu Premium Edition
 
-Added:
-- 5 Heraklion premium pages
-- 7 Athens premium pages
-- 3 expandable offline route maps
-- Real Wikimedia Commons photography and credits
-- Updated Ports of Call cards
-- Updated navigation and PWA cache
+Added 12 destination pages and 2 offline SVG maps.
+All chapter links and local asset references validated.

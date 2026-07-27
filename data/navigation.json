@@ -261,5 +261,57 @@
       "label": "Maps & Routes",
       "href": "/ports/athens/maps.html"
     }
+  ],
+  "olympia": [
+    {
+      "label": "Olympia Overview",
+      "href": "/ports/olympia/index.html"
+    },
+    {
+      "label": "Before You Go",
+      "href": "/ports/olympia/before-you-go.html"
+    },
+    {
+      "label": "The Sanctuary",
+      "href": "/ports/olympia/sanctuary.html"
+    },
+    {
+      "label": "The Stadium",
+      "href": "/ports/olympia/stadium.html"
+    },
+    {
+      "label": "Museum Priorities",
+      "href": "/ports/olympia/museum.html"
+    },
+    {
+      "label": "Map & Route",
+      "href": "/ports/olympia/maps.html"
+    }
+  ],
+  "corfu": [
+    {
+      "label": "Corfu Overview",
+      "href": "/ports/corfu/index.html"
+    },
+    {
+      "label": "Panoramic Corfu",
+      "href": "/ports/corfu/panoramic.html"
+    },
+    {
+      "label": "Old Town Walk",
+      "href": "/ports/corfu/old-town.html"
+    },
+    {
+      "label": "Old Fortress",
+      "href": "/ports/corfu/fortress.html"
+    },
+    {
+      "label": "Map & Day Plan",
+      "href": "/ports/corfu/maps.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/corfu/photography.html"
+    }
   ]
 }
