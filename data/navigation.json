@@ -141,5 +141,39 @@
       "label": "Photography",
       "href": "/ports/ephesus/photography.html"
     }
+  ],
+  "rhodes": [
+    {
+      "label": "Rhodes Overview",
+      "href": "/ports/rhodes/index.html"
+    },
+    {
+      "label": "Morning Old Town",
+      "href": "/ports/rhodes/old-town.html"
+    },
+    {
+      "label": "Palace of the Grand Master",
+      "href": "/ports/rhodes/palace.html"
+    },
+    {
+      "label": "Street of the Knights",
+      "href": "/ports/rhodes/street-of-knights.html"
+    },
+    {
+      "label": "East Coast Drive",
+      "href": "/ports/rhodes/east-coast.html"
+    },
+    {
+      "label": "Lindos Briefing",
+      "href": "/ports/rhodes/lindos.html"
+    },
+    {
+      "label": "Map & Day Plan",
+      "href": "/ports/rhodes/maps.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/rhodes/photography.html"
+    }
   ]
 }

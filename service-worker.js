@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.6.0';
+const CACHE='ivtc-v2.7.0';
 const CORE=[
   "./README.md",
   "./VERSION.txt",
@@ -68,6 +68,15 @@ const CORE=[
   "./ports/ephesus/terrace-houses.html",
   "./ports/ephesus/great-theatre.html",
   "./ports/ephesus/photography.html",
+  "./assets/maps/rhodes-day-map.svg",
+  "./ports/rhodes/index.html",
+  "./ports/rhodes/old-town.html",
+  "./ports/rhodes/palace.html",
+  "./ports/rhodes/street-of-knights.html",
+  "./ports/rhodes/east-coast.html",
+  "./ports/rhodes/lindos.html",
+  "./ports/rhodes/maps.html",
+  "./ports/rhodes/photography.html",
   "./reservations.html",
   "./timeline.html"
 ];
