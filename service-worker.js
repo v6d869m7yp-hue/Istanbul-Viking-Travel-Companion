@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.4.2';
+const CACHE='ivtc-v2.5.0';
 const CORE=[
   "./README.md",
   "./VERSION.txt",
@@ -28,6 +28,11 @@ const CORE=[
   "./assets/maps/sultanahmet-route.svg",
   "./assets/maps/topkapi-plan.svg",
   "./cruise/index.html",
+  "./cruise/embarkation.html",
+  "./cruise/ship-guide.html",
+  "./cruise/daily-life.html",
+  "./cruise/tomorrow.html",
+  "./cruise/disembarkation.html",
   "./data/attractions.json",
   "./data/excursions.json",
   "./data/istanbul.json",

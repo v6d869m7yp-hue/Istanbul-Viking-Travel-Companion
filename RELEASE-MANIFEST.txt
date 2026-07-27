@@ -1,11 +1,17 @@
-Istanbul–Viking Travel Companion v2.4.2
-Map Consistency Fix
+v2.5.0 Cruise Experience Foundation
 
-Changes:
-- Standardized all seven map cards
-- Restored full visible previews for Sultanahmet and Bosphorus maps
-- Added full-screen expand controls to every map
-- Added map type labels
-- Added live-navigation or relevant guide actions to every card
-- Corrected preview-container CSS spacing
-- Updated central version and PWA cache
+Added:
+- cruise/embarkation.html
+- cruise/ship-guide.html
+- cruise/daily-life.html
+- cruise/tomorrow.html
+- cruise/disembarkation.html
+
+Updated:
+- cruise/index.html
+- data/navigation.json
+- data/trip.json
+- assets/js/app.js
+- assets/css/app.css
+- service-worker.js
+- VERSION.txt

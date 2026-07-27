@@ -85,5 +85,31 @@
       "label": "Practical",
       "href": "/istanbul/practical.html"
     }
+  ],
+  "cruise": [
+    {
+      "label": "Cruise Control Center",
+      "href": "/cruise/index.html"
+    },
+    {
+      "label": "Embarkation Day",
+      "href": "/cruise/embarkation.html"
+    },
+    {
+      "label": "Ship Essentials",
+      "href": "/cruise/ship-guide.html"
+    },
+    {
+      "label": "Life Onboard",
+      "href": "/cruise/daily-life.html"
+    },
+    {
+      "label": "Tomorrow in Port",
+      "href": "/cruise/tomorrow.html"
+    },
+    {
+      "label": "Disembarkation",
+      "href": "/cruise/disembarkation.html"
+    }
   ]
 }

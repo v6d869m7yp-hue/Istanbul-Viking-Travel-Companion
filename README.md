@@ -1,7 +1,3 @@
-# Istanbul–Viking Travel Companion v2.4.0
+# Istanbul · Viking Travel Companion v2.5.0
 
-Sultanahmet Premium Edition with four complete landmark field guides, full-screen map/image lightbox, pan/zoom controls, interactive orientation diagrams, and offline PWA caching.
-
-
-## v2.4.2 map consistency fix
-All seven map cards now use the same preview, expand control, map-type label, and action area. The CSS selector that padded map-preview containers has been corrected.
+Cruise Experience Foundation release. Adds embarkation, ship essentials, onboard routine, tomorrow-in-port briefings, and disembarkation guidance while preserving the Sultanahmet Premium and interactive map work.
