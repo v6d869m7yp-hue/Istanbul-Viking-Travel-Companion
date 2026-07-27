@@ -1,0 +1,153 @@
+{
+  "version": "2.0.0",
+  "travelers": "John & Lyla",
+  "title": "Istanbul · Viking Travel Companion",
+  "subtitle": "Independent Istanbul, Ancient Adriatic Treasures, and Northern Italy",
+  "start": "2026-08-13",
+  "end": "2026-09-01",
+  "ship": "Viking Vesta",
+  "stateroom": "4121 · DV5",
+  "hotel": "Dersaadet Hotel Istanbul",
+  "stages": [
+    {
+      "date": "2026-08-13",
+      "location": "Travel day",
+      "title": "Depart for Istanbul",
+      "summary": "Begin the journey from California.",
+      "time": "Departure"
+    },
+    {
+      "date": "2026-08-14",
+      "location": "Istanbul",
+      "title": "Arrival & first evening",
+      "summary": "Transfer to Dersaadet Hotel and take a gentle Sultanahmet orientation walk.",
+      "time": "Arrival"
+    },
+    {
+      "date": "2026-08-15",
+      "location": "Istanbul",
+      "title": "Imperial Old City",
+      "summary": "Blue Mosque, Hagia Sophia, Basilica Cistern and Topkapı Palace.",
+      "time": "Morning start"
+    },
+    {
+      "date": "2026-08-16",
+      "location": "Istanbul",
+      "title": "Bosphorus & waterfront",
+      "summary": "Ferry views, Spice Bazaar and waterfront neighborhoods.",
+      "time": "Morning"
+    },
+    {
+      "date": "2026-08-17",
+      "location": "Istanbul",
+      "title": "Markets & flexible day",
+      "summary": "Grand Bazaar, smaller neighborhoods and a relaxed final evening.",
+      "time": "Flexible"
+    },
+    {
+      "date": "2026-08-18",
+      "location": "Istanbul",
+      "title": "Embark Viking Vesta",
+      "summary": "Hotel checkout, port transfer, boarding and sail-away.",
+      "time": "Embarkation"
+    },
+    {
+      "date": "2026-08-19",
+      "location": "Istanbul",
+      "title": "Istanbul Cityscape",
+      "summary": "Booked Viking excursion.",
+      "time": "8:30 AM"
+    },
+    {
+      "date": "2026-08-20",
+      "location": "Çanakkale",
+      "title": "Çanakkale & Troy",
+      "summary": "Booked Viking excursion.",
+      "time": "8:45 AM"
+    },
+    {
+      "date": "2026-08-21",
+      "location": "Kuşadası",
+      "title": "Ancient Ephesus",
+      "summary": "Booked Viking excursion.",
+      "time": "12:45 PM"
+    },
+    {
+      "date": "2026-08-22",
+      "location": "Rhodes",
+      "title": "Rhodes double excursion day",
+      "summary": "Town walk in the morning and East Coast Island Drive in the afternoon.",
+      "time": "8:45 AM"
+    },
+    {
+      "date": "2026-08-23",
+      "location": "Heraklion",
+      "title": "Heraklion & Archaeological Museum",
+      "summary": "Booked Viking excursion.",
+      "time": "9:30 AM"
+    },
+    {
+      "date": "2026-08-24",
+      "location": "Athens",
+      "title": "Acropolis & Plaka",
+      "summary": "Booked optional excursion.",
+      "time": "8:15 AM"
+    },
+    {
+      "date": "2026-08-25",
+      "location": "Athens",
+      "title": "Panoramic Athens",
+      "summary": "Booked included excursion.",
+      "time": "12:30 PM"
+    },
+    {
+      "date": "2026-08-26",
+      "location": "Katakolon",
+      "title": "Ancient Olympia",
+      "summary": "Booked Viking excursion.",
+      "time": "12:30 PM"
+    },
+    {
+      "date": "2026-08-27",
+      "location": "Corfu",
+      "title": "Panoramic Corfu & Old Town",
+      "summary": "Booked Viking excursion.",
+      "time": "9:15 AM"
+    },
+    {
+      "date": "2026-08-28",
+      "location": "Kotor",
+      "title": "Summer Highlights of Montenegro",
+      "summary": "Booked optional excursion.",
+      "time": "9:00 AM"
+    },
+    {
+      "date": "2026-08-29",
+      "location": "Dubrovnik",
+      "title": "Dubrovnik on Foot",
+      "summary": "Booked Viking excursion.",
+      "time": "9:15 AM"
+    },
+    {
+      "date": "2026-08-30",
+      "location": "Split",
+      "title": "Highlights of the Split Riviera",
+      "summary": "Booked optional excursion.",
+      "time": "8:30 AM"
+    },
+    {
+      "date": "2026-08-31",
+      "location": "Venice",
+      "title": "At a Glance: St. Mark’s Square",
+      "summary": "Booked Viking excursion and transition toward Northern Italy.",
+      "time": "12:45 PM"
+    },
+    {
+      "date": "2026-09-01",
+      "location": "Venice",
+      "title": "Disembark & Northern Italy",
+      "summary": "Transfer to Hotel al Sotoportego and continue with the Northern Italy Companion.",
+      "time": "Morning"
+    }
+  ]
+}

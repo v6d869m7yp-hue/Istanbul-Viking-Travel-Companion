@@ -1,0 +1,37 @@
+{
+  "hero": "../assets/img/visuals/istanbul-panorama.svg",
+  "days": [
+    {
+      "number": "01",
+      "title": "Arrival & First Evening",
+      "date": "August 14",
+      "href": "days/arrival.html",
+      "image": "../assets/img/visuals/istanbul-panorama.svg",
+      "summary": "A low-pressure arrival plan centered on the hotel and Sultanahmet."
+    },
+    {
+      "number": "02",
+      "title": "Imperial Old City",
+      "date": "August 15",
+      "href": "days/old-city.html",
+      "image": "../assets/img/visuals/old-city.svg",
+      "summary": "The essential monuments in a route designed to minimize backtracking."
+    },
+    {
+      "number": "03",
+      "title": "Bosphorus & Waterfront",
+      "date": "August 16",
+      "href": "days/bosphorus.html",
+      "image": "../assets/img/visuals/bosphorus.svg",
+      "summary": "Ferries, water views, markets and neighborhoods beyond the monuments."
+    },
+    {
+      "number": "04",
+      "title": "Markets & Flexible Istanbul",
+      "date": "August 17",
+      "href": "days/markets.html",
+      "image": "../assets/img/visuals/markets.svg",
+      "summary": "Shopping, food and a flexible final independent day."
+    }
+  ]
+}

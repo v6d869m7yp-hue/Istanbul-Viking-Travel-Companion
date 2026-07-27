@@ -1,0 +1,76 @@
+{
+  "primary": [
+    {
+      "label": "Today",
+      "href": "/index.html",
+      "key": "home"
+    },
+    {
+      "label": "Itinerary",
+      "href": "/timeline.html",
+      "key": "timeline"
+    },
+    {
+      "label": "Istanbul",
+      "href": "/istanbul/index.html",
+      "key": "istanbul"
+    },
+    {
+      "label": "Cruise",
+      "href": "/cruise/index.html",
+      "key": "cruise"
+    },
+    {
+      "label": "Ports",
+      "href": "/ports/index.html",
+      "key": "ports"
+    },
+    {
+      "label": "Reservations",
+      "href": "/reservations.html",
+      "key": "reservations"
+    }
+  ],
+  "istanbul": [
+    {
+      "label": "Overview",
+      "href": "/istanbul/index.html"
+    },
+    {
+      "label": "Four-Day Plan",
+      "href": "/istanbul/itinerary.html"
+    },
+    {
+      "label": "Day 1 · Arrival",
+      "href": "/istanbul/days/arrival.html"
+    },
+    {
+      "label": "Day 2 · Old City",
+      "href": "/istanbul/days/old-city.html"
+    },
+    {
+      "label": "Day 3 · Bosphorus",
+      "href": "/istanbul/days/bosphorus.html"
+    },
+    {
+      "label": "Day 4 · Markets",
+      "href": "/istanbul/days/markets.html"
+    },
+    {
+      "label": "Embarkation",
+      "href": "/istanbul/embarkation.html"
+    },
+    {
+      "label": "Maps & Routes",
+      "href": "/istanbul/maps.html"
+    },
+    {
+      "label": "Restaurants",
+      "href": "/istanbul/restaurants.html"
+    },
+    {
+      "label": "Practical",
+      "href": "/istanbul/practical.html"
+    }
+  ]
+}

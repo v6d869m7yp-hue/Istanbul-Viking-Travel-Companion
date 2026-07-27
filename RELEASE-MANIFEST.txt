@@ -1,14 +1,34 @@
-Istanbul–Viking Travel Companion
-Release: v1.5.1 — Offline Cache & Repository Cleanup
-
-Built directly from the user's verified v1.5.0 repository download.
-
-Changes in v1.5.1:
-- Adds istanbul/maps.html to the preloaded offline cache.
-- Preloads all five visual framework SVG scenes.
-- Removes macOS metadata files (__MACOSX and .DS_Store).
-- Adds .gitignore rules to prevent those files from returning.
-- Standardizes all displayed versions and service-worker cache to v1.5.1.
-- Retains every existing v1.5.0 page and asset.
-
-Installation: copy the CONTENTS of this folder into the existing repository root.
+.gitignore
+README.md
+VERSION.txt
+assets/css/app.css
+assets/icons/icon.svg
+assets/img/hero.svg
+assets/img/visuals/bosphorus.svg
+assets/img/visuals/embarkation.svg
+assets/img/visuals/istanbul-panorama.svg
+assets/img/visuals/markets.svg
+assets/img/visuals/old-city.svg
+assets/js/app.js
+cruise/index.html
+data/excursions.json
+data/istanbul.json
+data/navigation.json
+data/trip.json
+docs/ARCHITECTURE.md
+index.html
+istanbul/days/arrival.html
+istanbul/days/bosphorus.html
+istanbul/days/markets.html
+istanbul/days/old-city.html
+istanbul/embarkation.html
+istanbul/index.html
+istanbul/itinerary.html
+istanbul/maps.html
+istanbul/practical.html
+istanbul/restaurants.html
+manifest.webmanifest
+ports/index.html
+reservations.html
+service-worker.js
+timeline.html
