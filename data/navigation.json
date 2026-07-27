@@ -313,5 +313,71 @@
       "label": "Photography",
       "href": "/ports/corfu/photography.html"
     }
+  ],
+  "kotor": [
+    {
+      "label": "Kotor Overview",
+      "href": "/ports/kotor/index.html"
+    },
+    {
+      "label": "Summer Highlights",
+      "href": "/ports/kotor/highlights.html"
+    },
+    {
+      "label": "Old Town",
+      "href": "/ports/kotor/old-town.html"
+    },
+    {
+      "label": "Map & Day Plan",
+      "href": "/ports/kotor/maps.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/kotor/photography.html"
+    }
+  ],
+  "dubrovnik": [
+    {
+      "label": "Dubrovnik Overview",
+      "href": "/ports/dubrovnik/index.html"
+    },
+    {
+      "label": "Dubrovnik on Foot",
+      "href": "/ports/dubrovnik/walk.html"
+    },
+    {
+      "label": "City Walls Decision",
+      "href": "/ports/dubrovnik/walls.html"
+    },
+    {
+      "label": "Map & Route",
+      "href": "/ports/dubrovnik/maps.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/dubrovnik/photography.html"
+    }
+  ],
+  "split": [
+    {
+      "label": "Split Overview",
+      "href": "/ports/split/index.html"
+    },
+    {
+      "label": "Split Riviera",
+      "href": "/ports/split/riviera.html"
+    },
+    {
+      "label": "Diocletian’s Palace",
+      "href": "/ports/split/palace.html"
+    },
+    {
+      "label": "Map & Route",
+      "href": "/ports/split/maps.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/split/photography.html"
+    }
   ]
 }

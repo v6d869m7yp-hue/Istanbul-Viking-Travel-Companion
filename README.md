@@ -1,9 +1,3 @@
-# Istanbul–Viking Travel Companion v3.0.0
+# Istanbul–Viking Travel Companion v3.1.0
 
-Premium PWA release adding Ancient Olympia and Corfu.
-
-## Added
-- Olympia sanctuary, stadium, museum and expandable route map
-- Corfu panoramic drive, Old Town, fortress, photography and expandable day map
-- Real Wikimedia Commons photography with source credits
-- Updated Ports of Call index and offline cache
+Adds Premium Editions for Kotor, Dubrovnik and Split, with real photography, expandable offline maps, itinerary-specific excursion briefings and field guides.

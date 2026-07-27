@@ -1,5 +1,5 @@
 {
-  "name": "Istanbul · Viking Travel Companion",
+  "name": "Istanbul \u00b7 Viking Travel Companion",
   "short_name": "Istanbul Viking",
   "start_url": "./index.html",
   "display": "standalone",
@@ -13,5 +13,6 @@
       "purpose": "any maskable"
     }
   ],
-  "version": "3.0.0"
+  "version": "3.0.0",
+  "description": "Premium travel companion for Istanbul, Viking Ancient Adriatic Treasures, and Northern Italy."
 }
