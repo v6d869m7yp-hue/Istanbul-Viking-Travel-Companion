@@ -209,5 +209,57 @@
       "label": "Ancient World Context",
       "href": "/ports/troy/ancient-world.html"
     }
+  ],
+  "heraklion": [
+    {
+      "label": "Heraklion Overview",
+      "href": "/ports/heraklion/index.html"
+    },
+    {
+      "label": "Museum Field Guide",
+      "href": "/ports/heraklion/museum.html"
+    },
+    {
+      "label": "Minoan Highlights",
+      "href": "/ports/heraklion/minoan-highlights.html"
+    },
+    {
+      "label": "Harbor & Old Town",
+      "href": "/ports/heraklion/harbor.html"
+    },
+    {
+      "label": "Map & Route",
+      "href": "/ports/heraklion/maps.html"
+    }
+  ],
+  "athens": [
+    {
+      "label": "Athens Overview",
+      "href": "/ports/athens/index.html"
+    },
+    {
+      "label": "Day 1 · Acropolis & Plaka",
+      "href": "/ports/athens/day-one.html"
+    },
+    {
+      "label": "Acropolis Field Guide",
+      "href": "/ports/athens/acropolis.html"
+    },
+    {
+      "label": "Plaka & Rest Strategy",
+      "href": "/ports/athens/plaka.html"
+    },
+    {
+      "label": "Day 2 · Panoramic Athens",
+      "href": "/ports/athens/day-two.html"
+    },
+    {
+      "label": "Archaeological Museum",
+      "href": "/ports/athens/museum.html"
+    },
+    {
+      "label": "Maps & Routes",
+      "href": "/ports/athens/maps.html"
+    }
   ]
 }

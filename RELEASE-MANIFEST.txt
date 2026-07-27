@@ -1,12 +1,10 @@
-Release: v2.8.3 — Troy Real Photography Edition
-Base: v2.8.0 Troy Premium Edition
+Istanbul Viking Travel Companion v2.9.0
+Heraklion + Athens Premium Edition
 
 Added:
-- Real JPEG hero photography across all Troy pages
-- Troy photo essay on destination hub
-- Museum exterior/interior gallery
-- Route landmark gallery
-- Six-image photography story
-- Expanded image credits and responsive lightbox styling
-
-Note: licensed JPEG files load from Wikimedia Commons and are cached after first viewing.
+- 5 Heraklion premium pages
+- 7 Athens premium pages
+- 3 expandable offline route maps
+- Real Wikimedia Commons photography and credits
+- Updated Ports of Call cards
+- Updated navigation and PWA cache

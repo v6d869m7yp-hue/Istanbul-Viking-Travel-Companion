@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.8.3';
+const CACHE='ivtc-v2.9.0';
 const CORE=[
   "./README.md",
   "./VERSION.txt",
@@ -88,6 +88,21 @@ const CORE=[
   "./ports/troy/museum.html",
   "./ports/troy/photography.html",
   "./ports/troy/ancient-world.html",
+  "./assets/maps/heraklion-route.svg",
+  "./assets/maps/acropolis-walk.svg",
+  "./assets/maps/athens-two-day.svg",
+  "./ports/heraklion/index.html",
+  "./ports/heraklion/museum.html",
+  "./ports/heraklion/minoan-highlights.html",
+  "./ports/heraklion/harbor.html",
+  "./ports/heraklion/maps.html",
+  "./ports/athens/index.html",
+  "./ports/athens/day-one.html",
+  "./ports/athens/acropolis.html",
+  "./ports/athens/plaka.html",
+  "./ports/athens/day-two.html",
+  "./ports/athens/museum.html",
+  "./ports/athens/maps.html",
   "./reservations.html",
   "./timeline.html"
 ];
