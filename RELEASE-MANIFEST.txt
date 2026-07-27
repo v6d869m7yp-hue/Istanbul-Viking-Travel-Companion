@@ -1,17 +1,77 @@
-v2.5.0 Cruise Experience Foundation
+Istanbul-Viking Travel Companion v2.6.0
+Files: 74
 
-Added:
-- cruise/embarkation.html
-- cruise/ship-guide.html
-- cruise/daily-life.html
-- cruise/tomorrow.html
-- cruise/disembarkation.html
-
-Updated:
-- cruise/index.html
-- data/navigation.json
-- data/trip.json
-- assets/js/app.js
-- assets/css/app.css
-- service-worker.js
-- VERSION.txt
+.gitignore
+BOSPHORUS-MAP-FIX.txt
+README.md
+RELEASE-MANIFEST.txt
+VERSION.txt
+assets/css/app.css
+assets/icons/icon.svg
+assets/img/hero.svg
+assets/img/visuals/basilica-cistern.svg
+assets/img/visuals/blue-mosque.svg
+assets/img/visuals/bosphorus.svg
+assets/img/visuals/embarkation.svg
+assets/img/visuals/istanbul-panorama.svg
+assets/img/visuals/markets.svg
+assets/img/visuals/old-city.svg
+assets/img/visuals/topkapi.svg
+assets/img/visuals/turkish-breakfast.svg
+assets/js/app.js
+assets/maps/blue-mosque-plan.svg
+assets/maps/bosphorus-ferry.png
+assets/maps/bosphorus-ferry.svg
+assets/maps/cistern-plan.svg
+assets/maps/cruise-route.svg
+assets/maps/embarkation-transfer.svg
+assets/maps/ephesus-site-route.svg
+assets/maps/hagia-floorplan.svg
+assets/maps/istanbul-transit.svg
+assets/maps/markets-walk.svg
+assets/maps/master-trip.svg
+assets/maps/sultanahmet-route.svg
+assets/maps/topkapi-plan.svg
+cruise/daily-life.html
+cruise/disembarkation.html
+cruise/embarkation.html
+cruise/index.html
+cruise/ship-guide.html
+cruise/tomorrow.html
+data/attractions.json
+data/excursions.json
+data/istanbul.json
+data/navigation.json
+data/trip.json
+docs/ARCHITECTURE.md
+index.html
+istanbul/days/arrival.html
+istanbul/days/bosphorus.html
+istanbul/days/markets.html
+istanbul/days/old-city.html
+istanbul/embarkation.html
+istanbul/explorer.html
+istanbul/index.html
+istanbul/itinerary.html
+istanbul/maps.html
+istanbul/practical.html
+istanbul/restaurants.html
+istanbul/sultanahmet/basilica-cistern.html
+istanbul/sultanahmet/blue-mosque.html
+istanbul/sultanahmet/hagia-sophia.html
+istanbul/sultanahmet/index.html
+istanbul/sultanahmet/topkapi-palace.html
+istanbul/visuals.html
+manifest.webmanifest
+photo-credits.html
+ports/ephesus/before-you-go.html
+ports/ephesus/great-theatre.html
+ports/ephesus/index.html
+ports/ephesus/library-of-celsus.html
+ports/ephesus/photography.html
+ports/ephesus/route.html
+ports/ephesus/terrace-houses.html
+ports/index.html
+reservations.html
+service-worker.js
+timeline.html

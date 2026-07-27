@@ -111,5 +111,35 @@
       "label": "Disembarkation",
       "href": "/cruise/disembarkation.html"
     }
+  ],
+  "ephesus": [
+    {
+      "label": "Ephesus Overview",
+      "href": "/ports/ephesus/index.html"
+    },
+    {
+      "label": "Before You Go",
+      "href": "/ports/ephesus/before-you-go.html"
+    },
+    {
+      "label": "Site Map & Route",
+      "href": "/ports/ephesus/route.html"
+    },
+    {
+      "label": "Library of Celsus",
+      "href": "/ports/ephesus/library-of-celsus.html"
+    },
+    {
+      "label": "Terrace Houses",
+      "href": "/ports/ephesus/terrace-houses.html"
+    },
+    {
+      "label": "Great Theatre",
+      "href": "/ports/ephesus/great-theatre.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/ephesus/photography.html"
+    }
   ]
 }

@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.5.0';
+const CACHE='ivtc-v2.6.0';
 const CORE=[
   "./README.md",
   "./VERSION.txt",
@@ -60,6 +60,14 @@ const CORE=[
   "./manifest.webmanifest",
   "./photo-credits.html",
   "./ports/index.html",
+  "./assets/maps/ephesus-site-route.svg",
+  "./ports/ephesus/index.html",
+  "./ports/ephesus/before-you-go.html",
+  "./ports/ephesus/route.html",
+  "./ports/ephesus/library-of-celsus.html",
+  "./ports/ephesus/terrace-houses.html",
+  "./ports/ephesus/great-theatre.html",
+  "./ports/ephesus/photography.html",
   "./reservations.html",
   "./timeline.html"
 ];
