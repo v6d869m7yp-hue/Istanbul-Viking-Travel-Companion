@@ -1,24 +1,15 @@
 # Istanbul–Viking Travel Companion
 
-## Version 1.2.0 — Istanbul Guide
+## v1.3.0 — Multi-Page Istanbul PWA
 
-A responsive, GitHub Pages–ready personal travel companion for Istanbul and the Viking *Ancient Adriatic Treasures* voyage.
+A GitHub Pages-ready progressive web application for the August–September 2026 journey.
 
-### This release adds
+### This release
+- Adds a persistent Istanbul chapter navigator on desktop
+- Adds a collapsible chapter menu on phones and tablets
+- Exposes eleven dedicated Istanbul pages
+- Adds Markets, Transportation, Embarkation and History chapters
+- Preserves PWA manifest and offline service-worker support
+- Fixes service-worker registration from nested pages
 
-- Expanded Istanbul hub
-- Personalized four-day pre-cruise itinerary
-- Arrival and hotel-orientation guide
-- Old City walking-day guide
-- Bosphorus day planner
-- Food and dining strategy
-- Practical transit, etiquette and language guide
-- Mobile-responsive guide components and route links
-
-### Publish
-
-Copy the contents of this folder into the root of the GitHub repository, commit the changes, and push to `main`. GitHub Pages should continue deploying from `main` and `/(root)`.
-
-### Privacy
-
-The public site intentionally omits full booking numbers, payment details, reservation PINs and copies of personal travel documents.
+Open `index.html` locally or deploy the repository root through GitHub Pages.

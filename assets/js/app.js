@@ -1,3 +1,21 @@
+
+const ISTANBUL_CHAPTERS=[
+  ['overview','index.html','Overview'],['itinerary','itinerary.html','Four-Day Plan'],['arrival','arrival.html','Arrival'],
+  ['old-city','old-city.html','Old City'],['bosphorus','bosphorus.html','Bosphorus'],['markets','markets.html','Markets'],
+  ['restaurants','restaurants.html','Restaurants'],['transportation','transportation.html','Transportation'],
+  ['practical','practical.html','Practical'],['embarkation','embarkation.html','Embarkation'],['history','history.html','History']
+];
+function setupIstanbulChapters(){
+  if(document.body.dataset.page!=='istanbul')return;
+  const main=document.querySelector('main'); if(!main)return;
+  const active=document.body.dataset.section||'overview';
+  const shell=document.createElement('div'); shell.className='chapter-shell';
+  const aside=document.createElement('aside'); aside.className='chapter-nav';
+  aside.innerHTML=`<div class="chapter-nav-head"><div><small>Istanbul guide</small><strong>August 14–18</strong></div><button class="chapter-toggle" aria-expanded="false">Chapters</button></div><nav>${ISTANBUL_CHAPTERS.map(([id,href,label],i)=>`<a class="${id===active?'active':''}" href="${href}"><span>${String(i+1).padStart(2,'0')}</span>${label}</a>`).join('')}</nav>`;
+  main.parentNode.insertBefore(shell,main); shell.append(aside,main);
+  aside.querySelector('.chapter-toggle')?.addEventListener('click',e=>{const open=aside.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',String(open))});
+}
+
 const TRIP_DAYS=[
 {date:'2026-08-13',location:'Departure',title:'Travel to Istanbul',time:'Flight day',summary:'Pack essentials in your carry-on and shift your schedule toward Istanbul time.',icon:'✈'},
 {date:'2026-08-14',location:'Istanbul',title:'Arrival & Sultanahmet',time:'Hotel check-in after 2:00 PM',summary:'Transfer to Dersaadet Hotel, settle in, and enjoy an easy first-evening walk.',icon:'◆'},
@@ -26,5 +44,5 @@ function getTripContext(){const now=new Date(),start=new Date('2026-08-13T00:00:
 function renderDashboard(){const card=document.querySelector('[data-today-card]');if(!card)return;const c=getTripContext(),d=TRIP_DAYS[c.idx];const days=Math.ceil((c.start-c.now)/86400000);document.querySelector('[data-countdown]').textContent=c.before?Math.max(days,0):c.during?(c.idx+1):'✓';document.querySelector('[data-countdown-label]').textContent=c.before?'days':c.during?'trip day':'complete';const hour=c.now.getHours();document.querySelector('[data-greeting]').textContent=`Good ${hour<12?'morning':hour<18?'afternoon':'evening'}, John & Lyla`;document.querySelector('[data-trip-state]').textContent=c.before?`${days} days until departure. Your dashboard is ready.`:c.during?`You are on day ${c.idx+1} of the journey.`:'The 2026 journey is complete.';document.querySelector('[data-today-date]').textContent=c.before?'Next major day · '+fmtDate(d.date):fmtDate(d.date);document.querySelector('[data-today-location]').textContent=d.location;document.querySelector('[data-today-title]').textContent=d.title;document.querySelector('[data-today-summary]').textContent=d.summary;document.querySelector('[data-today-time]').textContent=d.time;const future=TRIP_DAYS.slice(c.idx,c.idx+3);document.querySelector('[data-upcoming]').innerHTML=future.map(x=>`<div class="upcoming-item"><time>${fmtDate(x.date)}</time><div><strong>${x.location} · ${x.title}</strong><small>${x.time}</small></div><span>${x.icon}</span></div>`).join('');const ribbon=TRIP_DAYS.filter((_,i)=>i===0||i===1||i===5||i>5).map(x=>`<div class="ribbon-stop"><div class="dot"></div><small>${fmtDate(x.date)}</small><strong>${x.location}</strong><small>${x.title}</small></div>`).join('');document.querySelector('[data-ribbon]').innerHTML=ribbon}
 function renderTimeline(){const el=document.querySelector('[data-timeline]');if(el)el.innerHTML=TRIP_DAYS.map(d=>`<article class="day"><time>${fmtDate(d.date)}</time><h3>${d.location} · ${d.title}</h3><div>${d.time} <span class="pill">${d.summary}</span></div></article>`).join('')}
 function renderExcursions(){const el=document.querySelector('[data-excursions]');if(el)el.innerHTML=EXCURSIONS.map(e=>`<tr><td>${fmtDate(e[0])}</td><td><strong>${e[1]}</strong></td><td>${e[2]}</td><td>${e[3]}</td><td>${e[4]}</td><td>${e[5]}</td></tr>`).join('')}
-function registerSW(){if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{}))}
-document.addEventListener('DOMContentLoaded',()=>{setupNav();renderDashboard();renderTimeline();renderExcursions();registerSW()});
+function registerSW(){if('serviceWorker'in navigator)window.addEventListener('load',()=>{const sw=new URL('service-worker.js',document.baseURI);if(location.pathname.includes('/istanbul/')||location.pathname.includes('/ports/'))sw.pathname=sw.pathname.replace(/\/(istanbul|ports)\/service-worker\.js$/,'/service-worker.js');navigator.serviceWorker.register(sw.pathname).catch(()=>{})})}
+document.addEventListener('DOMContentLoaded',()=>{setupNav();setupIstanbulChapters();renderDashboard();renderTimeline();renderExcursions();registerSW()});
