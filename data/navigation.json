@@ -6,6 +6,11 @@
       "key": "home"
     },
     {
+      "label": "Trip at a Glance",
+      "href": "/trip-at-a-glance.html",
+      "key": "glance"
+    },
+    {
       "label": "Itinerary",
       "href": "/timeline.html",
       "key": "timeline"
@@ -24,6 +29,11 @@
       "label": "Ports",
       "href": "/ports/index.html",
       "key": "ports"
+    },
+    {
+      "label": "Search",
+      "href": "/search.html",
+      "key": "search"
     },
     {
       "label": "Reservations",

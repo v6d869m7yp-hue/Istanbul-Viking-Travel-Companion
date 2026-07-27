@@ -1,6 +1,10 @@
-v3.2.1
-- Fixed Istanbul card on Ports of Call
-- Added From Istanbul to Viking transition chapter
-- Added bidirectional journey navigation
-- Added Northern Italy continuation card
-- Updated offline PWA cache
+Istanbul–Viking Travel Companion v3.3.0
+
+New features:
+- Trip at a Glance page
+- Offline global search across 101 HTML pages
+- Device-local favorites
+- Persistent search and save controls
+- Updated PWA cache
+
+Project files: 159

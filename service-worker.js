@@ -1,10 +1,9 @@
-const CACHE='ivtc-v3.2.1';
+const CACHE='ivtc-v3.3.0';
 const CORE=[
   "./.gitignore",
   "./BOSPHORUS-MAP-FIX.txt",
   "./DUBROVNIK-PHOTO-FIX.txt",
   "./README.md",
-  "./RELEASE-MANIFEST.txt",
   "./TROY-MAP-FIX.txt",
   "./TROY-PORT-PHOTO-FIX.txt",
   "./VERSION.txt",
@@ -59,8 +58,10 @@ const CORE=[
   "./data/excursions.json",
   "./data/istanbul.json",
   "./data/navigation.json",
+  "./data/search-index.json",
   "./data/trip.json",
   "./docs/ARCHITECTURE.md",
+  "./favorites.html",
   "./index.html",
   "./istanbul/days/arrival.html",
   "./istanbul/days/bosphorus.html",
@@ -70,7 +71,6 @@ const CORE=[
   "./istanbul/explorer.html",
   "./istanbul/index.html",
   "./istanbul/itinerary.html",
-  "./istanbul/to-viking.html",
   "./istanbul/maps.html",
   "./istanbul/practical.html",
   "./istanbul/restaurants.html",
@@ -79,6 +79,7 @@ const CORE=[
   "./istanbul/sultanahmet/hagia-sophia.html",
   "./istanbul/sultanahmet/index.html",
   "./istanbul/sultanahmet/topkapi-palace.html",
+  "./istanbul/to-viking.html",
   "./istanbul/visuals.html",
   "./manifest.webmanifest",
   "./photo-credits.html",
@@ -153,7 +154,10 @@ const CORE=[
   "./ports/venice/photography.html",
   "./ports/venice/st-marks.html",
   "./reservations.html",
-  "./timeline.html"
+  "./search.html",
+  "./service-worker.js",
+  "./timeline.html",
+  "./trip-at-a-glance.html"
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
