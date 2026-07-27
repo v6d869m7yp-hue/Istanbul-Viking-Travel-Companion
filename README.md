@@ -1,6 +1,6 @@
 # Istanbul–Viking Travel Companion
 
-## v1.3.0 — Multi-Page Istanbul PWA
+## v1.4.0 — Visual Framework
 
 A GitHub Pages-ready progressive web application for the August–September 2026 journey.
 
@@ -13,3 +13,10 @@ A GitHub Pages-ready progressive web application for the August–September 2026
 - Fixes service-worker registration from nested pages
 
 Open `index.html` locally or deploy the repository root through GitHub Pages.
+
+
+## v1.4.0 visual framework
+- Added five original, offline-friendly editorial illustrations.
+- Added cinematic hero treatment to every Istanbul chapter.
+- Added image-led guide tiles, visual orientation panels, gallery layouts and editorial pull quotes.
+- Preserved the PWA architecture and offline availability.
