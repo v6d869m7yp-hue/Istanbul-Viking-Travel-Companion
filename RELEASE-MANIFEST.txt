@@ -1,16 +1,14 @@
 Istanbul–Viking Travel Companion
-Release: v1.5.0 Istanbul Maps PWA — CORRECTED
+Release: v1.5.1 — Offline Cache & Repository Cleanup
 
-This package is based on the complete corrected v1.4.0 visual framework and retains:
-- assets/data
-- assets/img/photos
-- all existing Istanbul chapters
-- PWA manifest and service worker
+Built directly from the user's verified v1.5.0 repository download.
 
-New in v1.5.0:
-- istanbul/maps.html
-- Istanbul Maps & Routes navigation link
-- map-specific styles
-- updated offline cache
+Changes in v1.5.1:
+- Adds istanbul/maps.html to the preloaded offline cache.
+- Preloads all five visual framework SVG scenes.
+- Removes macOS metadata files (__MACOSX and .DS_Store).
+- Adds .gitignore rules to prevent those files from returning.
+- Standardizes all displayed versions and service-worker cache to v1.5.1.
+- Retains every existing v1.5.0 page and asset.
 
 Installation: copy the CONTENTS of this folder into the existing repository root.

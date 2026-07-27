@@ -1,6 +1,19 @@
 # Istanbul–Viking Travel Companion
 
-## v1.5.0 — Istanbul Maps
+## v1.5.1 — Offline Cache & Repository Cleanup
+
+A maintenance release built from the verified v1.5.0 repository download.
+
+### This release
+- Adds the Istanbul maps chapter to the preloaded PWA cache.
+- Preloads all visual framework illustrations for offline viewing.
+- Removes macOS metadata files and adds `.gitignore` protection.
+- Standardizes every page and cache identifier to v1.5.1.
+- Preserves all existing pages, maps, and visual assets.
+
+Open `index.html` locally or deploy the repository root through GitHub Pages.
+
+## v1.5.1 — Istanbul Maps
 
 A GitHub Pages-ready progressive web application for the August–September 2026 journey.
 
@@ -15,7 +28,7 @@ A GitHub Pages-ready progressive web application for the August–September 2026
 Open `index.html` locally or deploy the repository root through GitHub Pages.
 
 
-## v1.5.0 visual framework
+## v1.5.1 visual framework
 - Added five original, offline-friendly editorial illustrations.
 - Added cinematic hero treatment to every Istanbul chapter.
 - Added image-led guide tiles, visual orientation panels, gallery layouts and editorial pull quotes.
@@ -23,10 +36,10 @@ Open `index.html` locally or deploy the repository root through GitHub Pages.
 
 ## Corrected package
 
-This package standardizes all page footers and the service-worker cache to v1.5.0 and uses the correct v1.5.0 top-level folder name.
+This package standardizes all page footers and the service-worker cache to v1.5.1 and uses the correct v1.5.1 top-level folder name.
 
 
-## v1.5.0 additions
+## v1.5.1 additions
 - Dedicated Istanbul maps chapter
 - Offline custom Sultanahmet orientation map
 - Old City route sequence
