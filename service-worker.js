@@ -1,4 +1,4 @@
-const CACHE='ivtc-v2.7.0';
+const CACHE='ivtc-v2.8.0';
 const CORE=[
   "./README.md",
   "./VERSION.txt",
@@ -77,6 +77,17 @@ const CORE=[
   "./ports/rhodes/lindos.html",
   "./ports/rhodes/maps.html",
   "./ports/rhodes/photography.html",
+  "./assets/img/visuals/troy-hero.svg",
+  "./assets/maps/troy-site-route.svg",
+  "./assets/maps/troy-layers.svg",
+  "./ports/troy/index.html",
+  "./ports/troy/before-you-go.html",
+  "./ports/troy/route.html",
+  "./ports/troy/layers.html",
+  "./ports/troy/myth-history.html",
+  "./ports/troy/museum.html",
+  "./ports/troy/photography.html",
+  "./ports/troy/ancient-world.html",
   "./reservations.html",
   "./timeline.html"
 ];

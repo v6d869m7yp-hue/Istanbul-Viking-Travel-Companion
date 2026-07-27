@@ -1,5 +1,18 @@
-v2.7.0 Rhodes Premium Edition
-- 8 Rhodes guide pages
-- custom offline day map
-- morning and afternoon excursion integration
-- real Wikimedia Commons photography with credits
+Istanbul–Viking Travel Companion v2.8.0
+Troy Premium Edition
+
+Added:
+- 8 linked Troy chapters
+- Troy archaeological route map
+- Nine Cities of Troy visual diagram
+- Myth vs. History comparison
+- Museum and photography guidance
+- Ancient World context linking Troy, Ephesus and Athens
+- Offline PWA cache entries for all new pages and maps
+
+Base preserved:
+- Istanbul Premium sections
+- Interactive map/lightbox system
+- Cruise Experience Foundation
+- Ephesus Premium Edition
+- Rhodes Premium Edition

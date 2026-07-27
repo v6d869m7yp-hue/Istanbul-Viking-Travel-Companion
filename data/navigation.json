@@ -175,5 +175,39 @@
       "label": "Photography",
       "href": "/ports/rhodes/photography.html"
     }
+  ],
+  "troy": [
+    {
+      "label": "Troy Overview",
+      "href": "/ports/troy/index.html"
+    },
+    {
+      "label": "Before You Go",
+      "href": "/ports/troy/before-you-go.html"
+    },
+    {
+      "label": "Site Map & Route",
+      "href": "/ports/troy/route.html"
+    },
+    {
+      "label": "Nine Cities of Troy",
+      "href": "/ports/troy/layers.html"
+    },
+    {
+      "label": "Myth vs. History",
+      "href": "/ports/troy/myth-history.html"
+    },
+    {
+      "label": "Troy Museum",
+      "href": "/ports/troy/museum.html"
+    },
+    {
+      "label": "Photography",
+      "href": "/ports/troy/photography.html"
+    },
+    {
+      "label": "Ancient World Context",
+      "href": "/ports/troy/ancient-world.html"
+    }
   ]
 }

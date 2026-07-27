@@ -51,3 +51,7 @@
 
 /* v2.7 Rhodes Premium Edition */
 .rhodes-hero>img{object-position:center 48%}.rhodes-dashboard{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;margin:28px 0}.sun-card{background:linear-gradient(145deg,#305f72,#7bb3c4);color:#fff;border-radius:22px;padding:26px;box-shadow:var(--shadow)}.sun-card h2{font:400 1.8rem Georgia,serif}.rhodes-dashboard .brief-card{background:linear-gradient(145deg,#41342c,#7f5a3c)}@media(max-width:840px){.rhodes-dashboard{grid-template-columns:1fr}}
+
+
+/* v2.8 Troy Premium Edition */
+.troy-hero>img{object-position:center 55%}.troy-dashboard{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;margin:28px 0}.bronze-card{background:linear-gradient(145deg,#5c4430,#b8894e);color:#fff;border-radius:22px;padding:26px;box-shadow:var(--shadow)}.bronze-card h2{font:400 1.85rem Georgia,serif}.myth-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:26px 0}.myth-grid section{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px}.myth-grid h2{font-size:1.55rem;margin:.3rem 0 .6rem}.troy-layers{display:grid;gap:8px;margin:24px 0}.troy-layer{display:grid;grid-template-columns:110px 1fr;gap:18px;border-radius:14px;padding:13px 16px;color:#fff}.troy-layer strong{font-family:Georgia,serif}.troy-hero+.container{}@media(max-width:840px){.troy-dashboard,.myth-grid{grid-template-columns:1fr}}
