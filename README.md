@@ -20,3 +20,7 @@ Open `index.html` locally or deploy the repository root through GitHub Pages.
 - Added cinematic hero treatment to every Istanbul chapter.
 - Added image-led guide tiles, visual orientation panels, gallery layouts and editorial pull quotes.
 - Preserved the PWA architecture and offline availability.
+
+## Corrected package
+
+This package standardizes all page footers and the service-worker cache to v1.4.0 and uses the correct v1.4.0 top-level folder name.

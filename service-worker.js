@@ -1,4 +1,4 @@
-const CACHE='ivtc-v1.3.0';
+const CACHE='ivtc-v1.4.0';
 const FILES=["./", "./index.html", "./timeline.html", "./reservations.html", "./cruise.html", "./ports/index.html", "./assets/css/styles.css", "./assets/js/app.js", "./manifest.webmanifest", "./assets/icons/icon.svg", "./assets/img/hero.svg", "./istanbul/index.html", "./istanbul/itinerary.html", "./istanbul/arrival.html", "./istanbul/old-city.html", "./istanbul/bosphorus.html", "./istanbul/markets.html", "./istanbul/restaurants.html", "./istanbul/transportation.html", "./istanbul/practical.html", "./istanbul/embarkation.html", "./istanbul/history.html"];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
