@@ -16,8 +16,6 @@ async function createTrip({label='Istanbul–Viking–Venice 2026'}={}){
  const batch=s.api.writeBatch(s.db);
  batch.set(tripRef,{schema:1,label,ownerUid:s.user.uid,memberUids:[s.user.uid],roles:{[s.user.uid]:'owner'},createdAt:s.api.serverTimestamp(),updatedAt:s.api.serverTimestamp(),status:'active'});
  batch.set(s.api.doc(tripRef,'envelopes','connection-test'),{ciphertext:payload.ciphertext,iv:payload.iv,algorithm:payload.algorithm,testOnly:true,updatedAt:s.api.serverTimestamp(),updatedBy:s.user.uid});
- batch.set(s.api.doc(s.db,'users',s.user.uid),{email:s.user.email||null,updatedAt:s.api.serverTimestamp()},{merge:true});
- batch.set(s.api.doc(s.db,'users',s.user.uid,'trips',tripRef.id),{tripId:tripRef.id,role:'owner',label,updatedAt:s.api.serverTimestamp()});
  await batch.commit();return tripRef.id;
 }
 async function listTrips(){

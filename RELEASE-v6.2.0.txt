@@ -1,0 +1,10 @@
+Istanbul–Viking Travel Companion v6.2.0
+
+Firebase Authentication & First Trip
+
+- Connects the deployed app to the configured Firebase project
+- Supports owner email/password sign-in
+- Creates and reads the first trip document in Firestore
+- Writes an encrypted connectivity-test envelope
+- Keeps the existing local Travel Vault private and offline
+- Adds Cloud Sign In access from the dashboard and footer
