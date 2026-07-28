@@ -79,7 +79,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'6.1.1',buildId:'v6.1.1-20260728-diagnostics-consistency-fix'};
+const APP_RELEASE={version:'6.1.2',buildId:'v6.1.2-20260728-service-worker-control-fix'};
 let updateRegistration=null;
 function showUpdateBanner(reg){
   updateRegistration=reg||updateRegistration;
@@ -102,7 +102,7 @@ function activateWaitingWorker(){
   else location.reload();
 }
 async function setupAppUpdates(){
-  if(!('serviceWorker' in navigator)) return;
+  if(!('serviceWorker' in navigator)) return null;
   let refreshing=false;
   navigator.serviceWorker.addEventListener('controllerchange',()=>{
     if(refreshing)return;
@@ -125,8 +125,13 @@ async function setupAppUpdates(){
       });
     });
     await reg.update().catch(()=>{});
+    await navigator.serviceWorker.ready.catch(()=>reg);
     setInterval(()=>reg.update().catch(()=>{}),5*60*1000);
-  }catch(err){console.warn('Service worker registration failed',err)}
+    return reg;
+  }catch(err){
+    console.warn('Service worker registration failed',err);
+    return null;
+  }
 }
 async function diagnosticsPage(){
   const target=document.querySelector('[data-diagnostics]');
@@ -136,7 +141,9 @@ async function diagnosticsPage(){
   let reg=null,controller='No active service worker',waiting='No';
   if('serviceWorker' in navigator){
     reg=await navigator.serviceWorker.getRegistration();
-    controller=navigator.serviceWorker.controller?.scriptURL||'No controlling service worker';
+    const controlled=navigator.serviceWorker.controller?.scriptURL;
+    const active=reg?.active?.scriptURL;
+    controller=controlled || (active ? 'Registered and active: '+active+' (this tab will be controlled after Safari completes the lifecycle or reloads)' : 'No registered service worker');
     waiting=reg?.waiting?'Yes':'No';
   }
   const cacheNames=('caches' in window)?await caches.keys():[];
@@ -164,9 +171,9 @@ async function diagnosticsPage(){
     if(status)status.textContent='Navigation button returned to its default position.';
   });
   const checks=document.querySelector('[data-release-checks]');
-  const urls=['/index.html','/assets/js/app.js?v=6.1.1','/assets/js/map-explorer.js?v=6.1.1','/data/trip.json','/data/build-info.json','/diagnostics.html'];
+  const urls=['/index.html','/assets/js/app.js?v=6.1.2','/assets/js/map-explorer.js?v=6.1.2','/data/trip.json','/data/build-info.json','/diagnostics.html'];
   const results=await Promise.all(urls.map(async u=>{try{const r=await fetch(abs(u),{cache:'no-store'});return [u,r.ok]}catch(e){return[u,false]}}));
   checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
 }
 
-document.addEventListener('DOMContentLoaded',async()=>{const trip=await shell();unifiedJourneySwitcher();if(document.body.dataset.view==='dashboard')dashboard(trip);if(document.body.dataset.view==='timeline')timeline(trip);if(document.body.dataset.view==='istanbul')istanbulCards();if(document.body.dataset.view==='excursions')excursionTable();if(document.body.dataset.view==='search')searchPage();if(document.body.dataset.view==='favorites')favoritesPage();if(document.body.dataset.view==='diagnostics')diagnosticsPage();glanceStatus(trip);intelligence();interactiveMedia();interactiveCruiseRoute();setupAppUpdates();});
+document.addEventListener('DOMContentLoaded',async()=>{const trip=await shell();unifiedJourneySwitcher();await setupAppUpdates();if(document.body.dataset.view==='dashboard')dashboard(trip);if(document.body.dataset.view==='timeline')timeline(trip);if(document.body.dataset.view==='istanbul')istanbulCards();if(document.body.dataset.view==='excursions')excursionTable();if(document.body.dataset.view==='search')searchPage();if(document.body.dataset.view==='favorites')favoritesPage();if(document.body.dataset.view==='diagnostics')await diagnosticsPage();glanceStatus(trip);intelligence();interactiveMedia();interactiveCruiseRoute();});

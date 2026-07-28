@@ -1,6 +1,6 @@
-Istanbul–Viking Travel Companion v6.1.1
+Istanbul–Viking Travel Companion v6.1.2
 
-Diagnostics Consistency Fix
+Service Worker Control Fix
 
 - Aligns the displayed app version, footer version, build ID, expected cache name, service worker identity, and release-verification URLs.
 - Uses a new cache name so activation removes obsolete ivtc-* caches.

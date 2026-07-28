@@ -1,0 +1,7 @@
+Istanbul–Viking Travel Companion v6.1.2
+Service Worker Control Fix
+
+- Registers and awaits the service worker before Diagnostics renders.
+- Reports active registration separately from page control.
+- Preserves automatic update and cache cleanup behavior.
+- Updates all release, cache, footer, and verification identifiers consistently.
