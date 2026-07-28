@@ -1,0 +1,6 @@
+v3.5.1
+- Cruise route map on Istanbul Maps page now has tappable port hotspots.
+- Map images with a live Google Maps link now open that live map when tapped.
+- Expand buttons continue to open the offline schematic full-screen.
+- Added missing live-map links to remaining port map pages.
+- Updated service-worker cache to force the corrected files to load.

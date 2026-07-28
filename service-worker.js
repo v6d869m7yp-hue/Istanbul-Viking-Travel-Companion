@@ -1,10 +1,11 @@
-const CACHE='ivtc-v3.5.1';
+const CACHE='ivtc-v3.5.2';
 const CORE=[
   "./.gitignore",
   "./BOSPHORUS-MAP-FIX.txt",
   "./DUBROVNIK-PHOTO-FIX.txt",
   "./README.md",
   "./INTERACTIVE-CRUISE-MAP.txt",
+  "./INTERACTIVE-MAPS-FIX.txt",
   "./TROY-MAP-FIX.txt",
   "./TROY-PORT-PHOTO-FIX.txt",
   "./VERSION.txt",
