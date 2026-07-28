@@ -1,6 +1,6 @@
-const VERSION='4.1.0';
-const BUILD_ID='v4.1.0-20260728-map-update';
-const CACHE='ivtc-v4.1.0-v4.1.0-20260728-map-update';
+const VERSION='4.1.1';
+const BUILD_ID='v4.1.1-20260728-draggable-nav';
+const CACHE='ivtc-v4.1.1-v4.1.1-20260728-draggable-nav';
 const CORE=[
   "./BOSPHORUS-MAP-FIX.txt",
   "./DUBROVNIK-PHOTO-FIX.txt",

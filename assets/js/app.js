@@ -18,15 +18,68 @@ function glanceStatus(trip){const wrap=document.querySelector('[data-glance-stat
 function unifiedJourneySwitcher(){
   if(document.querySelector('.journey-switcher')) return;
   const northernItalyVenice='https://v6d869m7yp-hue.github.io/NorthernItalyTravelerCompanion-v023/venice.html';
-  const northernItalyHome='https://v6d869m7yp-hue.github.io/NorthernItalyTravelerCompanion-v023/index.html';
   const nav=document.createElement('nav');
   nav.className='journey-switcher';
   nav.setAttribute('aria-label','Switch journey companion');
-  nav.innerHTML=`<a href="${abs('/istanbul/index.html')}">Istanbul</a><a href="${northernItalyVenice}" class="primary">Continue: Venice & Northern Italy →</a>`;
+  nav.setAttribute('data-draggable-navigation','');
+  nav.innerHTML=`<span class="journey-drag-handle" aria-hidden="true">⋮⋮</span><a href="${abs('/istanbul/index.html')}">Istanbul</a><a href="${northernItalyVenice}" class="primary">Continue: Venice & Northern Italy →</a>`;
   document.body.appendChild(nav);
+
+  const storageKey='ivtc-journey-switcher-position-v1';
+  let dragging=false,moved=false,pointerId=null,startX=0,startY=0,startLeft=0,startTop=0,suppressClick=false;
+  const safe=12;
+  const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
+  const viewport=()=>({w:window.innerWidth,h:window.innerHeight});
+  const place=(left,top,save=false)=>{
+    const {w,h}=viewport(),r=nav.getBoundingClientRect();
+    const maxLeft=Math.max(safe,w-r.width-safe),maxTop=Math.max(safe,h-r.height-safe);
+    left=clamp(left,safe,maxLeft);top=clamp(top,safe,maxTop);
+    nav.style.left=left+'px';nav.style.top=top+'px';nav.style.right='auto';nav.style.bottom='auto';
+    if(save)localStorage.setItem(storageKey,JSON.stringify({side:left+r.width/2<w/2?'left':'right',topRatio:top/Math.max(1,h-r.height)}));
+  };
+  const restore=()=>{
+    let saved=null;try{saved=JSON.parse(localStorage.getItem(storageKey)||'null')}catch(e){}
+    const {w,h}=viewport(),r=nav.getBoundingClientRect();
+    if(saved){
+      const top=clamp((Number(saved.topRatio)||0)*(h-r.height),safe,Math.max(safe,h-r.height-safe));
+      place(saved.side==='left'?safe:w-r.width-safe,top,false);
+    }else place(w-r.width-safe,h-r.height-86,false);
+  };
+  requestAnimationFrame(restore);
+
+  nav.addEventListener('pointerdown',e=>{
+    if(e.button!==undefined&&e.button!==0)return;
+    dragging=true;moved=false;pointerId=e.pointerId;
+    const r=nav.getBoundingClientRect();startX=e.clientX;startY=e.clientY;startLeft=r.left;startTop=r.top;
+    nav.classList.add('dragging');nav.setPointerCapture?.(e.pointerId);
+  });
+  nav.addEventListener('pointermove',e=>{
+    if(!dragging||e.pointerId!==pointerId)return;
+    const dx=e.clientX-startX,dy=e.clientY-startY;
+    if(Math.hypot(dx,dy)>6)moved=true;
+    if(moved){e.preventDefault();place(startLeft+dx,startTop+dy,false)}
+  },{passive:false});
+  const finish=e=>{
+    if(!dragging||e.pointerId!==pointerId)return;
+    dragging=false;nav.classList.remove('dragging');
+    if(moved){
+      const {w}=viewport(),r=nav.getBoundingClientRect();
+      const left=r.left+r.width/2<w/2?safe:w-r.width-safe;
+      place(left,r.top,true);suppressClick=true;setTimeout(()=>suppressClick=false,80);
+    }
+  };
+  nav.addEventListener('pointerup',finish);nav.addEventListener('pointercancel',finish);
+  nav.addEventListener('click',e=>{if(suppressClick){e.preventDefault();e.stopPropagation()}},true);
+  window.addEventListener('resize',restore,{passive:true});
+
+  const footer=document.querySelector('.footer');
+  if(footer&&'IntersectionObserver' in window){
+    new IntersectionObserver(entries=>nav.classList.toggle('footer-visible',entries.some(x=>x.isIntersecting)),{threshold:.02}).observe(footer);
+  }
+  window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'4.1.0',buildId:'v4.1.0-20260728-map-update'};
+const APP_RELEASE={version:'4.1.1',buildId:'v4.1.1-20260728-draggable-nav'};
 let updateRegistration=null;
 function showUpdateBanner(reg){
   updateRegistration=reg||updateRegistration;
@@ -105,8 +158,13 @@ async function diagnosticsPage(){
     const r=await navigator.serviceWorker.getRegistration();await r?.unregister();
     location.replace(abs('/index.html')+'?refresh='+Date.now());
   });
+  document.querySelector('[data-reset-navigation-position]')?.addEventListener('click',()=>{
+    window.resetJourneySwitcherPosition?.();
+    const status=document.querySelector('[data-navigation-position-status]');
+    if(status)status.textContent='Navigation button returned to its default position.';
+  });
   const checks=document.querySelector('[data-release-checks]');
-  const urls=['/index.html','/assets/js/app.js?v=4.1.0','/assets/js/map-explorer.js?v=4.1.0','/data/trip.json','/diagnostics.html'];
+  const urls=['/index.html','/assets/js/app.js?v=4.1.1','/assets/js/map-explorer.js?v=4.1.1','/data/trip.json','/diagnostics.html'];
   const results=await Promise.all(urls.map(async u=>{try{const r=await fetch(abs(u),{cache:'no-store'});return [u,r.ok]}catch(e){return[u,false]}}));
   checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
 }

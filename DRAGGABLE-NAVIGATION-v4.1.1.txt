@@ -1,0 +1,1 @@
+Adds a draggable, edge-snapping journey navigation control, remembers its position per device, fades it when the footer is visible, and provides a reset control in Diagnostics.
