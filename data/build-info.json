@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "5.1.0",
-  "buildId": "v5.1.0-20260728-travel-vault-foundation",
+  "version": "6.0.0",
+  "buildId": "v6.0.0-20260728-secure-backend-preview",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v5.1.0-travel-vault-foundation",
-  "release": "Encrypted Travel Vault Foundation",
-  "pageCount": 103,
+  "cacheName": "ivtc-v6.0.0-secure-backend-preview",
+  "release": "Secure Backend Developer Preview",
+  "pageCount": 104,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "precacheEntryCount": 165
+  "precacheEntryCount": 169
 }

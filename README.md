@@ -1,10 +1,5 @@
-# Istanbul–Viking Travel Companion v3.3.0
+# Istanbul–Viking Travel Companion v6.0.0
 
-Istanbul-to-Viking journey integration, fixed Istanbul Ports of Call card, embarkation handoff, and bidirectional navigation.
+Offline-first public travel guide plus a local encrypted Travel Vault. This developer preview adds a disabled, ciphertext-only Firebase backend foundation. See `backend-setup.html` and `docs/V6-BACKEND-BOOTSTRAP.md`.
 
-
-## v3.3.0 additions
-- Trip at a Glance control page
-- Offline global search index
-- Device-local Favorites
-- Persistent save-page and search controls
+Run `npm test` before deployment.

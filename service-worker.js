@@ -1,7 +1,15 @@
-const VERSION='5.1.0';
-const BUILD_ID='v5.1.0-20260728-shared-vault-collaboration';
-const CACHE='ivtc-v5.1.0-shared-vault-collaboration';
+const VERSION='6.0.0';
+const BUILD_ID='v6.0.0-20260728-secure-backend-preview';
+const CACHE='ivtc-v6.0.0-secure-backend-preview';
 const CORE=[
+  "./assets/js/backend/firebase-config.js",
+  "./assets/js/backend/firebase-client.js",
+  "./assets/js/sync/firebase-adapter.js",
+  "./backend-setup.html",
+  "./RELEASE-v6.0.0.txt",
+  "./assets/js/sync/adapter.js",
+  "./assets/js/core/runtime.js",
+  "./RELEASE-v5.2.0.txt",
   "./RELEASE-v5.1.0.txt",
   "./BOSPHORUS-MAP-FIX.txt",
   "./DUBROVNIK-PHOTO-FIX.txt",

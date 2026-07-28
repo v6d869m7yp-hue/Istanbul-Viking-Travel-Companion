@@ -1,0 +1,4 @@
+Istanbul–Viking Travel Companion v6.0.0
+Secure Backend Developer Preview
+
+Adds disabled Firebase bootstrap files, deny-by-default Firestore and Storage rules, browser initialization diagnostics, a ciphertext-only synchronization adapter, emulator configuration, and backend deployment documentation. No current Travel Vault content is uploaded in this release.

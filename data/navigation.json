@@ -39,6 +39,11 @@
       "label": "Travel Vault",
       "href": "/vault.html",
       "key": "vault"
+    },
+    {
+      "label": "Backend Setup",
+      "href": "/backend-setup.html",
+      "key": "backend"
     }
   ],
   "istanbul": [
