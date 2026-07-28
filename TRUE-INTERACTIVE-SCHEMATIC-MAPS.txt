@@ -1,3 +1,0 @@
-v3.6.0
-
-Converted all four Sultanahmet schematic maps from image-coordinate guessing to real HTML hotspot controls. Number and label areas are tappable on-page and in full-screen mode. Added iPad Safari pointer, pan, pinch-zoom, keyboard, and accessible labels.

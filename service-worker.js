@@ -1,4 +1,4 @@
-const CACHE='ivtc-v3.6.0';
+const CACHE='ivtc-v4.0.0';
 const CORE=[
   "./.gitignore",
   "./BOSPHORUS-MAP-FIX.txt",
@@ -22,6 +22,7 @@ const CORE=[
   "./assets/img/visuals/troy-hero.svg",
   "./assets/img/visuals/turkish-breakfast.svg",
   "./assets/js/app.js",
+  "./assets/js/map-explorer.js",
   "./assets/maps/acropolis-walk.svg",
   "./assets/maps/athens-two-day.svg",
   "./assets/maps/blue-mosque-plan.svg",

@@ -1,0 +1,9 @@
+v4.0.0 Map Explorer
+
+- Replaces image-only schematic interaction with inline SVG controls.
+- Number and name text in supported SVG maps are true tappable controls.
+- Adds visible point buttons as a reliable touch fallback.
+- Adds location-specific descriptions and guide links.
+- Adds full-screen explorer with zoom controls and scroll/pan.
+- Supports Istanbul, cruise route, and principal port sequence maps.
+- Built from v3.5.1 baseline.
