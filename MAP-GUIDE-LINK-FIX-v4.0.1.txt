@@ -1,0 +1,8 @@
+v4.0.1 Map Guide Link Repair
+
+- Audited every Map Explorer guide target.
+- Confirmed all referenced HTML guide files exist.
+- Removed fragment identifiers whose target IDs do not exist.
+- Changed misleading “Open guide section” text to “Open related guide.”
+- Hardened relative URL construction for local/GitHub Pages use.
+- Updated offline cache/version markers.
