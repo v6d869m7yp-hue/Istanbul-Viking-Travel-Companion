@@ -1,1 +1,0 @@
-v3.5.2 adds real tappable HTML hotspots to the four Sultanahmet visitor schematics, both in-page and in the full-screen map viewer.
