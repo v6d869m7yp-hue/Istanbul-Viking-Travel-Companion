@@ -1,0 +1,19 @@
+Istanbul–Viking Travel Companion v4.1.0
+Build: v4.1.0-20260728-map-update
+Date: 2026-07-28T17:00:00-07:00
+
+Update reliability
+- Network-first loading for HTML, JSON, JavaScript and CSS.
+- Unique cache and build identifiers.
+- Old ivtc caches removed automatically after activation.
+- Service-worker registration bypasses the browser HTTP cache.
+- Automatic update checks at launch and every five minutes while open.
+- Visible Update ready banner with one-tap activation.
+- Cache-busted application CSS and JavaScript references.
+
+Diagnostics
+- New diagnostics.html page.
+- Running app version, build ID, build date and expected cache.
+- Active service-worker URL and cache inventory.
+- Manual update check, install-update and cache-reset controls.
+- Live release-file verification.

@@ -1,12 +1,17 @@
-const CACHE='ivtc-v4.0.1';
+const VERSION='4.1.0';
+const BUILD_ID='v4.1.0-20260728-map-update';
+const CACHE='ivtc-v4.1.0-v4.1.0-20260728-map-update';
 const CORE=[
-  "./.gitignore",
   "./BOSPHORUS-MAP-FIX.txt",
   "./DUBROVNIK-PHOTO-FIX.txt",
-  "./README.md",
   "./INTERACTIVE-CRUISE-MAP.txt",
+  "./MAP-EXPLORER-V4.txt",
+  "./MAP-GUIDE-LINK-FIX-v4.0.1.txt",
+  "./NORTHERN-ITALY-LINK-FIX.txt",
+  "./RELEASE-MANIFEST.txt",
   "./TROY-MAP-FIX.txt",
   "./TROY-PORT-PHOTO-FIX.txt",
+  "./UNIFIED-JOURNEY-NAVIGATION.txt",
   "./VERSION.txt",
   "./assets/css/app.css",
   "./assets/icons/icon.svg",
@@ -57,12 +62,13 @@ const CORE=[
   "./cruise/ship-guide.html",
   "./cruise/tomorrow.html",
   "./data/attractions.json",
+  "./data/build-info.json",
   "./data/excursions.json",
   "./data/istanbul.json",
   "./data/navigation.json",
   "./data/search-index.json",
   "./data/trip.json",
-  "./docs/ARCHITECTURE.md",
+  "./diagnostics.html",
   "./favorites.html",
   "./index.html",
   "./istanbul/days/arrival.html",
@@ -157,10 +163,53 @@ const CORE=[
   "./ports/venice/st-marks.html",
   "./reservations.html",
   "./search.html",
-  "./service-worker.js",
   "./timeline.html",
-  "./trip-at-a-glance.html"
+  "./trip-at-a-glance.html",
+  "./assets/css/app.css?v=4.1.0",
+  "./assets/js/app.js?v=4.1.0",
+  "./assets/js/map-explorer.js?v=4.1.0"
 ];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(resp=>{const copy=resp.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return resp}).catch(()=>caches.match('./index.html'))))});
+
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));
+});
+
+self.addEventListener('activate',event=>{
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key.startsWith('ivtc-')&&key!==CACHE).map(key=>caches.delete(key)));
+    await self.clients.claim();
+    const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    clients.forEach(client=>client.postMessage({type:'APP_ACTIVATED',version:VERSION,buildId:BUILD_ID}));
+  })());
+});
+
+self.addEventListener('message',event=>{
+  if(event.data?.type==='SKIP_WAITING') self.skipWaiting();
+  if(event.data?.type==='GET_VERSION') event.source?.postMessage({type:'APP_VERSION',version:VERSION,buildId:BUILD_ID,cache:CACHE});
+});
+
+async function networkFirst(request){
+  const cache=await caches.open(CACHE);
+  try{
+    const response=await fetch(request,{cache:'no-store'});
+    if(response&&response.ok)await cache.put(request,response.clone());
+    return response;
+  }catch(error){
+    return (await cache.match(request,{ignoreSearch:false})) || (await cache.match(request,{ignoreSearch:true})) || (request.mode==='navigate'?await cache.match('./index.html'):Response.error());
+  }
+}
+async function cacheFirstRefresh(request){
+  const cache=await caches.open(CACHE);
+  const cached=(await cache.match(request,{ignoreSearch:false}))||(await cache.match(request,{ignoreSearch:true}));
+  const refresh=fetch(request).then(response=>{if(response&&response.ok)cache.put(request,response.clone());return response;}).catch(()=>null);
+  return cached || (await refresh) || Response.error();
+}
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET')return;
+  const url=new URL(request.url);
+  if(url.origin!==self.location.origin)return;
+  const isCritical=request.mode==='navigate'||/\.(?:html|json|js|css)$/.test(url.pathname)||url.pathname.endsWith('/');
+  event.respondWith(isCritical?networkFirst(request):cacheFirstRefresh(request));
+});
