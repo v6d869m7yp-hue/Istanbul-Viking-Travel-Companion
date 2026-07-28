@@ -36,9 +36,9 @@
       "key": "search"
     },
     {
-      "label": "Reservations",
-      "href": "/reservations.html",
-      "key": "reservations"
+      "label": "Travel Vault",
+      "href": "/vault.html",
+      "key": "vault"
     }
   ],
   "istanbul": [

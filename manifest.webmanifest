@@ -1,6 +1,6 @@
 {
-  "name": "Istanbul & Viking Travel Companion v4.0",
-  "short_name": "Istanbul Viking",
+  "name": "Istanbul · Viking Travel Companion with Travel Vault",
+  "short_name": "Travel Companion",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f6f1e8",

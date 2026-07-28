@@ -1,6 +1,6 @@
-const VERSION='4.1.1';
-const BUILD_ID='v4.1.1-20260728-draggable-nav';
-const CACHE='ivtc-v4.1.1-v4.1.1-20260728-draggable-nav';
+const VERSION='5.0.0';
+const BUILD_ID='v5.0.0-20260728-travel-vault-foundation';
+const CACHE='ivtc-v5.0.0-travel-vault-foundation';
 const CORE=[
   "./BOSPHORUS-MAP-FIX.txt",
   "./DUBROVNIK-PHOTO-FIX.txt",
@@ -28,6 +28,7 @@ const CORE=[
   "./assets/img/visuals/turkish-breakfast.svg",
   "./assets/js/app.js",
   "./assets/js/map-explorer.js",
+  "./assets/js/vault.js",
   "./assets/maps/acropolis-walk.svg",
   "./assets/maps/athens-two-day.svg",
   "./assets/maps/blue-mosque-plan.svg",
@@ -165,9 +166,7 @@ const CORE=[
   "./search.html",
   "./timeline.html",
   "./trip-at-a-glance.html",
-  "./assets/css/app.css?v=4.1.0",
-  "./assets/js/app.js?v=4.1.0",
-  "./assets/js/map-explorer.js?v=4.1.0"
+  "./vault.html",
 ];
 
 self.addEventListener('install',event=>{

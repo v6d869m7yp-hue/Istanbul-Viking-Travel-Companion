@@ -1,0 +1,21 @@
+TRAVEL VAULT v5.0.0
+
+Implemented in the static GitHub Pages companion:
+- AES-256-GCM encrypted vault payload
+- Random master key wrapped by a PBKDF2-SHA-256 password key
+- 310,000 PBKDF2 iterations and unique random salt
+- Hotel, flight, cruise, restaurant, transport and other private records
+- Fully offline encrypted storage
+- Automatic locking and manual lock
+- Optional WebAuthn/passkey PRF biometric unlock when supported by Safari/device
+- Encrypted backup export and restore
+- Password change without re-encrypting records under a password-derived data key
+- Traveler profiles
+- Public guide remains unlocked
+
+Not falsely implemented in this static release:
+- Four-account cloud synchronization
+- Lost-device server revocation
+- QR temporary public-PC sessions
+
+Those require a separately deployed authenticated ciphertext synchronization service. The local vault format is designed so that service can synchronize encrypted vault envelopes later without placing readable reservation data in GitHub.
