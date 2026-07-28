@@ -1,0 +1,12 @@
+Istanbul–Viking Travel Companion v5.1.0
+
+Shared Travel Vault collaboration foundation:
+- richer reservation cards
+- encrypted attachments up to 5 MB each
+- activity timeline
+- known-device registry
+- encrypted collaboration packages for AirDrop, Messages, Mail or iCloud Drive
+- merge rules that preserve conflicting edits
+- explicit sync queue status
+
+Automatic cloud sync, remote revocation and temporary public-PC sessions are not enabled until a secure backend is configured.

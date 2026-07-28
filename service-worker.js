@@ -1,7 +1,8 @@
-const VERSION='5.0.0';
-const BUILD_ID='v5.0.0-20260728-travel-vault-foundation';
-const CACHE='ivtc-v5.0.0-travel-vault-foundation';
+const VERSION='5.1.0';
+const BUILD_ID='v5.1.0-20260728-shared-vault-collaboration';
+const CACHE='ivtc-v5.1.0-shared-vault-collaboration';
 const CORE=[
+  "./RELEASE-v5.1.0.txt",
   "./BOSPHORUS-MAP-FIX.txt",
   "./DUBROVNIK-PHOTO-FIX.txt",
   "./INTERACTIVE-CRUISE-MAP.txt",

@@ -1,4 +1,4 @@
-TRAVEL VAULT v5.0.0
+TRAVEL VAULT v5.1.0
 
 Implemented in the static GitHub Pages companion:
 - AES-256-GCM encrypted vault payload

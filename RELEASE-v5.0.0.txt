@@ -1,3 +1,3 @@
-Istanbul · Viking Travel Companion v5.0.0 — Travel Vault Foundation
+Istanbul · Viking Travel Companion v5.1.0 — Travel Vault Foundation
 
-This release adds a working encrypted, offline Travel Vault to the existing companion. See TRAVEL-VAULT-v5.0.0.txt for the security model and current synchronization boundary.
+This release adds a working encrypted, offline Travel Vault to the existing companion. See TRAVEL-VAULT-v5.1.0.txt for the security model and current synchronization boundary.

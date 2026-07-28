@@ -79,7 +79,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'5.0.0',buildId:'v5.0.0-20260728-travel-vault-foundation'};
+const APP_RELEASE={version:'5.1.0',buildId:'v5.1.0-20260728-shared-vault-collaboration'};
 let updateRegistration=null;
 function showUpdateBanner(reg){
   updateRegistration=reg||updateRegistration;
@@ -164,7 +164,7 @@ async function diagnosticsPage(){
     if(status)status.textContent='Navigation button returned to its default position.';
   });
   const checks=document.querySelector('[data-release-checks]');
-  const urls=['/index.html','/assets/js/app.js?v=5.0.0','/assets/js/map-explorer.js?v=5.0.0','/data/trip.json','/diagnostics.html'];
+  const urls=['/index.html','/assets/js/app.js?v=5.1.0','/assets/js/map-explorer.js?v=5.1.0','/data/trip.json','/diagnostics.html'];
   const results=await Promise.all(urls.map(async u=>{try{const r=await fetch(abs(u),{cache:'no-store'});return [u,r.ok]}catch(e){return[u,false]}}));
   checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
 }
