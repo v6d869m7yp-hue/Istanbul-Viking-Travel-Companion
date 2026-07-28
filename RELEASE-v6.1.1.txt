@@ -1,0 +1,7 @@
+Istanbul–Viking Travel Companion v6.1.1
+
+Diagnostics Consistency Fix
+
+- Aligns the displayed app version, footer version, build ID, expected cache name, service worker identity, and release-verification URLs.
+- Uses a new cache name so activation removes obsolete ivtc-* caches.
+- Preserves the v6.1 trip-centric Firebase foundation and local Travel Vault.

@@ -1,7 +1,8 @@
-const VERSION='6.1.0';
-const BUILD_ID='v6.1.0-20260728-secure-backend-preview';
-const CACHE='ivtc-v6.1.0-secure-backend-preview';
+const VERSION='6.1.1';
+const BUILD_ID='v6.1.1-20260728-diagnostics-consistency-fix';
+const CACHE='ivtc-v6.1.1-diagnostics-consistency-fix';
 const CORE=[
+  "./RELEASE-v6.1.1.txt",
   "./assets/js/backend/trip-model.js",
   "./cloud-vault.html",
   "./RELEASE-v6.1.0.txt",
