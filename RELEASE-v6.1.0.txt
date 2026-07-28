@@ -1,0 +1,10 @@
+Istanbul–Viking Travel Companion v6.1.0
+Trip-Centric Cloud Foundation
+
+- Activates the supplied Firebase Web configuration
+- Adds owner sign-in and sign-out test page
+- Adds trip-centric Firestore data model
+- Adds secure membership and role-based Firestore rules
+- Adds harmless AES-256-GCM connectivity-test envelope
+- Keeps the existing local Travel Vault isolated
+- Defers Cloud Storage and attachments

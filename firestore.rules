@@ -2,38 +2,44 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function member(tripId) {
-      return signedIn() && exists(/databases/$(database)/documents/trips/$(tripId)/members/$(request.auth.uid));
-    }
-    function owner(tripId) {
-      return member(tripId) && get(/databases/$(database)/documents/trips/$(tripId)/members/$(request.auth.uid)).data.role == 'owner';
-    }
+    function tripDoc(tripId) { return get(/databases/$(database)/documents/trips/$(tripId)); }
+    function isMember(tripId) { return signedIn() && request.auth.uid in tripDoc(tripId).data.memberUids; }
+    function role(tripId) { return tripDoc(tripId).data.roles[request.auth.uid]; }
+    function canEdit(tripId) { return isMember(tripId) && role(tripId) in ['owner','editor']; }
+
     match /users/{uid} {
       allow read, create, update: if signedIn() && request.auth.uid == uid;
       allow delete: if false;
+      match /trips/{tripId} { allow read, write: if signedIn() && request.auth.uid == uid; }
+      match /devices/{deviceId} { allow read, write: if signedIn() && request.auth.uid == uid; }
     }
+
     match /trips/{tripId} {
-      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
-      allow read: if member(tripId);
-      allow update, delete: if owner(tripId);
-      match /members/{uid} {
-        allow read: if member(tripId);
-        allow create, update, delete: if owner(tripId);
-      }
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.memberUids == [request.auth.uid]
+        && request.resource.data.roles[request.auth.uid] == 'owner';
+      allow read: if signedIn() && request.auth.uid in resource.data.memberUids;
+      allow update: if signedIn()
+        && request.auth.uid in resource.data.memberUids
+        && resource.data.roles[request.auth.uid] == 'owner';
+      allow delete: if signedIn() && resource.data.ownerUid == request.auth.uid;
+
       match /envelopes/{envelopeId} {
-        allow read, create, update: if member(tripId)
-          && request.resource.data.keys().hasOnly(['ciphertext','metadata','updatedAt','updatedBy'])
-          && request.resource.data.updatedBy == request.auth.uid
-          && request.resource.data.ciphertext is string
-          && request.resource.data.ciphertext.size() < 900000;
-        allow delete: if owner(tripId);
+        allow read: if isMember(tripId);
+        allow create, update, delete: if canEdit(tripId);
       }
-      match /devices/{deviceId} {
-        allow read: if member(tripId);
-        allow create, update: if member(tripId) && request.resource.data.uid == request.auth.uid;
-        allow delete: if owner(tripId) || (member(tripId) && resource.data.uid == request.auth.uid);
+      match /activity/{entryId} {
+        allow read: if isMember(tripId);
+        allow create: if canEdit(tripId) && request.resource.data.actorUid == request.auth.uid;
+        allow update, delete: if false;
+      }
+      match /members/{uid} {
+        allow read: if isMember(tripId);
+        allow write: if false; // invitations and removals will use a trusted server function
       }
     }
+
     match /{document=**} { allow read, write: if false; }
   }
 }

@@ -1,12 +1,15 @@
-const VERSION='6.0.0';
-const BUILD_ID='v6.0.0-20260728-secure-backend-preview';
-const CACHE='ivtc-v6.0.0-secure-backend-preview';
+const VERSION='6.1.0';
+const BUILD_ID='v6.1.0-20260728-secure-backend-preview';
+const CACHE='ivtc-v6.1.0-secure-backend-preview';
 const CORE=[
+  "./assets/js/backend/trip-model.js",
+  "./cloud-vault.html",
+  "./RELEASE-v6.1.0.txt",
   "./assets/js/backend/firebase-config.js",
   "./assets/js/backend/firebase-client.js",
   "./assets/js/sync/firebase-adapter.js",
   "./backend-setup.html",
-  "./RELEASE-v6.0.0.txt",
+  "./RELEASE-v6.1.0.txt",
   "./assets/js/sync/adapter.js",
   "./assets/js/core/runtime.js",
   "./RELEASE-v5.2.0.txt",

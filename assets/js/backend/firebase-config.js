@@ -1,14 +1,10 @@
-/**
- * Firebase public web configuration.
- * These identifiers are not secret, but this file ships disabled until the
- * project owner replaces the placeholders and sets enabled to true.
- */
+/** Firebase public browser configuration. Authorization is enforced by Firebase Authentication and Firestore Security Rules. */
 window.IVTC_FIREBASE_CONFIG = Object.freeze({
-  enabled: false,
-  apiKey: "REPLACE_ME",
-  authDomain: "REPLACE_ME.firebaseapp.com",
-  projectId: "REPLACE_ME",
-  storageBucket: "REPLACE_ME.firebasestorage.app",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
+  enabled: true,
+  apiKey: "AIzaSyA4cBhXIRgT9NSeMkBjsujHmWsQMVvsIeM",
+  authDomain: "istanbul-viking-venice-travel.firebaseapp.com",
+  projectId: "istanbul-viking-venice-travel",
+  storageBucket: "istanbul-viking-venice-travel.firebasestorage.app",
+  messagingSenderId: "105113849735",
+  appId: "1:105113849735:web:4cf62067eaa87ee9ac0d22"
 });
