@@ -1,0 +1,5 @@
+v3.5.0 Unified Journey Navigation
+- Persistent Istanbul / Northern Italy journey switcher on every page.
+- Northern Italy button opens directly to the Venice chapter.
+- Venice handoff now remains in the same browser tab for app-like continuity.
+- Large touch targets for iPad and mobile use.
