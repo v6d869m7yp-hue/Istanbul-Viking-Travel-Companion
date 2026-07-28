@@ -1,0 +1,6 @@
+v3.4.0
+
+- Every numbered port on the Ancient Adriatic Treasures route is now a large touch target.
+- Tapping a port opens its corresponding destination guide.
+- Added hover/focus feedback and enlarged iPad-friendly hit areas.
+- Added a full-screen interactive route view that preserves port navigation.

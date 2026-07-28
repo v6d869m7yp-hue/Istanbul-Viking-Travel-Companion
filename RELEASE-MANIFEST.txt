@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v3.3.0
+Istanbul–Viking Travel Companion v3.4.0
 
 New features:
 - Trip at a Glance page
@@ -8,3 +8,5 @@ New features:
 - Updated PWA cache
 
 Project files: 159
+
+Interactive cruise-route port navigation added.
