@@ -1,0 +1,4 @@
+v3.4.1
+Updated the Venice handoff button to open:
+https://v6d869m7yp-hue.github.io/NorthernItalyTravelerCompanion-v023/index.html
+Also corrected the button styling and refreshed the offline cache version.

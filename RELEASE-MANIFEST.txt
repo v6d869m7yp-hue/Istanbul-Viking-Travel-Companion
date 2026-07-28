@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v3.4.0
+Istanbul–Viking Travel Companion v3.4.1
 
 New features:
 - Trip at a Glance page

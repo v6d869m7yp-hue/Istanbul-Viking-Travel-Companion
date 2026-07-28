@@ -1,4 +1,4 @@
-v3.4.0
+v3.4.1
 
 - Every numbered port on the Ancient Adriatic Treasures route is now a large touch target.
 - Tapping a port opens its corresponding destination guide.
