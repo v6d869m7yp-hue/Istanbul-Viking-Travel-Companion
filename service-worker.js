@@ -1,9 +1,9 @@
-const VERSION='6.5.0';
-const BUILD_ID='v6.5.0-20260728-cloud-hotel-reservations';
-const CACHE='ivtc-v6.5.0-cloud-hotel-reservations';
+const VERSION='6.5.1';
+const BUILD_ID='v6.5.1-20260728-working-cloud-reservations';
+const CACHE='ivtc-v6.5.1-working-cloud-reservations';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
-  "./RELEASE-v6.5.0.txt",
+  "./RELEASE-v6.5.1.txt",
   "./RELEASE-v6.4.4.txt",
   "./my-trips.html",
   "./assets/js/backend/trip-model.js",

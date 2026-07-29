@@ -1,4 +1,4 @@
-Istanbul–Viking–Venice Travel Companion v6.5.0
+Istanbul–Viking–Venice Travel Companion v6.5.1
 Cloud Hotel Reservations
 
 - Cloud-synced lodging records attached to the active Firestore trip

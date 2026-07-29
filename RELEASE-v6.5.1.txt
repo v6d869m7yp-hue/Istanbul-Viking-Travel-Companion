@@ -1,0 +1,8 @@
+v6.5.1 — Working Cloud Reservations
+
+- Stores lodging as real Firestore subcollection documents at trips/{tripId}/reservations/{reservationId}
+- Automatically migrates any v6.5.0 hotelReservations array into the new collection
+- Seeds the known 2026 lodging itinerary only when the selected trip has no reservations
+- Adds create, edit, delete, read, and cloud reload behavior
+- Preserves the working v6.4.6 Map Explorer without structural changes
+- Requires publishing the included Firestore rules so trip members can access reservations

@@ -1,3 +1,3 @@
-v6.5.0 — Map Information Popups
+v6.5.1 — Map Information Popups
 
 Restores the intended map interaction: tapping a numbered marker opens an information card with the location description, a More location information link, and an optional live-map link.
