@@ -141,6 +141,8 @@
 /* v6.5.4: HTML hidden must override modal display rules. */
 [hidden]{display:none!important}
 
-/* v6.5.5 hard guarantee: closed reservation modal never renders. */
+/* v6.6.0 hard guarantee: closed reservation modal never renders. */
 #reservation-modal[hidden],#reservation-modal[aria-hidden="true"]{display:none!important;visibility:hidden!important;pointer-events:none!important}
 #reservation-modal:not([hidden]){visibility:visible;pointer-events:auto}
+/* v6.6.0 encrypted document vault */
+.vault-document-groups{display:grid;gap:24px}.vault-document-group>h3{margin:0 0 12px;font-family:var(--serif);font-size:1.55rem}.vault-document-card .vault-attachments{margin-top:14px}.vault-existing-files{display:grid;gap:8px;margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(13,43,67,.04)}.vault-existing-files label{display:flex;gap:8px;align-items:center}.vault-page .callout{margin-top:20px}

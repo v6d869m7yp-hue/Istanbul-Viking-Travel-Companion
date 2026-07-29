@@ -1,0 +1,3 @@
+v6.6.0 — Encrypted Document Vault
+
+Adds encrypted passport, identity, medical, insurance, travel and emergency document storage to the existing Travel Vault. Files remain encrypted locally and are included in encrypted backups and share packages.

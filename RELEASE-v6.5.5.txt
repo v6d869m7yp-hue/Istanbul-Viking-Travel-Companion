@@ -1,7 +1,7 @@
-Istanbul–Viking Travel Companion v6.5.5
+Istanbul–Viking Travel Companion v6.6.0
 Reservation Dialog Hard Fix
 
 - Forces the Add lodging dialog closed on startup and on X, Cancel, backdrop, and Escape.
 - Updates the service-worker version so browsers actually install the fix.
 - Replaces Safari date controls with blank YYYY-MM-DD fields instead of displaying the current date.
-- Updates all active asset version labels and diagnostics references to v6.5.5.
+- Updates all active asset version labels and diagnostics references to v6.6.0.
