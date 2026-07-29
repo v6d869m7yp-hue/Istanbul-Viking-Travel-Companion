@@ -1,9 +1,9 @@
-const VERSION='6.4.1';
-const BUILD_ID='v6.4.1-20260728-map-link-repair';
-const CACHE='ivtc-v6.4.1-map-link-repair';
+const VERSION='6.4.2';
+const BUILD_ID='v6.4.2-20260728-map-marker-tap-fix';
+const CACHE='ivtc-v6.4.2-map-marker-tap-fix';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
-  "./RELEASE-v6.4.1.txt",
+  "./RELEASE-v6.4.2.txt",
   "./my-trips.html",
   "./assets/js/backend/trip-model.js",
   "./cloud-vault.html",

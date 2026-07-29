@@ -1,4 +1,4 @@
-# Istanbul–Viking Travel Companion v6.4.1
+# Istanbul–Viking Travel Companion v6.4.2
 
 Milestone 2 begins with Firebase Authentication: sign in, sign out, session persistence, a current-user indicator, and an account profile card.
 

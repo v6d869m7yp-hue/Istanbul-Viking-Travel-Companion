@@ -44,7 +44,8 @@ async function openExplorer(src,config){createModal();modal.querySelector('[data
 async function enhance(img){const file=decodeURIComponent(img.src.split('/').pop().split('?')[0]);const config=C[file];if(!config||img.dataset.mapEnhanced)return;img.dataset.mapEnhanced='true';const src=img.src;const parent=img.parentElement;try{const svg=await fetchSVG(src);svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('preserveAspectRatio','xMidYMid meet');const inline=document.createElement('div');inline.className='inline-interactive-map';inline.setAttribute('aria-label',config.title);inline.appendChild(svg);parent.insertBefore(inline,img);img.hidden=true;wireSVG(svg,config,parent.closest('.interactive-plan,.map-card,.route-map-panel,section,article')||parent);
 const list=document.createElement('div');list.className='inline-map-points map-point-list';inline.insertAdjacentElement('afterend',list);const ctx=inline.parentElement;pointList(config,ctx);const detail=document.createElement('div');detail.className='map-point-detail inline-map-detail';detail.innerHTML='<span class="map-point-number">Interactive map</span><h2>Tap a number or name</h2><p>Every numbered label is now a real control. You can also use the buttons below the map.</p>';list.insertAdjacentElement('afterend',detail);
 const expand=parent.querySelector('.map-expand,.route-expand');if(expand)expand.onclick=e=>{e.preventDefault();e.stopPropagation();openExplorer(src,config)};
-inline.addEventListener('click',e=>e.stopPropagation(),true);
+// Do not stop clicks during capture: Safari must deliver the tap to the SVG text hotspot.
+inline.addEventListener('click',e=>e.stopPropagation());
 }catch(e){console.warn('Map enhancement failed',file,e)}}
 function setup(){
   // Support every map markup pattern used across the companion. Earlier builds
