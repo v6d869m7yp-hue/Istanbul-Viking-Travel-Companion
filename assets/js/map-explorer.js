@@ -36,7 +36,38 @@ function createModal(){if(modal)return modal;modal=document.createElement('div')
 modal.querySelector('.map-explorer-close').onclick=closeModal;modal.querySelector('[data-zoom-in]').onclick=()=>setZoom(active.zoom+.25);modal.querySelector('[data-zoom-out]').onclick=()=>setZoom(active.zoom-.25);modal.querySelector('[data-zoom-reset]').onclick=()=>setZoom(1);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))closeModal()});return modal;}
 function setZoom(z){active.zoom=Math.max(.75,Math.min(3,z));const svg=modal.querySelector('.map-explorer-svg svg');if(svg)svg.style.width=(active.zoom*100)+'%';modal.querySelector('[data-zoom-reset]').textContent=Math.round(active.zoom*100)+'%';}
 function closeModal(){modal?.classList.remove('open');modal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
-function selectItem(item,ctx){ctx.querySelectorAll('.map-hotspot,.map-point-button').forEach(x=>x.classList.remove('selected'));ctx.querySelectorAll(`[data-map-key="${CSS.escape(item.marker)}"]`).forEach(x=>x.classList.add('selected'));const d=ctx.querySelector('.map-point-detail');if(d)d.innerHTML=`<span class="map-point-number">${item.marker}</span><h2>${item.label}</h2><p>${item.description}</p><div class="map-detail-actions">${item.guide?`<a class="btn" href="${local(item.guide)}">Open related guide</a>`:''}${item.maps?`<a class="btn secondary" target="_blank" rel="noopener" href="${item.maps}">Open live map</a>`:''}</div>`;const r=document.querySelector('.hotspot-readout');if(r&&ctx!==modal)r.innerHTML=`<strong>${item.marker} · ${item.label}</strong> — ${item.description}`;}
+function popupMarkup(item){return `<button type="button" class="map-info-popup-close" aria-label="Close location information">×</button><span class="map-point-number">${item.marker}</span><h2>${item.label}</h2><p>${item.description}</p><div class="map-detail-actions">${item.guide?`<a class="btn" href="${local(item.guide)}">More location information</a>`:''}${item.maps?`<a class="btn secondary" target="_blank" rel="noopener" href="${item.maps}">Open live map</a>`:''}</div>`;}
+function ensureInlinePopup(ctx){
+  const map=ctx.querySelector('.inline-interactive-map');
+  if(!map)return null;
+  let popup=map.querySelector('.map-info-popup');
+  if(!popup){
+    popup=document.createElement('div');
+    popup.className='map-info-popup';
+    popup.setAttribute('role','dialog');
+    popup.setAttribute('aria-live','polite');
+    popup.setAttribute('aria-label','Map location information');
+    map.appendChild(popup);
+    popup.addEventListener('click',e=>e.stopPropagation());
+  }
+  return popup;
+}
+function selectItem(item,ctx){
+  ctx.querySelectorAll('.map-hotspot,.map-hitbox,.map-point-button').forEach(x=>x.classList.remove('selected'));
+  ctx.querySelectorAll(`[data-map-key="${CSS.escape(item.marker)}"]`).forEach(x=>x.classList.add('selected'));
+  const d=ctx.querySelector('.map-point-detail');
+  if(d)d.innerHTML=`<span class="map-point-number">${item.marker}</span><h2>${item.label}</h2><p>${item.description}</p><div class="map-detail-actions">${item.guide?`<a class="btn" href="${local(item.guide)}">More location information</a>`:''}${item.maps?`<a class="btn secondary" target="_blank" rel="noopener" href="${item.maps}">Open live map</a>`:''}</div>`;
+  if(ctx!==modal){
+    const popup=ensureInlinePopup(ctx);
+    if(popup){
+      popup.innerHTML=popupMarkup(item);
+      popup.classList.add('open');
+      popup.querySelector('.map-info-popup-close').onclick=e=>{e.preventDefault();e.stopPropagation();popup.classList.remove('open')};
+    }
+  }
+  const r=document.querySelector('.hotspot-readout');
+  if(r&&ctx!==modal)r.innerHTML=`<strong>${item.marker} · ${item.label}</strong> — ${item.description}`;
+}
 function wireSVG(svg,config,ctx){
   const texts=[...svg.querySelectorAll('text')];
   const items=config.items.map(itemObj);
@@ -72,7 +103,7 @@ function wireSVG(svg,config,ctx){
       hit.setAttribute('fill','#ffffff');
       hit.setAttribute('fill-opacity','0.001');
       hit.setAttribute('pointer-events','all');
-      hit.setAttribute('role','link');
+      hit.setAttribute('role','button');
       hit.setAttribute('tabindex','0');
       hit.setAttribute('aria-label',`${item.marker}. ${item.label}`);
       hit.dataset.mapKey=item.marker;
@@ -80,13 +111,9 @@ function wireSVG(svg,config,ctx){
       hit.style.cursor='pointer';
       hit.style.touchAction='manipulation';
 
-      const open=()=>{
-        selectItem(item,ctx);
-        if(item.guide) window.location.assign(local(item.guide));
-        else if(item.maps) window.open(item.maps,'_blank','noopener');
-      };
-      hit.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();open();});
-      hit.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+      const openInfo=()=>selectItem(item,ctx);
+      hit.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openInfo();});
+      hit.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openInfo();}});
       svg.appendChild(hit); // topmost and independent from the artwork groups
     }catch(e){
       console.warn('Unable to create map link target',item.marker,e);

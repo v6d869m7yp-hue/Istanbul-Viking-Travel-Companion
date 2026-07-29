@@ -123,3 +123,13 @@
 .inline-interactive-map{cursor:default;}
 .inline-interactive-map .map-hitbox{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(168,63,40,.25);}
 .inline-interactive-map .map-hitbox:hover,.inline-interactive-map .map-hitbox:focus{fill:#fff4ed;fill-opacity:.18;outline:none;}
+
+/* v6.4.5 map location information popups */
+.inline-interactive-map{position:relative}
+.map-info-popup{position:absolute;z-index:8;left:14px;right:14px;bottom:14px;display:none;max-width:560px;margin:auto;padding:18px 52px 18px 18px;border:1px solid rgba(13,43,67,.22);border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 14px 38px rgba(3,19,31,.28);color:#263746;text-align:left}
+.map-info-popup.open{display:block}
+.map-info-popup h2{margin:.35rem 0 .45rem;font:400 1.35rem Georgia,serif;color:#0d2b43}
+.map-info-popup p{margin:.35rem 0 .8rem}
+.map-info-popup-close{position:absolute;right:10px;top:9px;width:36px;height:36px;border:0;border-radius:50%;background:#0d2b43;color:#fff;font-size:1.55rem;line-height:1;cursor:pointer}
+.map-hitbox.selected{outline:none}
+@media(max-width:620px){.map-info-popup{left:8px;right:8px;bottom:8px;max-height:72%;overflow:auto;padding:15px 47px 15px 15px}.map-info-popup .map-detail-actions{display:grid}.map-info-popup .btn{width:100%;text-align:center}}

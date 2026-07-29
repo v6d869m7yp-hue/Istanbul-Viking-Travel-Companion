@@ -1,13 +1,13 @@
 {
-  "appName": "Istanbul–Viking Travel Companion",
-  "version": "6.4.4",
-  "buildId": "v6.4.4-20260728-direct-map-links",
+  "appName": "Istanbul\u2013Viking Travel Companion",
+  "version": "6.4.5",
+  "buildId": "v6.4.5-20260728-map-information-popups",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.4.4-direct-map-links",
-  "release": "Direct Map Links",
+  "cacheName": "ivtc-v6.4.5-map-information-popups",
+  "release": "Map Information Popups",
   "pageCount": 105,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
   "precacheEntryCount": 178,
-  "cache": "ivtc-v6.4.4-direct-map-links"
+  "cache": "ivtc-v6.4.5-map-information-popups"
 }

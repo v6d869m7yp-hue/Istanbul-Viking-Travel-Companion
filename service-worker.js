@@ -1,8 +1,9 @@
-const VERSION='6.4.4';
-const BUILD_ID='v6.4.4-20260728-robust-map-hitboxes';
-const CACHE='ivtc-v6.4.4-direct-map-links';
+const VERSION='6.4.5';
+const BUILD_ID='v6.4.5-20260728-map-information-popups';
+const CACHE='ivtc-v6.4.5-map-information-popups';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
+  "./RELEASE-v6.4.5.txt",
   "./RELEASE-v6.4.4.txt",
   "./my-trips.html",
   "./assets/js/backend/trip-model.js",
