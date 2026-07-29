@@ -1,3 +1,4 @@
+Current release: v6.2.1 Diagnostics Resilience Fix
 Istanbul–Viking Travel Companion v3.4.1
 
 New features:

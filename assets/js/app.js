@@ -79,7 +79,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'6.2.0',buildId:'v6.2.0-20260728-service-worker-control-fix'};
+const APP_RELEASE={version:'6.2.1',buildId:'v6.2.1-20260728-diagnostics-resilience-fix'};
 let updateRegistration=null;
 function showUpdateBanner(reg){
   updateRegistration=reg||updateRegistration;
@@ -136,44 +136,82 @@ async function setupAppUpdates(){
 async function diagnosticsPage(){
   const target=document.querySelector('[data-diagnostics]');
   if(!target)return;
+  const status=document.querySelector('[data-update-status]');
+  const checks=document.querySelector('[data-release-checks]');
+  const timeout=(promise,ms,fallback)=>Promise.race([
+    Promise.resolve(promise).catch(()=>fallback),
+    new Promise(resolve=>setTimeout(()=>resolve(fallback),ms))
+  ]);
+  let currentRegistration=null;
+
+  // Wire controls first so a slow Safari API cannot leave the page buttons inert.
+  const checkButton=document.querySelector('[data-check-update]');
+  if(checkButton)checkButton.onclick=async()=>{
+    checkButton.disabled=true;
+    if(status)status.textContent='Checking GitHub Pages for a newer build…';
+    try{
+      const reg=await timeout(navigator.serviceWorker?.getRegistration?.(),4000,null);
+      if(reg)await timeout(reg.update(),5000,null);
+      if(status)status.textContent=reg?.waiting?'Update ready. Tap Install downloaded update.':'No newer downloaded build was detected.';
+      if(reg?.waiting)showUpdateBanner(reg);
+    }catch(e){if(status)status.textContent='Update check could not complete on this browser.'}
+    checkButton.disabled=false;
+  };
+  const clearButton=document.querySelector('[data-clear-app-cache]');
+  if(clearButton)clearButton.onclick=async()=>{
+    clearButton.disabled=true;
+    if(status)status.textContent='Clearing this app cache…';
+    try{
+      if('caches' in window){
+        const names=await timeout(caches.keys(),4000,[]);
+        await timeout(Promise.all(names.map(k=>caches.delete(k))),5000,[]);
+      }
+      const reg=await timeout(navigator.serviceWorker?.getRegistration?.(),3000,null);
+      if(reg)await timeout(reg.unregister(),3000,false);
+    }catch(e){}
+    location.replace(abs('/index.html')+'?refresh='+Date.now());
+  };
+  const resetButton=document.querySelector('[data-reset-navigation-position]');
+  if(resetButton)resetButton.onclick=()=>{
+    window.resetJourneySwitcherPosition?.();
+    const note=document.querySelector('[data-navigation-position-status]');
+    if(note)note.textContent='Navigation button returned to its default position.';
+  };
+  const install=document.querySelector('[data-activate-update]');
+  if(install)install.onclick=activateWaitingWorker;
+
   let info={version:APP_RELEASE.version,buildId:APP_RELEASE.buildId,buildDate:'Unavailable',cacheName:'Unavailable'};
-  try{const r=await fetch(abs('/data/build-info.json')+'?t='+Date.now(),{cache:'no-store'});if(r.ok)info=await r.json()}catch(e){}
-  let reg=null,controller='No active service worker',waiting='No';
+  try{
+    const r=await timeout(fetch(abs('/data/build-info.json')+'?t='+Date.now(),{cache:'no-store'}),5000,null);
+    if(r?.ok)info=await timeout(r.json(),2500,info);
+  }catch(e){}
+
+  let reg=null,controller='Service-worker status unavailable',waiting='Unknown';
   if('serviceWorker' in navigator){
-    reg=await navigator.serviceWorker.getRegistration();
+    reg=await timeout(navigator.serviceWorker.getRegistration(),4000,null);
+    currentRegistration=reg;
     const controlled=navigator.serviceWorker.controller?.scriptURL;
     const active=reg?.active?.scriptURL;
-    controller=controlled || (active ? 'Registered and active: '+active+' (this tab will be controlled after Safari completes the lifecycle or reloads)' : 'No registered service worker');
-    waiting=reg?.waiting?'Yes':'No';
+    controller=controlled || (active ? 'Registered and active: '+active+' (this tab may require another reload before it is controlled)' : 'No registered service worker detected');
+    waiting=reg?.waiting?'Yes':(reg?'No':'Unknown');
+  }else{
+    controller='Service workers are not supported by this browser.';
+    waiting='Not supported';
   }
-  const cacheNames=('caches' in window)?await caches.keys():[];
+  const cacheNames=('caches' in window)?await timeout(caches.keys(),4000,[]):[];
   target.innerHTML=`
     <article class="card diagnostic-primary"><div class="meta">Running release</div><strong>v${info.version}</strong><p>${info.buildId}</p></article>
     <article class="card"><h2>Build</h2><dl><dt>Build date</dt><dd>${info.buildDate}</dd><dt>Expected cache</dt><dd>${info.cacheName}</dd></dl></article>
     <article class="card"><h2>This device</h2><dl><dt>Online</dt><dd>${navigator.onLine?'Yes':'No'}</dd><dt>Display mode</dt><dd>${matchMedia('(display-mode: standalone)').matches?'Installed app':'Browser tab'}</dd><dt>Waiting update</dt><dd>${waiting}</dd></dl></article>
-    <article class="card"><h2>Service worker</h2><p class="diagnostic-code">${controller}</p><h3>Stored caches</h3><p class="diagnostic-code">${cacheNames.join('\n')||'None'}</p></article>`;
-  const status=document.querySelector('[data-update-status]');
+    <article class="card"><h2>Service worker</h2><p class="diagnostic-code">${controller}</p><h3>Stored caches</h3><p class="diagnostic-code">${cacheNames.join('\n')||'None reported'}</p></article>`;
   if(status)status.textContent=reg?.waiting?'An update is downloaded and ready to install.':'This device reports v'+info.version+'. Use Check for update to ask GitHub Pages again.';
-  const install=document.querySelector('[data-activate-update]');if(install){install.hidden=!reg?.waiting;install.onclick=activateWaitingWorker}
-  document.querySelector('[data-check-update]')?.addEventListener('click',async e=>{
-    e.currentTarget.disabled=true;if(status)status.textContent='Checking GitHub Pages for a newer build…';
-    try{const r=await navigator.serviceWorker.getRegistration();await r?.update();if(status)status.textContent=r?.waiting?'Update ready. Tap Install downloaded update.':'No newer downloaded build was detected.';if(r?.waiting)showUpdateBanner(r)}catch(err){if(status)status.textContent='Update check failed. Confirm that this device is online.'}
-    e.currentTarget.disabled=false;
-  });
-  document.querySelector('[data-clear-app-cache]')?.addEventListener('click',async()=>{
-    if('caches' in window)await Promise.all((await caches.keys()).map(k=>caches.delete(k)));
-    const r=await navigator.serviceWorker.getRegistration();await r?.unregister();
-    location.replace(abs('/index.html')+'?refresh='+Date.now());
-  });
-  document.querySelector('[data-reset-navigation-position]')?.addEventListener('click',()=>{
-    window.resetJourneySwitcherPosition?.();
-    const status=document.querySelector('[data-navigation-position-status]');
-    if(status)status.textContent='Navigation button returned to its default position.';
-  });
-  const checks=document.querySelector('[data-release-checks]');
-  const urls=['/index.html','/assets/js/app.js?v=6.2.0','/assets/js/map-explorer.js?v=6.2.0','/data/trip.json','/data/build-info.json','/diagnostics.html'];
-  const results=await Promise.all(urls.map(async u=>{try{const r=await fetch(abs(u),{cache:'no-store'});return [u,r.ok]}catch(e){return[u,false]}}));
-  checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
+  if(install){install.hidden=!reg?.waiting;install.onclick=activateWaitingWorker}
+
+  const urls=['/index.html','/assets/js/app.js?v=6.2.1','/assets/js/map-explorer.js?v=6.2.1','/data/trip.json','/data/build-info.json','/diagnostics.html'];
+  const results=await Promise.all(urls.map(async u=>{
+    try{const r=await timeout(fetch(abs(u),{cache:'no-store'}),5000,null);return [u,Boolean(r?.ok)]}catch(e){return[u,false]}
+  }));
+  if(checks)checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
 }
 
 document.addEventListener('DOMContentLoaded',async()=>{const trip=await shell();unifiedJourneySwitcher();await setupAppUpdates();if(document.body.dataset.view==='dashboard')dashboard(trip);if(document.body.dataset.view==='timeline')timeline(trip);if(document.body.dataset.view==='istanbul')istanbulCards();if(document.body.dataset.view==='excursions')excursionTable();if(document.body.dataset.view==='search')searchPage();if(document.body.dataset.view==='favorites')favoritesPage();if(document.body.dataset.view==='diagnostics')await diagnosticsPage();glanceStatus(trip);intelligence();interactiveMedia();interactiveCruiseRoute();});

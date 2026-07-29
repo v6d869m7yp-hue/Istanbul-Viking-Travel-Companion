@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.2.0
+Istanbul–Viking Travel Companion v6.2.1
 
 Service Worker Control Fix
 

@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.2.1
+Diagnostics Resilience Fix
+
+- Fixes the macOS Safari Diagnostics page hanging on “Loading build information…”
+- Wires update and cache buttons before asynchronous diagnostics checks
+- Adds timeouts and fallbacks for service-worker, Cache Storage, and network checks
+- Shows a useful status instead of leaving the page frozen
+- Corrects v6.2.1 build and cache identifiers
