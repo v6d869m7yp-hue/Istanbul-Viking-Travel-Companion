@@ -37,7 +37,76 @@ modal.querySelector('.map-explorer-close').onclick=closeModal;modal.querySelecto
 function setZoom(z){active.zoom=Math.max(.75,Math.min(3,z));const svg=modal.querySelector('.map-explorer-svg svg');if(svg)svg.style.width=(active.zoom*100)+'%';modal.querySelector('[data-zoom-reset]').textContent=Math.round(active.zoom*100)+'%';}
 function closeModal(){modal?.classList.remove('open');modal?.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
 function selectItem(item,ctx){ctx.querySelectorAll('.map-hotspot,.map-point-button').forEach(x=>x.classList.remove('selected'));ctx.querySelectorAll(`[data-map-key="${CSS.escape(item.marker)}"]`).forEach(x=>x.classList.add('selected'));const d=ctx.querySelector('.map-point-detail');if(d)d.innerHTML=`<span class="map-point-number">${item.marker}</span><h2>${item.label}</h2><p>${item.description}</p><div class="map-detail-actions">${item.guide?`<a class="btn" href="${local(item.guide)}">Open related guide</a>`:''}${item.maps?`<a class="btn secondary" target="_blank" rel="noopener" href="${item.maps}">Open live map</a>`:''}</div>`;const r=document.querySelector('.hotspot-readout');if(r&&ctx!==modal)r.innerHTML=`<strong>${item.marker} · ${item.label}</strong> — ${item.description}`;}
-function wireSVG(svg,config,ctx){const texts=[...svg.querySelectorAll('text')];const items=config.items.map(itemObj);items.forEach(item=>{const markerIndex=texts.findIndex(t=>norm(t.textContent)===norm(item.marker));let labelIndex=texts.findIndex(t=>norm(t.textContent)===norm(item.label));if(labelIndex<0&&item.label.includes('/')) labelIndex=texts.findIndex(t=>norm(t.textContent).includes(norm(item.label.split('/')[0])));[markerIndex,labelIndex].filter(i=>i>=0).forEach(i=>{const t=texts[i];t.classList.add('map-hotspot');t.dataset.mapKey=item.marker;t.setAttribute('role','button');t.setAttribute('tabindex','0');t.setAttribute('aria-label',`${item.marker}. ${item.label}`);const go=e=>{e.preventDefault();e.stopPropagation();selectItem(item,ctx)};t.addEventListener('click',go);t.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){go(e)}})});});}
+function wireSVG(svg,config,ctx){
+  const texts=[...svg.querySelectorAll('text')];
+  const items=config.items.map(itemObj);
+  const escapeValue=(v)=>String(v).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+  const activate=(item)=>selectItem(item,ctx);
+
+  items.forEach(item=>{
+    const markerIndex=texts.findIndex(t=>norm(t.textContent)===norm(item.marker));
+    let labelIndex=texts.findIndex(t=>norm(t.textContent)===norm(item.label));
+    if(labelIndex<0&&item.label.includes('/')) labelIndex=texts.findIndex(t=>norm(t.textContent).includes(norm(item.label.split('/')[0])));
+    const marker=markerIndex>=0?texts[markerIndex]:null;
+    const label=labelIndex>=0?texts[labelIndex]:null;
+    if(!marker&&!label)return;
+
+    // Make the whole SVG group tappable, not merely the small number glyph.
+    // This is much more reliable in Safari/iPadOS and creates a generous hit area.
+    const group=(marker?.closest('g')||label?.closest('g')||marker||label);
+    group.classList.add('map-hotspot');
+    group.dataset.mapKey=item.marker;
+    group.setAttribute('role','button');
+    group.setAttribute('tabindex','0');
+    group.setAttribute('aria-label',`${item.marker}. ${item.label}`);
+    if(marker&&marker!==group){marker.dataset.mapKey=item.marker;marker.style.pointerEvents='none';}
+    if(label&&label!==group){label.dataset.mapKey=item.marker;label.style.pointerEvents='none';}
+
+    // Add an invisible minimum-size target over the group. Safari can otherwise
+    // miss taps on SVG text even when pointer-events is enabled.
+    try{
+      const box=group.getBBox();
+      const pad=Math.max(14,Math.min(28,Math.max(box.width,box.height)*.16));
+      const hit=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      hit.setAttribute('x',box.x-pad);hit.setAttribute('y',box.y-pad);
+      hit.setAttribute('width',Math.max(44,box.width+pad*2));
+      hit.setAttribute('height',Math.max(44,box.height+pad*2));
+      hit.setAttribute('rx','10');
+      hit.setAttribute('fill','transparent');
+      hit.setAttribute('pointer-events','all');
+      hit.dataset.mapKey=item.marker;
+      hit.classList.add('map-hitbox');
+      group.insertBefore(hit,group.firstChild);
+    }catch(_){/* group remains directly tappable */}
+
+    let lastPointer=0;
+    const go=e=>{
+      e.preventDefault();e.stopPropagation();
+      lastPointer=Date.now();
+      activate(item);
+    };
+    group.addEventListener('pointerup',go,{passive:false});
+    group.addEventListener('touchend',go,{passive:false});
+    group.addEventListener('click',e=>{
+      if(Date.now()-lastPointer<700){e.preventDefault();e.stopPropagation();return;}
+      go(e);
+    });
+    group.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){go(e)}});
+  });
+
+  // Delegated fallback catches taps when Safari reports the child SVG element
+  // rather than the group listener.
+  const byMarker=new Map(items.map(i=>[String(i.marker),i]));
+  const delegated=e=>{
+    const node=e.target?.closest?.('[data-map-key]');
+    if(!node||!svg.contains(node))return;
+    const item=byMarker.get(String(node.dataset.mapKey));
+    if(!item)return;
+    e.preventDefault();e.stopPropagation();activate(item);
+  };
+  svg.addEventListener('pointerup',delegated,{passive:false});
+  svg.addEventListener('click',delegated);
+}
 function pointList(config,ctx){const list=ctx.querySelector('.map-point-list');if(!list)return;list.innerHTML='';config.items.map(itemObj).forEach(item=>{const b=document.createElement('button');b.type='button';b.className='map-point-button';b.dataset.mapKey=item.marker;b.innerHTML=`<strong>${item.marker}</strong><span>${item.label}</span>`;b.onclick=()=>selectItem(item,ctx);list.appendChild(b)});}
 async function fetchSVG(src){const r=await fetch(src,{cache:'no-store'});if(!r.ok)throw new Error('Unable to load map');const text=await r.text();return new DOMParser().parseFromString(text,'image/svg+xml').documentElement;}
 async function openExplorer(src,config){createModal();modal.querySelector('[data-map-title]').textContent=config.title;const holder=modal.querySelector('.map-explorer-svg');holder.innerHTML='<div class="map-loading">Loading interactive map…</div>';pointList(config,modal);modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');try{const svg=await fetchSVG(src);svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('preserveAspectRatio','xMidYMid meet');holder.replaceChildren(svg);wireSVG(svg,config,modal);setZoom(1);}catch(e){holder.innerHTML='<div class="map-loading">This map could not be loaded. Reload the page and try again.</div>';}}
