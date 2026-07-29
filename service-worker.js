@@ -1,10 +1,11 @@
-const VERSION='6.7.2';
-const BUILD_ID='v6.7.2-20260729-diagnostics-consistency';
-const CACHE='ivtc-v6.7.2-diagnostics-consistency';
+const VERSION='6.8.0';
+const BUILD_ID='v6.8.0-20260729-reservation-reliability';
+const CACHE='ivtc-v6.8.0-reservation-reliability';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
+  "./RELEASE-v6.8.0.txt",
   "./assets/js/backend/reservation-model.js",
-  "./RELEASE-v6.7.2.txt",
+  "./RELEASE-v6.8.0.txt",
   "./RELEASE-v6.4.4.txt",
   "./my-trips.html",
   "./assets/js/backend/trip-model.js",

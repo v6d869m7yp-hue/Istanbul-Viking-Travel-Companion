@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.8.0 — Reservation Reliability
+
+- Preserves the tested Travel Vault, Maps, My Trips, authentication and navigation behavior.
+- Adds live Firestore reservation synchronization for the active trip.
+- Shows cloud, offline-cache and pending-write states.
+- Adds reservation date and website validation.
+- Prevents duplicate live listeners when the active trip changes.
+- Keeps the known itinerary import idempotent and confirms manual imports.

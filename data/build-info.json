@@ -1,12 +1,12 @@
 {
-  "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.7.2",
-  "buildId": "v6.7.2-20260729-diagnostics-consistency",
+  "appName": "Istanbul–Viking Travel Companion",
+  "version": "6.8.0",
+  "buildId": "v6.8.0-20260729-reservation-reliability",
   "buildDate": "2026-07-29",
-  "cacheName": "ivtc-v6.7.2-diagnostics-consistency",
-  "release": "Diagnostics Consistency",
+  "cacheName": "ivtc-v6.8.0-reservation-reliability",
+  "release": "Reservation Reliability",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "diagnostics-consistency"
+  "label": "reservation-reliability"
 }
