@@ -1,4 +1,4 @@
-# Istanbul–Viking Travel Companion v6.5.3
+# Istanbul–Viking Travel Companion v6.5.4
 
 ## Open reservations
 

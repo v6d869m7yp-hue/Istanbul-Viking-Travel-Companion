@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.5.3",
-  "buildId": "v6.5.3-20260728-reservations-ready",
+  "version": "6.5.4",
+  "buildId": "v6.5.4-20260728-reservation-dialog-close-fix",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.5.3-reservations-ready",
-  "release": "Visible Cloud Reservations",
+  "cacheName": "ivtc-v6.5.4-reservation-dialog-close-fix",
+  "release": "Reservation Dialog Close Fix",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "reservations-ready"
+  "label": "reservation-dialog-close-fix"
 }

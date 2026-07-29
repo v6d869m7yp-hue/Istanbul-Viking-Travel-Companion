@@ -1,0 +1,5 @@
+v6.5.4 — Reservation Dialog Close Fix
+
+- Fixes the Add lodging dialog opening automatically.
+- Restores the X, Cancel, backdrop, and Escape close controls.
+- Preserves the six imported lodging records and all v6.5.3 functionality.
