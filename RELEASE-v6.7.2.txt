@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.8.1
+Istanbul–Viking Travel Companion v6.9.0
 
 Diagnostics consistency maintenance release.
 

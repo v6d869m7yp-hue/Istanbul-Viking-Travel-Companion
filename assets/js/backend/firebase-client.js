@@ -3,7 +3,7 @@
 window.IVTC=window.IVTC||{};
 if(window.IVTC.firebase)return;
 const SDK_VERSION='12.1.0';
-const state={configured:false,connected:false,user:null,error:null,app:null,auth:null,db:null,api:null,initializing:null,authReady:false};
+const state={configured:false,connected:false,user:null,error:null,app:null,auth:null,db:null,storage:null,api:null,initializing:null,authReady:false};
 const config=window.IVTC_FIREBASE_CONFIG||{};
 function userView(user){
  if(!user)return null;
@@ -29,11 +29,12 @@ async function initialize(){
    const appSdk=await import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-app.js`);
    const authSdk=await import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-auth.js`);
    const fsSdk=await import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-firestore.js`);
+   const storageSdk=await import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-storage.js`);
    state.app=appSdk.getApps().length?appSdk.getApp():appSdk.initializeApp(config);
    state.auth=authSdk.getAuth(state.app);
    try{state.db=fsSdk.initializeFirestore(state.app,{localCache:fsSdk.persistentLocalCache({tabManager:fsSdk.persistentMultipleTabManager()})});}
    catch{state.db=fsSdk.getFirestore(state.app);}
-   state.api={...authSdk,...fsSdk};state.configured=true;state.error=null;
+   state.storage=storageSdk.getStorage(state.app);state.api={...authSdk,...fsSdk,...storageSdk};state.configured=true;state.error=null;
    authSdk.onAuthStateChanged(state.auth,user=>{state.user=user;state.connected=!!user;state.authReady=true;emit();});
    return publicState();
   }catch(error){state.error=error?.message||String(error);state.authReady=true;emit();return publicState();}

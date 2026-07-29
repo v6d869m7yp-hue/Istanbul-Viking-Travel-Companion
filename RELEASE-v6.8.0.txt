@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.8.1 — Unified Reservations
+Istanbul–Viking Travel Companion v6.9.0 — Unified Reservations
 
 - Preserves the tested Travel Vault, Maps, My Trips, authentication and navigation behavior.
 - Adds live Firestore reservation synchronization for the active trip.
