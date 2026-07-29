@@ -1,9 +1,5 @@
-# v6.2.5 Service Worker Retry Fix
+# Istanbul–Viking Travel Companion v6.3.0
 
-Diagnostics now initializes before the shared app shell and service-worker startup, so its buttons remain functional even when Safari stalls during another startup operation.
-
-# Istanbul–Viking Travel Companion v6.1.0
-
-Offline-first public travel guide plus a local encrypted Travel Vault. This developer preview adds a disabled, ciphertext-only Firebase backend foundation. See `backend-setup.html` and `docs/V6-BACKEND-BOOTSTRAP.md`.
+Milestone 2 begins with Firebase Authentication: sign in, sign out, session persistence, a current-user indicator, and an account profile card.
 
 Run `npm test` before deployment.

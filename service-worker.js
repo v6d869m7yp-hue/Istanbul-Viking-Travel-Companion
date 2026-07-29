@@ -1,9 +1,9 @@
-const VERSION='6.2.5';
-const BUILD_ID='v6.2.5-20260728-robust-service-worker-install';
-const CACHE='ivtc-v6.2.5-robust-service-worker-install';
+const VERSION='6.3.0';
+const BUILD_ID='v6.3.0-20260728-firebase-authentication';
+const CACHE='ivtc-v6.3.0-firebase-authentication';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
-  "./RELEASE-v6.2.5.txt",
+  "./RELEASE-v6.3.0.txt",
   "./assets/js/backend/trip-model.js",
   "./cloud-vault.html",
   "./RELEASE-v6.1.0.txt",

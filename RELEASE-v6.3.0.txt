@@ -1,0 +1,10 @@
+Istanbul–Viking Travel Companion v6.3.0
+Firebase Authentication
+
+- Email/password sign in and sign out
+- Trusted-device session persistence
+- Current-user indicator in the application header
+- Firebase account profile card
+- Password-reset email support
+- Account refresh and clear status messaging
+- Retains stable v6.2.5 Safari service-worker installation strategy
