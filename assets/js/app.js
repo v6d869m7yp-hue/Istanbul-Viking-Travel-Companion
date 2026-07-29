@@ -79,7 +79,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'6.2.3',buildId:'v6.2.3-20260728-service-worker-registration-fix'};
+const APP_RELEASE={version:'6.2.4',buildId:'v6.2.4-20260728-service-worker-retry-fix'};
 let updateRegistration=null;
 let appUpdatesPromise=null;
 function showUpdateBanner(reg){
@@ -153,13 +153,29 @@ async function diagnosticsPage(){
   const checkButton=document.querySelector('[data-check-update]');
   if(checkButton)checkButton.onclick=async()=>{
     checkButton.disabled=true;
-    if(status)status.textContent='Checking GitHub Pages for a newer build…';
+    if(status)status.textContent='Registering the offline app and checking GitHub Pages…';
     try{
-      const reg=await timeout(navigator.serviceWorker?.getRegistration?.(),4000,null);
-      if(reg)await timeout(reg.update(),5000,null);
-      if(status)status.textContent=reg?.waiting?'Update ready. Tap Install downloaded update.':'No newer downloaded build was detected.';
-      if(reg?.waiting)showUpdateBanner(reg);
-    }catch(e){if(status)status.textContent='Update check could not complete on this browser.'}
+      // A retry must actively register the worker. Merely calling getRegistration()
+      // cannot recover when Safari has no registration yet.
+      appUpdatesPromise=null;
+      let reg=await timeout(setupAppUpdates(),15000,null);
+      if(!reg)reg=await timeout(navigator.serviceWorker?.getRegistration?.(),4000,null);
+      if(reg)await timeout(reg.update(),7000,null);
+      const worker=reg?.active||reg?.waiting||reg?.installing;
+      if(reg?.waiting){
+        if(status)status.textContent='Update ready. Tap Install downloaded update.';
+        showUpdateBanner(reg);
+      }else if(reg?.active){
+        if(status)status.textContent='Offline app registered and active. Reload once if this tab is not yet controlled.';
+      }else if(reg?.installing){
+        if(status)status.textContent='Offline app is installing. Wait a few seconds, then reload this page.';
+      }else if(status){
+        status.textContent='Registration still did not complete. Open Safari Web Inspector Console for the exact error.';
+      }
+    }catch(e){
+      console.error('Manual service-worker retry failed',e);
+      if(status)status.textContent='Registration retry failed. Open Safari Web Inspector Console for the exact error.';
+    }
     checkButton.disabled=false;
   };
   const clearButton=document.querySelector('[data-clear-app-cache]');
@@ -195,12 +211,12 @@ async function diagnosticsPage(){
   if('serviceWorker' in navigator){
     // Diagnostics is the recovery page, so actively start registration instead of
     // merely observing whether another startup path happened to finish first.
-    reg=await timeout(setupAppUpdates(),8000,null);
+    reg=await timeout(setupAppUpdates(),15000,null);
     if(!reg)reg=await timeout(navigator.serviceWorker.getRegistration(),4000,null);
     currentRegistration=reg;
     const controlled=navigator.serviceWorker.controller?.scriptURL;
     const active=reg?.active?.scriptURL;
-    controller=controlled ? 'Controlling this page: '+controlled+' · Scope: '+(reg?.scope||'unknown') : (active ? 'Registered and active: '+active+' · Scope: '+(reg?.scope||'unknown')+' (reload once if this tab is not yet controlled)' : 'Registration did not complete. Use Check for update to retry.');
+    controller=controlled ? 'Controlling this page: '+controlled+' · Scope: '+(reg?.scope||'unknown') : (active ? 'Registered and active: '+active+' · Scope: '+(reg?.scope||'unknown')+' (reload once if this tab is not yet controlled)' : (reg?.installing ? 'Registration is installing: '+(reg.installing.scriptURL||'service-worker.js')+' · Reload shortly.' : 'Registration did not complete. Use Check for update to retry registration.'));
     waiting=reg?.waiting?'Yes':(reg?'No':'Unknown');
   }else{
     controller='Service workers are not supported by this browser.';
@@ -215,7 +231,7 @@ async function diagnosticsPage(){
   if(status)status.textContent=reg?.waiting?'An update is downloaded and ready to install.':'This device reports v'+info.version+'. Use Check for update to ask GitHub Pages again.';
   if(install){install.hidden=!reg?.waiting;install.onclick=activateWaitingWorker}
 
-  const urls=['/index.html','/assets/js/app.js?v=6.2.3','/assets/js/map-explorer.js?v=6.2.3','/data/trip.json','/data/build-info.json','/diagnostics.html'];
+  const urls=['/index.html','/assets/js/app.js?v=6.2.4','/assets/js/map-explorer.js?v=6.2.4','/data/trip.json','/data/build-info.json','/diagnostics.html'];
   const results=await Promise.all(urls.map(async u=>{
     try{const r=await timeout(fetch(abs(u),{cache:'no-store'}),5000,null);return [u,Boolean(r?.ok)]}catch(e){return[u,false]}
   }));

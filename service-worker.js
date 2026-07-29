@@ -1,8 +1,8 @@
-const VERSION='6.2.3';
-const BUILD_ID='v6.2.3-20260728-service-worker-registration-fix';
-const CACHE='ivtc-v6.2.3-service-worker-registration-fix';
+const VERSION='6.2.4';
+const BUILD_ID='v6.2.4-20260728-service-worker-retry-fix';
+const CACHE='ivtc-v6.2.4-service-worker-retry-fix';
 const CORE=[
-  "./RELEASE-v6.2.3.txt",
+  "./RELEASE-v6.2.4.txt",
   "./assets/js/backend/trip-model.js",
   "./cloud-vault.html",
   "./RELEASE-v6.1.0.txt",

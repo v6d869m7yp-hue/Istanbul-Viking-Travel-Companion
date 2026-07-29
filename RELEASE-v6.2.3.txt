@@ -1,5 +1,5 @@
-Istanbul–Viking Travel Companion v6.2.3
-Service Worker Registration Fix
+Istanbul–Viking Travel Companion v6.2.4
+Service Worker Retry Fix
 
 - Diagnostics actively starts service-worker registration before reporting status.
 - Service-worker setup is shared through one promise to prevent duplicate Safari registrations.

@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.2.4
+
+Service Worker Retry Fix
+
+- Check for update now actively retries service-worker registration.
+- Safari installation is allowed more time to complete.
+- Diagnostics distinguishes installing, active, waiting, and failed states.
+- Manual retry reports a useful status instead of silently querying a missing registration.
