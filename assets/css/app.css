@@ -140,3 +140,7 @@
 
 /* v6.5.4: HTML hidden must override modal display rules. */
 [hidden]{display:none!important}
+
+/* v6.5.5 hard guarantee: closed reservation modal never renders. */
+#reservation-modal[hidden],#reservation-modal[aria-hidden="true"]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+#reservation-modal:not([hidden]){visibility:visible;pointer-events:auto}

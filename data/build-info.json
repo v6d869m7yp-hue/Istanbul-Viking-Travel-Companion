@@ -1,12 +1,12 @@
 {
-  "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.5.4",
-  "buildId": "v6.5.4-20260728-reservation-dialog-close-fix",
+  "appName": "Istanbul–Viking Travel Companion",
+  "version": "6.5.5",
+  "buildId": "v6.5.5-20260728-reservation-dialog-hard-fix",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.5.4-reservation-dialog-close-fix",
-  "release": "Reservation Dialog Close Fix",
+  "cacheName": "ivtc-v6.5.5-reservation-dialog-hard-fix",
+  "release": "Reservation Dialog Hard Fix",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "reservation-dialog-close-fix"
+  "label": "reservation-dialog-hard-fix"
 }
