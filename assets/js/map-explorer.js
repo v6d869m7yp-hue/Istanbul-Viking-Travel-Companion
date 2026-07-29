@@ -123,12 +123,24 @@ function wireSVG(svg,config,ctx){
 function pointList(config,ctx){const list=ctx.querySelector('.map-point-list');if(!list)return;list.innerHTML='';config.items.map(itemObj).forEach(item=>{const b=document.createElement('button');b.type='button';b.className='map-point-button';b.dataset.mapKey=item.marker;b.innerHTML=`<strong>${item.marker}</strong><span>${item.label}</span>`;b.onclick=()=>selectItem(item,ctx);list.appendChild(b)});}
 async function fetchSVG(src){const r=await fetch(src,{cache:'no-store'});if(!r.ok)throw new Error('Unable to load map');const text=await r.text();return new DOMParser().parseFromString(text,'image/svg+xml').documentElement;}
 async function openExplorer(src,config){createModal();modal.querySelector('[data-map-title]').textContent=config.title;const holder=modal.querySelector('.map-explorer-svg');holder.innerHTML='<div class="map-loading">Loading interactive map…</div>';pointList(config,modal);modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');try{const svg=await fetchSVG(src);svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('preserveAspectRatio','xMidYMid meet');holder.replaceChildren(svg);wireSVG(svg,config,modal);setZoom(1);}catch(e){holder.innerHTML='<div class="map-loading">This map could not be loaded. Reload the page and try again.</div>';}}
-async function enhance(img){const file=decodeURIComponent(img.src.split('/').pop().split('?')[0]);const config=C[file];if(!config||img.dataset.mapEnhanced)return;img.dataset.mapEnhanced='true';const src=img.src;const parent=img.parentElement;try{const svg=await fetchSVG(src);svg.removeAttribute('width');svg.removeAttribute('height');svg.setAttribute('preserveAspectRatio','xMidYMid meet');const inline=document.createElement('div');inline.className='inline-interactive-map';inline.setAttribute('aria-label',config.title);inline.appendChild(svg);parent.insertBefore(inline,img);img.hidden=true;wireSVG(svg,config,parent.closest('.interactive-plan,.map-card,.route-map-panel,section,article')||parent);
-const list=document.createElement('div');list.className='inline-map-points map-point-list';inline.insertAdjacentElement('afterend',list);const ctx=inline.parentElement;pointList(config,ctx);const detail=document.createElement('div');detail.className='map-point-detail inline-map-detail';detail.innerHTML='<span class="map-point-number">Interactive map</span><h2>Tap a number or name</h2><p>Every numbered label is now a real control. You can also use the buttons below the map.</p>';list.insertAdjacentElement('afterend',detail);
-const expand=parent.querySelector('.map-expand,.route-expand');if(expand)expand.onclick=e=>{e.preventDefault();e.stopPropagation();openExplorer(src,config)};
-// Do not stop clicks during capture: Safari must deliver the tap to the SVG text hotspot.
-inline.addEventListener('click',e=>e.stopPropagation());
-}catch(e){console.warn('Map enhancement failed',file,e)}}
+async function enhance(img){
+  const file=decodeURIComponent(img.src.split('/').pop().split('?')[0]);
+  const config=C[file];
+  if(!config||img.dataset.mapEnhanced)return;
+  img.dataset.mapEnhanced='true';
+  const src=img.src;
+  img.style.cursor='pointer';
+  img.tabIndex=0;
+  img.setAttribute('role','button');
+  img.setAttribute('aria-label',`${config.title}. Open destination menu.`);
+  const open=()=>openExplorer(src,config);
+  // The map itself and its Expand control always open the destination menu.
+  img.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();open();},true);
+  img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+  const parent=img.parentElement;
+  const expand=parent?.querySelector('.map-expand,.route-expand');
+  if(expand)expand.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();open();},true);
+}
 function setup(){
   // Support every map markup pattern used across the companion. Earlier builds
   // only enhanced .zoomable-map/.hotspot-map images, while many destination

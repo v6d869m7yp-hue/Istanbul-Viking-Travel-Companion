@@ -1,4 +1,8 @@
-# Istanbul–Viking Travel Companion v6.4.5
+# v6.4.6 — Map Destination Menu Restore
+
+Tapping a supported map or its Expand button now opens Map Explorer with the complete destination list and information panel. Stale v6.4.0 diagnostic asset labels are corrected.
+
+# Istanbul–Viking Travel Companion v6.4.6
 
 Map Information Popups repair. Tapping a numbered marker opens a location-information card rather than navigating immediately or merely grabbing the map.
 
