@@ -1,0 +1,9 @@
+Istanbul–Viking–Venice Travel Companion v6.5.0
+Cloud Hotel Reservations
+
+- Cloud-synced lodging records attached to the active Firestore trip
+- Add and edit hotels, vacation rentals and cruise accommodation
+- One-time import of the known 2026 itinerary
+- Phone, website and directions actions
+- Confirmation, room, breakfast, payment and notes fields
+- Existing Map Explorer v6.4.6 preserved unchanged

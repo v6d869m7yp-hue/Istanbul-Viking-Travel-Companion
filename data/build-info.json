@@ -1,13 +1,13 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.4.6",
-  "buildId": "v6.4.6-20260728-map-destination-menu-restore",
+  "version": "6.5.0",
+  "buildId": "v6.5.0-20260728-cloud-hotel-reservations",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.4.6-map-destination-menu-restore",
-  "release": "Map Information Popups",
-  "pageCount": 105,
+  "cacheName": "ivtc-v6.5.0-cloud-hotel-reservations",
+  "release": "cloud-hotel-reservations",
+  "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
   "precacheEntryCount": 178,
-  "cache": "ivtc-v6.4.6-map-information-popups"
+  "cache": "ivtc-v6.5.0-cloud-hotel-reservations"
 }
