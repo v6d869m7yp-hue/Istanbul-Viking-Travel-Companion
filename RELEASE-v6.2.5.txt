@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.3.0
+Istanbul–Viking Travel Companion v6.4.0
 Robust Service Worker Install
 
 - Removes duplicate service-worker precache entries.

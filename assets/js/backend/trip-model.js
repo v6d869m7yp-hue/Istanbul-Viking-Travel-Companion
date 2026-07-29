@@ -3,25 +3,14 @@
 window.IVTC=window.IVTC||{};
 const enc=new TextEncoder();
 const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
-async function encryptConnectivityPayload(value){
- const key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},true,['encrypt','decrypt']);
- const iv=crypto.getRandomValues(new Uint8Array(12));
- const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(value)));
- return {algorithm:'AES-256-GCM',iv:b64(iv),ciphertext:b64(cipher),testOnly:true};
-}
 function requireState(){const s=window.IVTC.firebase?._state;if(!s?.user||!s.db||!s.api)throw new Error('Sign in first.');return s;}
-async function createTrip({label='Istanbul–Viking–Venice 2026'}={}){
- const s=requireState(),tripRef=s.api.doc(s.api.collection(s.db,'trips'));
- const payload=await encryptConnectivityPayload({message:'Encrypted connection test',createdAt:new Date().toISOString()});
- const batch=s.api.writeBatch(s.db);
- batch.set(tripRef,{schema:1,label,ownerUid:s.user.uid,memberUids:[s.user.uid],roles:{[s.user.uid]:'owner'},createdAt:s.api.serverTimestamp(),updatedAt:s.api.serverTimestamp(),status:'active'});
- batch.set(s.api.doc(tripRef,'envelopes','connection-test'),{ciphertext:payload.ciphertext,iv:payload.iv,algorithm:payload.algorithm,testOnly:true,updatedAt:s.api.serverTimestamp(),updatedBy:s.user.uid});
- await batch.commit();return tripRef.id;
-}
-async function listTrips(){
- const s=requireState();
- const q=s.api.query(s.api.collection(s.db,'trips'),s.api.where('memberUids','array-contains',s.user.uid));
- const snap=await s.api.getDocs(q);return snap.docs.map(d=>({id:d.id,...d.data()}));
-}
-window.IVTC.tripCloud=Object.freeze({createTrip,listTrips});
+async function encryptConnectivityPayload(value){const key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},true,['encrypt','decrypt']);const iv=crypto.getRandomValues(new Uint8Array(12));const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(value)));return {algorithm:'AES-256-GCM',iv:b64(iv),ciphertext:b64(cipher),testOnly:true};}
+async function createTrip({label='New trip',startDate=null,endDate=null,travelers=1,status='active'}={}){const s=requireState(),tripRef=s.api.doc(s.api.collection(s.db,'trips'));const payload=await encryptConnectivityPayload({message:'Encrypted connection test',createdAt:new Date().toISOString()});const batch=s.api.writeBatch(s.db);batch.set(tripRef,{schema:1,label:label.trim()||'New trip',startDate:startDate||null,endDate:endDate||null,travelers:Number(travelers)||1,ownerUid:s.user.uid,memberUids:[s.user.uid],roles:{[s.user.uid]:'owner'},createdAt:s.api.serverTimestamp(),updatedAt:s.api.serverTimestamp(),status});batch.set(s.api.doc(tripRef,'envelopes','connection-test'),{ciphertext:payload.ciphertext,iv:payload.iv,algorithm:payload.algorithm,testOnly:true,updatedAt:s.api.serverTimestamp(),updatedBy:s.user.uid});await batch.commit();return tripRef.id;}
+async function listTrips({includeArchived=true}={}){const s=requireState();const q=s.api.query(s.api.collection(s.db,'trips'),s.api.where('memberUids','array-contains',s.user.uid));const snap=await s.api.getDocs(q);return snap.docs.map(d=>({id:d.id,...d.data()})).filter(t=>includeArchived||t.status!=='archived').sort((a,b)=>{const av=a.updatedAt?.seconds||0,bv=b.updatedAt?.seconds||0;return bv-av;});}
+async function updateTrip(id,changes){const s=requireState();if(!id)throw new Error('Trip ID is required.');await s.api.updateDoc(s.api.doc(s.db,'trips',id),{...changes,updatedAt:s.api.serverTimestamp()});}
+async function deleteTrip(id){const s=requireState();if(!id)throw new Error('Trip ID is required.');await s.api.deleteDoc(s.api.doc(s.db,'trips',id));if(localStorage.getItem('ivtc.activeTripId')===id){localStorage.removeItem('ivtc.activeTripId');localStorage.removeItem('ivtc.activeTripLabel');}}
+async function duplicateTrip(id){const source=(await listTrips()).find(t=>t.id===id);if(!source)throw new Error('Trip not found.');return createTrip({label:`${source.label||'Trip'} copy`,startDate:source.startDate||null,endDate:source.endDate||null,travelers:source.travelers||1,status:'active'});}
+function selectTrip(trip){if(!trip?.id)throw new Error('Trip is required.');localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label||'Selected trip');window.dispatchEvent(new CustomEvent('ivtc:trip-selected',{detail:trip}));}
+function selectedTrip(){return {id:localStorage.getItem('ivtc.activeTripId'),label:localStorage.getItem('ivtc.activeTripLabel')};}
+window.IVTC.tripCloud=Object.freeze({createTrip,listTrips,updateTrip,deleteTrip,duplicateTrip,selectTrip,selectedTrip});
 })();

@@ -1,9 +1,10 @@
-const VERSION='6.3.0';
-const BUILD_ID='v6.3.0-20260728-firebase-authentication';
-const CACHE='ivtc-v6.3.0-firebase-authentication';
+const VERSION='6.4.0';
+const BUILD_ID='v6.4.0-20260728-my-trips';
+const CACHE='ivtc-v6.4.0-my-trips';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
-  "./RELEASE-v6.3.0.txt",
+  "./RELEASE-v6.4.0.txt",
+  "./my-trips.html",
   "./assets/js/backend/trip-model.js",
   "./cloud-vault.html",
   "./RELEASE-v6.1.0.txt",
