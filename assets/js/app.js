@@ -79,7 +79,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'6.2.1',buildId:'v6.2.1-20260728-diagnostics-resilience-fix'};
+const APP_RELEASE={version:'6.2.2',buildId:'v6.2.2-20260728-diagnostics-startup-fix'};
 let updateRegistration=null;
 function showUpdateBanner(reg){
   updateRegistration=reg||updateRegistration;
@@ -207,11 +207,35 @@ async function diagnosticsPage(){
   if(status)status.textContent=reg?.waiting?'An update is downloaded and ready to install.':'This device reports v'+info.version+'. Use Check for update to ask GitHub Pages again.';
   if(install){install.hidden=!reg?.waiting;install.onclick=activateWaitingWorker}
 
-  const urls=['/index.html','/assets/js/app.js?v=6.2.1','/assets/js/map-explorer.js?v=6.2.1','/data/trip.json','/data/build-info.json','/diagnostics.html'];
+  const urls=['/index.html','/assets/js/app.js?v=6.2.2','/assets/js/map-explorer.js?v=6.2.2','/data/trip.json','/data/build-info.json','/diagnostics.html'];
   const results=await Promise.all(urls.map(async u=>{
     try{const r=await timeout(fetch(abs(u),{cache:'no-store'}),5000,null);return [u,Boolean(r?.ok)]}catch(e){return[u,false]}
   }));
   if(checks)checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
 }
 
-document.addEventListener('DOMContentLoaded',async()=>{const trip=await shell();unifiedJourneySwitcher();await setupAppUpdates();if(document.body.dataset.view==='dashboard')dashboard(trip);if(document.body.dataset.view==='timeline')timeline(trip);if(document.body.dataset.view==='istanbul')istanbulCards();if(document.body.dataset.view==='excursions')excursionTable();if(document.body.dataset.view==='search')searchPage();if(document.body.dataset.view==='favorites')favoritesPage();if(document.body.dataset.view==='diagnostics')await diagnosticsPage();glanceStatus(trip);intelligence();interactiveMedia();interactiveCruiseRoute();});
+document.addEventListener('DOMContentLoaded',async()=>{
+  // Diagnostics must initialize before shell, trip-data, or service-worker startup.
+  // This keeps its controls usable even when another startup task stalls on Safari.
+  if(document.body.dataset.view==='diagnostics'){
+    diagnosticsPage().catch(err=>{
+      console.error('Diagnostics initialization failed',err);
+      const target=document.querySelector('[data-diagnostics]');
+      if(target)target.innerHTML='<article class="card"><h2>Diagnostics could not finish loading</h2><p>Reload this page or use the cache-reset control below.</p></article>';
+    });
+  }
+
+  let trip=null;
+  try{trip=await shell();}catch(err){console.error('App shell failed',err);}
+  try{unifiedJourneySwitcher();}catch(err){console.warn('Journey switcher failed',err);}
+  try{await Promise.race([setupAppUpdates(),new Promise(resolve=>setTimeout(resolve,6000))]);}catch(err){console.warn('App update setup failed',err);}
+
+  if(!trip)return;
+  if(document.body.dataset.view==='dashboard')dashboard(trip);
+  if(document.body.dataset.view==='timeline')timeline(trip);
+  if(document.body.dataset.view==='istanbul')istanbulCards();
+  if(document.body.dataset.view==='excursions')excursionTable();
+  if(document.body.dataset.view==='search')searchPage();
+  if(document.body.dataset.view==='favorites')favoritesPage();
+  glanceStatus(trip);intelligence();interactiveMedia();interactiveCruiseRoute();
+});
