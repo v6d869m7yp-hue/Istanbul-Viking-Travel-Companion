@@ -1,4 +1,4 @@
-v6.5.2 — Visible Cloud Reservations
+v6.5.3 — Visible Cloud Reservations
 
 Built directly from the verified v6.4.6 map release.
 

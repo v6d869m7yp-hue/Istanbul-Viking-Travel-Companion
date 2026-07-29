@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.5.3
+Reservations Ready
+
+- Uses the verified v6.4.6 Map Explorer behavior.
+- Adds a visible Reservations destination on the dashboard, primary menu, footer, and each My Trips card.
+- Opens Reservations with the chosen trip automatically selected.
+- Loads or imports the known 2026 lodging records into trips/{tripId}/reservations.
+- Existing Firestore rules already allow authenticated access under trips; no rules change is required.

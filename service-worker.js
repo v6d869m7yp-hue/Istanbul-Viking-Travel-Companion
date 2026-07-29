@@ -1,10 +1,10 @@
-const VERSION='6.5.2';
-const BUILD_ID='v6.5.2-20260728-visible-cloud-reservations';
-const CACHE='ivtc-v6.5.2-visible-cloud-reservations';
+const VERSION='6.5.3';
+const BUILD_ID='v6.5.3-20260728-visible-cloud-reservations';
+const CACHE='ivtc-v6.5.3-visible-cloud-reservations';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./assets/js/backend/reservation-model.js",
-  "./RELEASE-v6.5.2.txt",
+  "./RELEASE-v6.5.3.txt",
   "./RELEASE-v6.4.4.txt",
   "./my-trips.html",
   "./assets/js/backend/trip-model.js",

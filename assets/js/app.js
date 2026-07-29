@@ -244,7 +244,7 @@ async function diagnosticsPage(){
   if(status)status.textContent=reg?.waiting?'An update is downloaded and ready to install.':'This device reports v'+info.version+'. Use Check for update to ask GitHub Pages again.';
   if(install){install.hidden=!reg?.waiting;install.onclick=activateWaitingWorker}
 
-  const urls=['/index.html','/assets/js/app.js?v=6.5.2','/assets/js/map-explorer.js?v=6.5.2','/data/trip.json','/data/build-info.json','/diagnostics.html'];
+  const urls=['/index.html','/assets/js/app.js?v=6.5.3','/assets/js/map-explorer.js?v=6.5.3','/data/trip.json','/data/build-info.json','/diagnostics.html'];
   const results=await Promise.all(urls.map(async u=>{
     try{const r=await timeout(fetch(abs(u),{cache:'no-store'}),5000,null);return [u,Boolean(r?.ok)]}catch(e){return[u,false]}
   }));
