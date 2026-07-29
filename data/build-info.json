@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.7.1",
-  "buildId": "v6.7.1-20260728-vault-reliability",
-  "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.7.1-vault-reliability",
-  "release": "Encrypted Document Vault",
+  "version": "6.7.2",
+  "buildId": "v6.7.2-20260729-diagnostics-consistency",
+  "buildDate": "2026-07-29",
+  "cacheName": "ivtc-v6.7.2-diagnostics-consistency",
+  "release": "Diagnostics Consistency",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "vault-reliability"
+  "label": "diagnostics-consistency"
 }

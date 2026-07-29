@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.7.2
+
+Diagnostics consistency maintenance release.
+
+- Release verification now derives JavaScript asset URLs from data/build-info.json.
+- Removed the stale v6.6.0 verification labels.
+- Synchronized app, build, cache, diagnostics, and service-worker identifiers.
+- No changes to maps, trips, reservations, or encrypted vault data structures.

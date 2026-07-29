@@ -1,11 +1,11 @@
-Istanbul–Viking Travel Companion v6.7.1 — Vault Reliability
+Istanbul–Viking Travel Companion v6.7.2 — Vault Reliability
 
 Changes
 - Added Verify Backup, which checks the backup checksum, decrypts it with the Vault password, and reports document, file, reservation, traveler, and activity counts without changing the current vault.
 - Reworked Restore Backup to decrypt and summarize the selected backup before confirmation, then restore and immediately display the restored vault.
 - Added in-app secure document previews for images, PDFs, and text files, with a separate Download file action for unsupported formats.
 - Preserved the existing maps, trip, reservations, Firebase, navigation, and offline architecture.
-- Synchronized release, build, service-worker, cache, diagnostics, and asset version references to v6.7.1.
+- Synchronized release, build, service-worker, cache, diagnostics, and asset version references to v6.7.2.
 
 Validation
 - JavaScript syntax checks passed.
