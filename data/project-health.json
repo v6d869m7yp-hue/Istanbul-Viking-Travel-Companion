@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "6.9.0",
+  "release": "6.9.1",
   "baseline": "6.8.1",
   "status": "backend-unification",
   "components": [
@@ -51,5 +51,6 @@
     "Rollback ZIP retained",
     "Running build identifiers match"
   ],
-  "milestone": "Encrypted Vault Sync \u2014 Stage 1"
+  "milestone": "Encrypted Vault Sync \u2014 Stage 1",
+  "label": "sync-diagnostics-timeout-safety"
 }

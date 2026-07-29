@@ -1,6 +1,6 @@
-const VERSION='6.9.0';
-const BUILD_ID='v6.9.0-encrypted-vault-sync';
-const CACHE='ivtc-v6.9.0-encrypted-vault-sync';
+const VERSION='6.9.1';
+const BUILD_ID='v6.9.1-sync-diagnostics';
+const CACHE='ivtc-v6.9.1-sync-diagnostics';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",

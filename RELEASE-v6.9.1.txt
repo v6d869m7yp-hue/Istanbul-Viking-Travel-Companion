@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.9.1
+Sync Diagnostics & Timeout Safety
+
+- Adds visible step-by-step encrypted Vault sync progress.
+- Adds timeouts for Firebase connection, metadata, upload, download, and finalization.
+- Adds a Cancel sync control.
+- Surfaces technical Firebase errors instead of remaining stuck indefinitely.
+- Preserves Vault encryption, backups, maps, reservations, trips, and itinerary data.
