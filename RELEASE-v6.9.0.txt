@@ -1,3 +1,0 @@
-v6.9.0 — Encrypted Vault Sync
-
-Adds automatic ciphertext-only Travel Vault synchronization through Firebase Storage and Firestore metadata.

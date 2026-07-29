@@ -1,14 +1,14 @@
-# Istanbul–Viking Travel Companion v6.5.4
+# Istanbul–Viking Travel Companion v6.8.2
 
-## Open reservations
+Foundation & Stability release built from the user-confirmed v6.8.1 baseline.
 
-1. Deploy this release to GitHub Pages.
-2. Sign in.
-3. Open **My Trips**.
-4. Tap **Reservations** on the trip you want to use.
+## What changed
+- Internal release identifiers are synchronized.
+- Diagnostics includes project-health and release-gate information.
+- Automated validation checks version consistency and required project files.
+- Roadmap, developer guide, regression checklist, and release process are documented.
 
-The first successful opening creates the known 2026 lodging records under:
+## What did not change
+Vault encryption and backup format, Maps, Firebase trips, Firestore reservations, and itinerary content structures were not altered.
 
-`trips/{tripId}/reservations/{reservationId}`
-
-Your current Firestore rules already cover this subcollection. No rules change is required.
+Run `npm test` before deployment.

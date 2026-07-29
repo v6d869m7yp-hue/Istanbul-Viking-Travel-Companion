@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.8.2
+Foundation & Stability
+
+- Freezes v6.8.1 behavior as the functional baseline.
+- Corrects the stale internal APP_RELEASE identifier.
+- Adds project-health diagnostics and release-governance documentation.
+- Expands automated validation for version consistency and required release files.
+- Makes no changes to Vault encryption, Maps, Firestore reservations, or trip data structures.

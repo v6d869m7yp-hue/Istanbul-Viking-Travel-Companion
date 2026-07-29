@@ -92,7 +92,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'6.4.4',buildId:'v6.4.4-20260728-map-marker-tap-fix'};
+const APP_RELEASE={version:'6.8.2',buildId:'v6.8.2-20260729-foundation-stability'};
 let updateRegistration=null;
 let appUpdatesPromise=null;
 function showUpdateBanner(reg){
@@ -250,6 +250,19 @@ async function diagnosticsPage(){
     try{const r=await timeout(fetch(abs(u),{cache:'no-store'}),5000,null);return [u,Boolean(r?.ok)]}catch(e){return[u,false]}
   }));
   if(checks)checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
+
+  const healthTarget=document.querySelector('[data-project-health]');
+  if(healthTarget){
+    try{
+      const r=await timeout(fetch(abs('/data/project-health.json')+'?t='+Date.now(),{cache:'no-store'}),5000,null);
+      if(!r?.ok)throw new Error('Project health unavailable');
+      const health=await r.json();
+      const stateLabel={working:'Working',planned:'Planned','not-supported':'Not available as automatic web sync'};
+      healthTarget.innerHTML=`<p><strong>Baseline:</strong> v${health.baseline} · <strong>Current:</strong> v${health.release}</p>`+
+        `<div class="diagnostic-checks">${health.components.map(item=>`<p class="diagnostic-check ${item.state==='working'?'ok':item.state==='planned'?'':'bad'}"><strong>${item.state==='working'?'✓':item.state==='planned'?'○':'—'}</strong> ${item.name}: ${stateLabel[item.state]||item.state}<br><small>${item.verification}</small></p>`).join('')}</div>`+
+        `<h3>Release gates</h3><div class="diagnostic-checks">${health.releaseGates.map(x=>`<p class="diagnostic-check"><strong>□</strong> ${x}</p>`).join('')}</div>`;
+    }catch(e){healthTarget.innerHTML='<p>Project-health manifest could not be loaded.</p>';}
+  }
 }
 
 document.addEventListener('DOMContentLoaded',async()=>{

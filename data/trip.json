@@ -1,12 +1,12 @@
 {
-  "version": "6.9.0",
+  "version": "6.8.2",
   "travelers": "John & Lyla",
-  "title": "Istanbul · Viking Travel Companion",
+  "title": "Istanbul \u00b7 Viking Travel Companion",
   "subtitle": "Independent Istanbul, Ancient Adriatic Treasures, and Northern Italy",
   "start": "2026-08-13",
   "end": "2026-09-01",
   "ship": "Viking Vesta",
-  "stateroom": "4121 · DV5",
+  "stateroom": "4121 \u00b7 DV5",
   "hotel": "Dersaadet Hotel Istanbul",
   "stages": [
     {
@@ -27,7 +27,7 @@
       "date": "2026-08-15",
       "location": "Istanbul",
       "title": "Imperial Old City",
-      "summary": "Blue Mosque, Hagia Sophia, Basilica Cistern and Topkapı Palace.",
+      "summary": "Blue Mosque, Hagia Sophia, Basilica Cistern and Topkap\u0131 Palace.",
       "time": "Morning start"
     },
     {
@@ -60,14 +60,14 @@
     },
     {
       "date": "2026-08-20",
-      "location": "Çanakkale",
-      "title": "Çanakkale & Troy",
+      "location": "\u00c7anakkale",
+      "title": "\u00c7anakkale & Troy",
       "summary": "Booked Viking excursion.",
       "time": "8:45 AM"
     },
     {
       "date": "2026-08-21",
-      "location": "Kuşadası",
+      "location": "Ku\u015fadas\u0131",
       "title": "Ancient Ephesus",
       "summary": "Booked Viking excursion.",
       "time": "12:45 PM"
@@ -138,7 +138,7 @@
     {
       "date": "2026-08-31",
       "location": "Venice",
-      "title": "At a Glance: St. Mark’s Square",
+      "title": "At a Glance: St. Mark\u2019s Square",
       "summary": "Booked Viking excursion and transition toward Northern Italy.",
       "time": "12:45 PM"
     },

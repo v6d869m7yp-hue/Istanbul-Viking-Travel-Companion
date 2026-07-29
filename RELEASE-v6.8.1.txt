@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.9.0 — Unified Reservations
+Istanbul–Viking Travel Companion v6.8.2 — Unified Reservations
 
 - Shows the active trip’s Firestore reservations inside the unlocked Travel Vault.
 - Keeps sensitive notes and attachments encrypted locally and linked to the corresponding cloud reservation.

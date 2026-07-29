@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "release": "6.8.2",
+  "baseline": "6.8.1",
+  "status": "stabilization",
+  "components": [
+    {
+      "name": "Firebase Authentication",
+      "state": "working",
+      "verification": "Manual sign-in test"
+    },
+    {
+      "name": "Firestore Trips",
+      "state": "working",
+      "verification": "My Trips read/write test"
+    },
+    {
+      "name": "Cloud Reservations",
+      "state": "working",
+      "verification": "Six active-trip lodging records confirmed"
+    },
+    {
+      "name": "Interactive Maps",
+      "state": "working",
+      "verification": "Destination and marker navigation regression test"
+    },
+    {
+      "name": "Travel Vault",
+      "state": "working",
+      "verification": "Lock, unlock, upload, preview, export, verify, restore"
+    },
+    {
+      "name": "Offline App Cache",
+      "state": "working",
+      "verification": "Service-worker registration and cache check"
+    },
+    {
+      "name": "Automatic Encrypted Vault Sync",
+      "state": "planned",
+      "verification": "Required before finished release"
+    },
+    {
+      "name": "Automatic iCloud Sync",
+      "state": "not-supported",
+      "verification": "Manual encrypted backup to iCloud Drive remains supported"
+    }
+  ],
+  "releaseGates": [
+    "Automated build validation passes",
+    "Manual regression checklist completed",
+    "Rollback ZIP retained",
+    "Running build identifiers match"
+  ]
+}
