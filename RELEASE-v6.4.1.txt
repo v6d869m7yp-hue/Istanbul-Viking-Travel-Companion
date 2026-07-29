@@ -1,0 +1,10 @@
+Istanbul–Viking Travel Companion v6.4.1 — Map Link Repair
+
+Fixes a v6.4.0 regression that prevented interactive map activation on pages whose SVG maps use data-map-zoom or map-panel markup instead of the older zoomable-map/hotspot-map classes.
+
+Changes:
+- Restores active numbered map points and destination guide links.
+- Restores Expand controls across Istanbul and all port map pages.
+- Supports all map markup patterns used in the project.
+- Initializes correctly even when the script loads after DOMContentLoaded.
+- Preserves v6.4.0 My Trips and Firebase functionality.

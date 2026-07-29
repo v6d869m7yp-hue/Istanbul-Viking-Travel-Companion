@@ -46,6 +46,27 @@ const list=document.createElement('div');list.className='inline-map-points map-p
 const expand=parent.querySelector('.map-expand,.route-expand');if(expand)expand.onclick=e=>{e.preventDefault();e.stopPropagation();openExplorer(src,config)};
 inline.addEventListener('click',e=>e.stopPropagation(),true);
 }catch(e){console.warn('Map enhancement failed',file,e)}}
-function setup(){document.querySelectorAll('img.zoomable-map[src$=".svg"],img.hotspot-map[src$=".svg"]').forEach(enhance);document.querySelectorAll('.map-expand').forEach(btn=>{const img=btn.parentElement?.querySelector('img[src$=".svg"]');if(!img)return;const file=decodeURIComponent(img.src.split('/').pop().split('?')[0]);if(C[file])btn.onclick=e=>{e.preventDefault();e.stopPropagation();openExplorer(img.src,C[file])}});}
-window.addEventListener('DOMContentLoaded',()=>setTimeout(setup,0));
+function setup(){
+  // Support every map markup pattern used across the companion. Earlier builds
+  // only enhanced .zoomable-map/.hotspot-map images, while many destination
+  // pages use data-map-zoom or a plain SVG inside .map-panel/.plan-wrap.
+  const selector=[
+    'img.zoomable-map[src*=".svg"]',
+    'img.hotspot-map[src*=".svg"]',
+    'img[data-map-zoom][src*=".svg"]',
+    '.map-panel img[src*=".svg"]',
+    '.plan-wrap img[src*=".svg"]',
+    '.route-map-panel img[src*=".svg"]'
+  ].join(',');
+  document.querySelectorAll(selector).forEach(enhance);
+  document.querySelectorAll('.map-expand,.route-expand').forEach(btn=>{
+    const host=btn.closest('.map-panel,.plan-wrap,.route-map-panel,figure,section,article')||btn.parentElement;
+    const img=host?.querySelector('img[src*=".svg"]');
+    if(!img)return;
+    const file=decodeURIComponent(img.src.split('/').pop().split('?')[0]);
+    if(C[file])btn.onclick=e=>{e.preventDefault();e.stopPropagation();openExplorer(img.src,C[file])};
+  });
+}
+if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',()=>setTimeout(setup,0));
+else setTimeout(setup,0);
 })();

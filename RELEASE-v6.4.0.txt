@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.4.0 — My Trips
+Istanbul–Viking Travel Companion v6.4.1 — My Trips
 
 - Dedicated cloud My Trips dashboard
 - Create, open, rename, duplicate, archive, restore, and delete trips
