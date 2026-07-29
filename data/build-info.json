@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.6.0",
-  "buildId": "v6.6.0-20260728-encrypted-document-vault",
+  "version": "6.7.0",
+  "buildId": "v6.7.0-20260728-secure-backup-recovery",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.6.0-encrypted-document-vault",
+  "cacheName": "ivtc-v6.7.0-secure-backup-recovery",
   "release": "Encrypted Document Vault",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "encrypted-document-vault"
+  "label": "secure-backup-recovery"
 }

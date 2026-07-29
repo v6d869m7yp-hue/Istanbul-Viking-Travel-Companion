@@ -1,10 +1,10 @@
-const VERSION='6.6.0';
-const BUILD_ID='v6.6.0-20260728-reservation-dialog-hard-fix';
-const CACHE='ivtc-v6.6.0-reservation-dialog-hard-fix';
+const VERSION='6.7.0';
+const BUILD_ID='v6.7.0-20260729-secure-backup-recovery';
+const CACHE='ivtc-v6.7.0-secure-backup-recovery';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./assets/js/backend/reservation-model.js",
-  "./RELEASE-v6.6.0.txt",
+  "./RELEASE-v6.7.0.txt",
   "./RELEASE-v6.4.4.txt",
   "./my-trips.html",
   "./assets/js/backend/trip-model.js",
