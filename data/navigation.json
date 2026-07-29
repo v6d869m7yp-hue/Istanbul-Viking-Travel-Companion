@@ -16,6 +16,11 @@
       "key": "timeline"
     },
     {
+      "label": "Reservations",
+      "href": "/reservations.html",
+      "key": "reservations"
+    },
+    {
       "label": "Istanbul",
       "href": "/istanbul/index.html",
       "key": "istanbul"
@@ -34,11 +39,6 @@
       "label": "Search",
       "href": "/search.html",
       "key": "search"
-    },
-    {
-      "label": "Reservations",
-      "href": "/reservations.html",
-      "key": "reservations"
     },
     {
       "label": "Travel Vault",

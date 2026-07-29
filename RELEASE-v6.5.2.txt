@@ -1,0 +1,9 @@
+v6.5.2 — Visible Cloud Reservations
+
+Built directly from the verified v6.4.6 map release.
+
+- Adds Reservations to the main navigation and footer.
+- Adds a real Firestore-backed reservations page for the active trip.
+- Seeds the known 2026 lodging itinerary on first use.
+- Preserves the v6.4.6 Map Explorer files and behavior.
+- Requires publishing the included firestore.rules.

@@ -1,13 +1,11 @@
 {
   "appName": "Istanbul–Viking Travel Companion",
-  "version": "6.5.1",
-  "buildId": "v6.5.1-20260728-working-cloud-reservations",
+  "version": "6.5.2",
+  "buildId": "v6.5.2-20260728-visible-cloud-reservations",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.5.1-working-cloud-reservations",
-  "release": "working-cloud-reservations",
+  "cacheName": "ivtc-v6.5.2-visible-cloud-reservations",
+  "release": "Visible Cloud Reservations",
   "pageCount": 106,
   "mapAssetCount": 27,
-  "mapGuideLinkCount": 92,
-  "precacheEntryCount": 178,
-  "cache": "ivtc-v6.5.1-working-cloud-reservations"
+  "mapGuideLinkCount": 92
 }
