@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul–Viking Travel Companion",
-  "version": "6.8.0",
-  "buildId": "v6.8.0-20260729-reservation-reliability",
+  "version": "6.8.1",
+  "buildId": "v6.8.1-20260729-unified-reservations",
   "buildDate": "2026-07-29",
-  "cacheName": "ivtc-v6.8.0-reservation-reliability",
-  "release": "Reservation Reliability",
+  "cacheName": "ivtc-v6.8.1-unified-reservations",
+  "release": "Unified Reservations",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "reservation-reliability"
+  "label": "unified-reservations"
 }
