@@ -1,4 +1,4 @@
-Current release: v6.2.4 Service Worker Retry Fix
+Current release: v6.2.5 Service Worker Retry Fix
 Build date: 2026-07-28
-Expected cache: ivtc-v6.2.4-service-worker-retry-fix
+Expected cache: ivtc-v6.2.5-robust-service-worker-install
 Primary fixes: Safari service-worker registration visibility and consistent footer version.

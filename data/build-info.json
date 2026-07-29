@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.2.4",
-  "buildId": "service-worker-registration-fix",
+  "version": "6.2.5",
+  "buildId": "robust-service-worker-install",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.2.4-service-worker-retry-fix",
-  "release": "Service Worker Retry Fix",
+  "cacheName": "ivtc-v6.2.5-robust-service-worker-install",
+  "release": "Robust Service Worker Install",
   "pageCount": 104,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "precacheEntryCount": 169
+  "precacheEntryCount": 177
 }

@@ -1,8 +1,9 @@
-const VERSION='6.2.4';
-const BUILD_ID='v6.2.4-20260728-service-worker-retry-fix';
-const CACHE='ivtc-v6.2.4-service-worker-retry-fix';
-const CORE=[
-  "./RELEASE-v6.2.4.txt",
+const VERSION='6.2.5';
+const BUILD_ID='v6.2.5-20260728-robust-service-worker-install';
+const CACHE='ivtc-v6.2.5-robust-service-worker-install';
+const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/trip.json", "./data/navigation.json"];
+const OPTIONAL = [
+  "./RELEASE-v6.2.5.txt",
   "./assets/js/backend/trip-model.js",
   "./cloud-vault.html",
   "./RELEASE-v6.1.0.txt",
@@ -10,9 +11,7 @@ const CORE=[
   "./assets/js/backend/firebase-client.js",
   "./assets/js/sync/firebase-adapter.js",
   "./backend-setup.html",
-  "./RELEASE-v6.1.0.txt",
   "./assets/js/sync/adapter.js",
-  "./assets/js/core/runtime.js",
   "./RELEASE-v5.2.0.txt",
   "./RELEASE-v5.1.0.txt",
   "./BOSPHORUS-MAP-FIX.txt",
@@ -26,7 +25,6 @@ const CORE=[
   "./TROY-PORT-PHOTO-FIX.txt",
   "./UNIFIED-JOURNEY-NAVIGATION.txt",
   "./VERSION.txt",
-  "./assets/css/app.css",
   "./assets/icons/icon.svg",
   "./assets/img/hero.svg",
   "./assets/img/visuals/basilica-cistern.svg",
@@ -39,7 +37,6 @@ const CORE=[
   "./assets/img/visuals/topkapi.svg",
   "./assets/img/visuals/troy-hero.svg",
   "./assets/img/visuals/turkish-breakfast.svg",
-  "./assets/js/app.js",
   "./assets/js/map-explorer.js",
   "./assets/js/vault.js",
   "./assets/maps/acropolis-walk.svg",
@@ -76,15 +73,10 @@ const CORE=[
   "./cruise/ship-guide.html",
   "./cruise/tomorrow.html",
   "./data/attractions.json",
-  "./data/build-info.json",
   "./data/excursions.json",
   "./data/istanbul.json",
-  "./data/navigation.json",
   "./data/search-index.json",
-  "./data/trip.json",
-  "./diagnostics.html",
   "./favorites.html",
-  "./index.html",
   "./istanbul/days/arrival.html",
   "./istanbul/days/bosphorus.html",
   "./istanbul/days/markets.html",
@@ -103,7 +95,6 @@ const CORE=[
   "./istanbul/sultanahmet/topkapi-palace.html",
   "./istanbul/to-viking.html",
   "./istanbul/visuals.html",
-  "./manifest.webmanifest",
   "./photo-credits.html",
   "./ports/athens/acropolis.html",
   "./ports/athens/day-one.html",
@@ -182,8 +173,35 @@ const CORE=[
   "./vault.html",
 ];
 
-self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+
+    // Cache files one at a time. Safari can reject an entire cache.addAll()
+    // batch because of one duplicate, redirect, or missing optional resource.
+    const urls = [...new Set([...ESSENTIAL, ...OPTIONAL])];
+    const failures = [];
+
+    for (const url of urls) {
+      try {
+        const request = new Request(url, { cache: 'reload' });
+        const response = await fetch(request);
+        if (!response || !response.ok) {
+          throw new Error(`HTTP ${response ? response.status : 'no response'}`);
+        }
+        await cache.put(request, response.clone());
+      } catch (error) {
+        failures.push({ url, message: String(error && error.message ? error.message : error) });
+      }
+    }
+
+    if (failures.length) {
+      console.warn('[IVTC service worker] Optional precache failures:', failures);
+    }
+
+    // Installation must not fail because one optional guide asset is unavailable.
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate',event=>{

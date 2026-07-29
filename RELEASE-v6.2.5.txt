@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.2.5
+Robust Service Worker Install
+
+- Removes duplicate service-worker precache entries.
+- Replaces Safari-sensitive cache.addAll() with one-at-a-time caching.
+- Allows optional asset failures without aborting service-worker installation.
+- Deduplicates the full precache list before installation.
+- Activates the new worker immediately and retains diagnostics retry support.

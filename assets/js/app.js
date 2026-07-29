@@ -79,7 +79,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'6.2.4',buildId:'v6.2.4-20260728-service-worker-retry-fix'};
+const APP_RELEASE={version:'6.2.5',buildId:'v6.2.5-20260728-robust-service-worker-install'};
 let updateRegistration=null;
 let appUpdatesPromise=null;
 function showUpdateBanner(reg){
@@ -231,7 +231,7 @@ async function diagnosticsPage(){
   if(status)status.textContent=reg?.waiting?'An update is downloaded and ready to install.':'This device reports v'+info.version+'. Use Check for update to ask GitHub Pages again.';
   if(install){install.hidden=!reg?.waiting;install.onclick=activateWaitingWorker}
 
-  const urls=['/index.html','/assets/js/app.js?v=6.2.4','/assets/js/map-explorer.js?v=6.2.4','/data/trip.json','/data/build-info.json','/diagnostics.html'];
+  const urls=['/index.html','/assets/js/app.js?v=6.2.5','/assets/js/map-explorer.js?v=6.2.5','/data/trip.json','/data/build-info.json','/diagnostics.html'];
   const results=await Promise.all(urls.map(async u=>{
     try{const r=await timeout(fetch(abs(u),{cache:'no-store'}),5000,null);return [u,Boolean(r?.ok)]}catch(e){return[u,false]}
   }));
