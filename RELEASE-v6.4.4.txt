@@ -1,0 +1,4 @@
+v6.4.4 — Direct Map Links
+
+Repairs numbered map markers by giving every marker an independent SVG hit target.
+A marker now opens its corresponding port or destination guide directly.

@@ -1,13 +1,13 @@
 {
-  "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.4.3",
-  "buildId": "v6.4.3-20260728-map-marker-tap-fix",
+  "appName": "Istanbul–Viking Travel Companion",
+  "version": "6.4.4",
+  "buildId": "v6.4.4-20260728-direct-map-links",
   "buildDate": "2026-07-28",
-  "cacheName": "ivtc-v6.4.3-map-marker-tap-fix",
-  "release": "Map Marker Tap Fix",
+  "cacheName": "ivtc-v6.4.4-direct-map-links",
+  "release": "Direct Map Links",
   "pageCount": 105,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
   "precacheEntryCount": 178,
-  "cache": "ivtc-v6.4.3-map-marker-tap-fix"
+  "cache": "ivtc-v6.4.4-direct-map-links"
 }
