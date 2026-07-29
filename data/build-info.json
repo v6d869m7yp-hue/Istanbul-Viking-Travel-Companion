@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.8.2",
-  "buildId": "v6.8.2-20260729-foundation-stability",
+  "version": "6.8.3",
+  "buildId": "v6.8.3-backend-readiness",
   "buildDate": "2026-07-29",
-  "cacheName": "ivtc-v6.8.2-foundation-stability",
-  "release": "Foundation & Stability",
+  "cacheName": "ivtc-v6.8.3-backend-readiness",
+  "release": "Backend Readiness",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "foundation-stability"
+  "label": "backend-readiness"
 }

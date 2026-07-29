@@ -1,16 +1,37 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    function signedIn() { return request.auth != null; }
-    function member(tripId) {
-      return signedIn() && firestore.exists(/databases/(default)/documents/trips/$(tripId)/members/$(request.auth.uid));
+    function signedIn() {
+      return request.auth != null;
     }
+
+    // The trip document is the source of truth for membership in this app.
+    function tripMember(tripId) {
+      return signedIn()
+        && firestore.exists(/databases/(default)/documents/trips/$(tripId))
+        && request.auth.uid in firestore.get(/databases/(default)/documents/trips/$(tripId)).data.memberUids;
+    }
+
+    // v6.8.3 backend-readiness probe. The app writes a tiny harmless object,
+    // reads its metadata, then deletes it. No Vault content uses this path.
+    match /trips/{tripId}/readiness/{uid}/{fileName} {
+      allow read, delete: if tripMember(tripId) && request.auth.uid == uid;
+      allow create, update: if tripMember(tripId)
+        && request.auth.uid == uid
+        && request.resource.size < 4096
+        && request.resource.contentType == 'application/octet-stream';
+    }
+
+    // Reserved for a later release. These rules do not turn on Vault sync.
     match /trips/{tripId}/encrypted/{fileName} {
-      allow read: if member(tripId);
-      allow write: if member(tripId)
+      allow read: if tripMember(tripId);
+      allow write: if tripMember(tripId)
         && request.resource.size < 10 * 1024 * 1024
         && request.resource.contentType == 'application/octet-stream';
     }
-    match /{allPaths=**} { allow read, write: if false; }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
   }
 }

@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.8.2
+Istanbul–Viking Travel Companion v6.8.3
 Foundation & Stability
 
 - Freezes v6.8.1 behavior as the functional baseline.
