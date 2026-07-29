@@ -1,0 +1,9 @@
+Istanbul–Viking Travel Companion v6.9.2
+
+Device Registry & Sync History
+
+- Preserves the tested v6.9.1 encrypted snapshot sync.
+- Adds an encrypted device registry with last-seen, app-version, and completed-sync details.
+- Adds a recent sync-history panel inside Share & Sync.
+- Adds device name and app version to non-sensitive Firestore sync metadata.
+- Does not enable remote device revocation or change the Vault encryption/backup format.

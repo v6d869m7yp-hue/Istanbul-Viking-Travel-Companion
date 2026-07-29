@@ -1,5 +1,5 @@
-Istanbul–Viking Travel Companion v6.9.1
-Sync Diagnostics & Timeout Safety
+Istanbul–Viking Travel Companion v6.9.2
+Device Registry & Sync History
 
 - Adds visible step-by-step encrypted Vault sync progress.
 - Adds timeouts for Firebase connection, metadata, upload, download, and finalization.

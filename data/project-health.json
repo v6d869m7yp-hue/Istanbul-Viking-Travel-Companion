@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "6.9.1",
+  "release": "6.9.2",
   "baseline": "6.8.1",
   "status": "backend-unification",
   "components": [
@@ -52,5 +52,5 @@
     "Running build identifiers match"
   ],
   "milestone": "Encrypted Vault Sync \u2014 Stage 1",
-  "label": "sync-diagnostics-timeout-safety"
+  "label": "device-registry-sync-history"
 }
