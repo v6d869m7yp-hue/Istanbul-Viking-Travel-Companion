@@ -1,0 +1,3 @@
+Istanbul–Viking Travel Companion v6.8.4 — Unified Backend Session
+
+Makes every Firebase page wait for the same persisted authentication state before reporting status. Backend Readiness now uses the already-signed-in session from My Trips and Reservations. No Vault, reservation, map, or encryption data structures are changed.

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "release": "6.8.3",
+  "release": "6.8.4",
   "baseline": "6.8.1",
-  "status": "stabilization",
+  "status": "backend-unification",
   "components": [
     {
       "name": "Firebase Authentication",
       "state": "working",
-      "verification": "Manual sign-in test"
+      "verification": "Shared persisted session on My Trips, Reservations, and Backend Readiness"
     },
     {
       "name": "Firestore Trips",

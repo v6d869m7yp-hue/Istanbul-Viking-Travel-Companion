@@ -1,16 +1,16 @@
-const VERSION='6.8.3';
-const BUILD_ID='v6.8.3-backend-readiness';
-const CACHE='ivtc-v6.8.3-backend-readiness';
+const VERSION='6.8.4';
+const BUILD_ID='v6.8.4-unified-backend-session';
+const CACHE='ivtc-v6.8.4-unified-backend-session';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
-  "./RELEASE-v6.8.3.txt",
+  "./RELEASE-v6.8.4.txt",
   "./docs/PROJECT-ROADMAP.md",
   "./docs/REGRESSION-CHECKLIST.md",
   "./docs/RELEASE-PROCESS.md",
   "./docs/DEVELOPER-GUIDE.md",
-  "./RELEASE-v6.8.3.txt",
+  "./RELEASE-v6.8.4.txt",
   "./assets/js/backend/reservation-model.js",
-  "./RELEASE-v6.8.3.txt",
+  "./RELEASE-v6.8.4.txt",
   "./RELEASE-v6.4.4.txt",
   "./my-trips.html",
   "./assets/js/backend/trip-model.js",

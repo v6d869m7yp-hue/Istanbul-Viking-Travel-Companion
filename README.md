@@ -1,4 +1,4 @@
-# Istanbul–Viking Travel Companion v6.8.3
+# Istanbul–Viking Travel Companion v6.8.4
 
 Foundation & Stability release built from the user-confirmed v6.8.1 baseline.
 

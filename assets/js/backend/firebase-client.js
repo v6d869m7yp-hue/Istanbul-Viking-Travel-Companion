@@ -36,7 +36,23 @@ async function initialize(){
    catch{state.db=fsSdk.getFirestore(state.app);}
    state.storage=storageSdk.getStorage(state.app);
    state.api={...authSdk,...fsSdk,...storageSdk};state.configured=true;state.error=null;
-   authSdk.onAuthStateChanged(state.auth,user=>{state.user=user;state.connected=!!user;state.authReady=true;emit();});
+
+   // Firebase restores persisted authentication asynchronously. Do not report the
+   // backend as signed out until the first authoritative auth state has arrived.
+   await new Promise(resolve=>{
+    let settled=false;
+    const finish=(user)=>{
+     state.user=user||null;
+     state.connected=!!user;
+     state.authReady=true;
+     emit();
+     if(!settled){settled=true;resolve();}
+    };
+    authSdk.onAuthStateChanged(state.auth,finish,error=>{
+     state.error=error?.message||String(error);
+     finish(null);
+    });
+   });
    return publicState();
   }catch(error){state.error=error?.message||String(error);state.authReady=true;emit();return publicState();}
  })();return state.initializing;

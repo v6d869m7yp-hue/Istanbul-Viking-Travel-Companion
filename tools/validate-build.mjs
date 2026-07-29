@@ -21,7 +21,7 @@ for(const name of ['data/trip.json','data/navigation.json','data/build-info.json
 }
 
 const required=[
-  'VERSION.txt','package.json','service-worker.js','RELEASE-v6.8.2.txt',
+  'VERSION.txt','package.json','service-worker.js',`RELEASE-v${fs.readFileSync(path.join(root,'VERSION.txt'),'utf8').trim()}.txt`,
   'docs/PROJECT-ROADMAP.md','docs/REGRESSION-CHECKLIST.md','docs/RELEASE-PROCESS.md','docs/DEVELOPER-GUIDE.md'
 ];
 for(const name of required) if(!fs.existsSync(path.join(root,name))) failures.push(`required file missing: ${name}`);

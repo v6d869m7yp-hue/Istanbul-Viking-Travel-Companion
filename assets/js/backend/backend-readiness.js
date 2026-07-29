@@ -28,7 +28,7 @@ async function inspect(){
   }
   return {
     config:{ok:status.configured,text:status.configured?'Firebase browser configuration loaded.':status.error||'Firebase is not configured.'},
-    auth:{ok:status.connected,text:status.connected?`Signed in as ${status.user?.email||status.user?.uid}.`:'Sign in on Trip Cloud Connection first.'},
+    auth:{ok:status.connected,text:status.connected?`Shared Firebase session restored: ${status.user?.email||status.user?.uid}.`:'Sign in on Trip Cloud Connection first.'},
     trip:{ok:!!trip.id,text:trip.id?`${trip.label||'Active trip'} (${trip.id})`:'Choose an active trip in My Trips.'},
     firestore,
     storage:{ok:!!s?.storage,text:s?.storage?'Storage SDK initialized; rules test has not run yet.':'Storage SDK did not initialize.'}
@@ -46,7 +46,7 @@ async function testStorage(){
   const ref=s.api.ref(s.storage,path);
   const bytes=crypto.getRandomValues(new Uint8Array(32));
   try{
-    await s.api.uploadBytes(ref,bytes,{contentType:'application/octet-stream',customMetadata:{purpose:'ivtc-backend-readiness',release:'6.8.3'}});
+    await s.api.uploadBytes(ref,bytes,{contentType:'application/octet-stream',customMetadata:{purpose:'ivtc-backend-readiness',release:'6.8.4'}});
     const meta=await s.api.getMetadata(ref);
     await s.api.deleteObject(ref);
     return {ok:true,text:`Upload, metadata read, and cleanup passed (${meta.size} bytes). No Vault data was uploaded.`,path};

@@ -1,3 +1,0 @@
-Istanbul–Viking Travel Companion v6.8.3 — Backend Readiness
-
-Adds a non-destructive Firebase Storage readiness test, exact in-app setup instructions, and corrected trip-membership Storage rules. Automatic Vault sync remains disabled.
