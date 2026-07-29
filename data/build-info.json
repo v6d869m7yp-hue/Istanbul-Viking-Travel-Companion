@@ -1,9 +1,9 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.8.4",
-  "buildId": "v6.8.4-unified-backend-session",
+  "version": "6.9.0",
+  "buildId": "v6.9.0-encrypted-vault-sync",
   "buildDate": "2026-07-29",
-  "cacheName": "ivtc-v6.8.4-unified-backend-session",
+  "cacheName": "ivtc-v6.9.0-encrypted-vault-sync",
   "release": "Unified Backend Session",
   "pageCount": 106,
   "mapAssetCount": 27,

@@ -1,0 +1,6 @@
+Istanbul–Viking Travel Companion v6.9.0
+Encrypted Vault Sync — Stage 1
+
+Adds device-encrypted Firebase Storage snapshots, automatic synchronization while the Vault is unlocked, manual Sync now and Download latest controls, and non-destructive merge behavior. The Vault password and readable key remain on the device.
+
+Important: A second device must first restore the same encrypted Vault backup so it possesses the same master key. Keep the independent encrypted backup in iCloud Drive.
