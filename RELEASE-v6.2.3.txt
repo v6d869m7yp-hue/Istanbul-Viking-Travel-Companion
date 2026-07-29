@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v6.2.3
+Service Worker Registration Fix
+
+- Diagnostics actively starts service-worker registration before reporting status.
+- Service-worker setup is shared through one promise to prevent duplicate Safari registrations.
+- Diagnostics reports the active script and registration scope.
+- Footer version now follows the running JavaScript release rather than cached trip data.
+- Retains the resilient Diagnostics startup behavior from v6.2.2.

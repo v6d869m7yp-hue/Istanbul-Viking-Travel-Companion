@@ -1,4 +1,4 @@
-# v6.2.2 Diagnostics Startup Fix
+# v6.2.3 Service Worker Registration Fix
 
 Diagnostics now initializes before the shared app shell and service-worker startup, so its buttons remain functional even when Safari stalls during another startup operation.
 
