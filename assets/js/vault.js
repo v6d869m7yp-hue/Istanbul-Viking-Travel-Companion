@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.1.1';
+const APP_VERSION='8.1.2';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -121,15 +121,14 @@ async function cloudContext(){
  const state=await window.IVTC.firebase.initialize();
  const s=window.IVTC.firebase._state;
  if(!state.user||!s.storage||!s.db)throw new Error('Sign in to Firebase first.');
- let trip=null;
- if(window.IVTC.tripCloud?.resolveCanonicalTrip)trip=await window.IVTC.tripCloud.resolveCanonicalTrip();
- let tripId=trip?.id||localStorage.getItem('ivtc.activeTripId');
+ // The canonical trip was already selected in My Trips. Do not re-query
+ // Firestore during Vault sync; Safari can leave that verification pending.
+ const selected=window.IVTC.tripCloud?.selectedTrip?.()||{};
+ const tripId=selected.id||localStorage.getItem('ivtc.activeTripId');
  if(!tripId)throw new Error('Choose an active trip in My Trips first.');
- const check=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',tripId)),'Active trip verification',7000);
- if(!check.exists())throw new Error('The selected trip is not the cloud trip document. Open My Trips once, then try Sync now again.');
- const canonical={id:check.id,...check.data()};
- localStorage.setItem('ivtc.activeTripId',canonical.id);localStorage.setItem('ivtc.activeTripLabel',canonical.label||'Selected trip');
- return {s,tripId:canonical.id,path:`trips/${canonical.id}/encrypted/travel-vault.ivtcsync`};
+ const label=selected.label||localStorage.getItem('ivtc.activeTripLabel')||'Selected trip';
+ localStorage.setItem('ivtc.activeTripId',tripId);localStorage.setItem('ivtc.activeTripLabel',label);
+ return {s,tripId,path:`trips/${tripId}/encrypted/travel-vault.ivtcsync`};
 }
 function mergeById(local=[],incoming=[]){const map=new Map(local.map(x=>[x.id,x]));for(const item of incoming){const old=map.get(item.id);if(!old||String(item.updatedAt||item.at||'')>String(old.updatedAt||old.at||''))map.set(item.id,item)}return [...map.values()]}
 function mergeRemoteData(remote){
