@@ -12,7 +12,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.1.7';
+const APP_VERSION='8.1.8';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null,candidates:[]};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -183,10 +183,20 @@ async function cloudSyncNow(reason='manual'){
    const storageRef=ctx.s.api.ref(ctx.s.storage,ctx.path);
    await timeout(ctx.s.api.uploadBytes(storageRef,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}}),'Encrypted snapshot Storage upload',30000);
   }catch(error){storageState='bridge-only';storageError=error?.message||String(error);console.warn('Storage upload failed; continuing with encrypted Firestore bridge.',error)}
-  const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);ensureSyncRun(run);
-  setSyncStage(3,'done',`${blob.size.toLocaleString()} bytes · ${storageState==='uploaded'?'Storage + ':''}Firestore bridge ${firestoreChunkCount} chunk${firestoreChunkCount===1?'':'s'}`);
+  let firestoreChunkCount=0,firestoreBridgeError=null;
+  try{
+   firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);ensureSyncRun(run);
+  }catch(error){
+   firestoreBridgeError=error?.message||String(error);
+   console.warn('Firestore Vault bridge upload unavailable; continuing when Storage succeeded.',error);
+   if(storageState!=='uploaded')throw new Error(`Encrypted Vault could not be published. Storage: ${storageError||'unavailable'}. Firestore bridge: ${firestoreBridgeError}`);
+  }
+  const transportNote=storageState==='uploaded'
+   ? `${blob.size.toLocaleString()} bytes · Storage${firestoreChunkCount?` + Firestore bridge ${firestoreChunkCount} chunk${firestoreChunkCount===1?'':'s'}`:' · bridge deferred'}`
+   : `${blob.size.toLocaleString()} bytes · Firestore bridge ${firestoreChunkCount} chunk${firestoreChunkCount===1?'':'s'}`;
+  setSyncStage(3,'done',transportNote);
   setSyncStage(4,'active');cloudSync.message='Writing sync metadata…';
-  const syncMeta={storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()};
+  const syncMeta={storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeError,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()};
   await timeout(ctx.s.api.setDoc(ref,syncMeta,{merge:true}),'Sync metadata write',20000);ensureSyncRun(run);
   await publishVaultLocator(ctx,syncMeta);ensureSyncRun(run);setSyncStage(4,'done','metadata + cross-device locator');
   setSyncStage(5,'active');data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];addSyncHistory('upload','completed',reason==='auto'?'Automatic upload-first sync':'Manual upload-first sync',blob.size);await timeout(persist({skipCloud:true}),'Local sync finalization',15000);ensureSyncRun(run);setSyncStage(5,'done');

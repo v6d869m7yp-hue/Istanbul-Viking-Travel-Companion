@@ -1,4 +1,4 @@
-Release v8.1.7 — Multi-copy Vault recovery
+Release v8.1.8 — Multi-copy Vault recovery
 
 - Discovers all accessible encrypted Vault envelopes instead of accepting the first trip match.
 - Sorts cloud copies by update time and revision.

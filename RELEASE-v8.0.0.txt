@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v8.1.7
+Istanbul–Viking Travel Companion v8.1.8
 
 Unified Trip Repository
 - Adds one local-first repository for active trip and reservation access.
