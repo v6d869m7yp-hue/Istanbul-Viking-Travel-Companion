@@ -1,0 +1,8 @@
+Istanbul · Viking Travel Companion v8.1.1
+
+Duplicate Trip Cleanup
+
+- Replaces the failed merge workflow with a focused duplicate deletion action.
+- Verifies the currently active canonical Firestore trip before deleting anything.
+- Deletes only the non-active extra trip and preserves the canonical trip ID, membership, reservations, and Vault references.
+- Removes a local-only duplicate without requiring a Firestore document.

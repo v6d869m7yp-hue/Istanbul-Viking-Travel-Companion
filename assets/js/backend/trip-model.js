@@ -63,6 +63,26 @@ async function bootstrapPackagedTrip(packaged){
 async function updateTrip(id,changes){const s=requireState();if(!id)throw new Error('Trip ID is required.');const old=readShadow().find(t=>t.id===id)||{id};upsertShadow({...old,...changes,updatedAt:new Date().toISOString()});s.api.updateDoc(s.api.doc(s.db,'trips',id),{...changes,updatedAt:s.api.serverTimestamp()}).catch(()=>{});}
 async function deleteTrip(id){const s=requireState();if(!id)throw new Error('Trip ID is required.');removeShadow(id);s.api.deleteDoc(s.api.doc(s.db,'trips',id)).catch(()=>{});if(localStorage.getItem('ivtc.activeTripId')===id){localStorage.removeItem('ivtc.activeTripId');localStorage.removeItem('ivtc.activeTripLabel');}}
 
+
+async function deleteDuplicateTrip(duplicateId,canonicalId){
+ const s=requireState();
+ if(!duplicateId||!canonicalId)throw new Error('Both trip IDs are required.');
+ if(duplicateId===canonicalId)throw new Error('The active canonical trip cannot be deleted.');
+ const canonical=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',canonicalId)),5000);
+ if(!canonical.value?.exists())throw canonical.error||new Error('The canonical active trip could not be verified in Firestore.');
+ const c={id:canonical.value.id,...canonical.value.data(),cloudState:'synced'};
+ if(c.status==='archived')throw new Error('The canonical trip is archived. Restore it before cleanup.');
+ const duplicate=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',duplicateId)),3500);
+ if(duplicate.value?.exists()){
+  const removed=await timeoutResult(s.api.deleteDoc(s.api.doc(s.db,'trips',duplicateId)),7000);
+  if(removed.timeout)throw new Error('Deleting the duplicate cloud trip timed out.');
+  if(removed.error)throw removed.error;
+ }
+ removeShadow(duplicateId);
+ upsertShadow(c);selectTrip(c);
+ return {deletedId:duplicateId,canonical:c,cloudDeleted:!!duplicate.value?.exists()};
+}
+
 async function mergeTripsInto(preferredId,otherIds=[]){
  const s=requireState();
  if(!preferredId)throw new Error('Choose the trip to keep.');
@@ -127,5 +147,5 @@ async function mergeTripsInto(preferredId,otherIds=[]){
 async function duplicateTrip(id){const source=(await listTrips()).find(t=>t.id===id);if(!source)throw new Error('Trip not found.');return createTrip({label:`${source.label||'Trip'} copy`,startDate:source.startDate||null,endDate:source.endDate||null,travelers:source.travelers||1,status:'active',source:'duplicate',itinerary:source.itinerary||null});}
 function selectTrip(trip){if(!trip?.id)throw new Error('Trip is required.');localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label||'Selected trip');window.dispatchEvent(new CustomEvent('ivtc:trip-selected',{detail:trip}));}
 function selectedTrip(){return {id:localStorage.getItem('ivtc.activeTripId'),label:localStorage.getItem('ivtc.activeTripLabel')};}
-window.IVTC.tripCloud=Object.freeze({createTrip,listTrips,resolveCanonicalTrip,bootstrapPackagedTrip,updateTrip,deleteTrip,duplicateTrip,mergeTripsInto,selectTrip,selectedTrip});
+window.IVTC.tripCloud=Object.freeze({createTrip,listTrips,resolveCanonicalTrip,bootstrapPackagedTrip,updateTrip,deleteTrip,duplicateTrip,mergeTripsInto,deleteDuplicateTrip,selectTrip,selectedTrip});
 })();
