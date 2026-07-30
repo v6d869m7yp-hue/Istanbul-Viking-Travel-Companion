@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 window.IVTC=window.IVTC||{};
-const VERSION='8.1.8';
+const VERSION='8.2.0';
 async function packagedTrip(){
  const r=await fetch('data/trip.json',{cache:'no-store'});
  if(!r.ok)throw new Error('Unable to load the packaged Istanbul itinerary.');

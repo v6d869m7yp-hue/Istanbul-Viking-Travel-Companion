@@ -1,0 +1,7 @@
+Release v8.2.0 — Whole-Trip Sync
+
+- Synchronizes the canonical trip profile, dates, travelers and full itinerary through Firestore.
+- Synchronizes guide favorites across Mac, iPad and iPhone.
+- Preserves the existing cloud reservation model and encrypted Travel Vault.
+- Adds a dedicated Whole-Trip Sync page with upload, download and audit controls.
+- Adds nonblocking background sync after favorite changes and when connectivity returns.

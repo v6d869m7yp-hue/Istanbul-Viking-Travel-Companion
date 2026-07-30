@@ -1,6 +1,6 @@
-const VERSION='8.1.8';
-const BUILD_ID='v8.1.8-cloud-vault-locator';
-const CACHE='ivtc-v8.1.8-cloud-vault-locator';
+const VERSION='8.2.0';
+const BUILD_ID='v8.2.0-whole-trip-sync';
+const CACHE='ivtc-v8.2.0-whole-trip-sync';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
@@ -14,6 +14,8 @@ const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
   "./RELEASE-v6.4.4.txt",
   "./my-trips.html",
+  "./trip-sync.html",
+  "./assets/js/backend/whole-trip-sync.js",
   "./assets/js/backend/trip-model.js",
   "./cloud-vault.html",
   "./RELEASE-v6.1.0.txt",

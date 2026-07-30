@@ -46,6 +46,11 @@
       "key": "vault"
     },
     {
+      "label": "Trip Sync",
+      "href": "/trip-sync.html",
+      "key": "tripsync"
+    },
+    {
       "label": "Backend Setup",
       "href": "/backend-setup.html",
       "key": "backend"

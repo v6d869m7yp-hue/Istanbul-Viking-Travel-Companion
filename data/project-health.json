@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "release": "8.1.8",
+  "release": "8.2.0",
   "baseline": "6.9.2",
-  "status": "cloud-trip-bootstrap",
+  "status": "whole-trip-sync",
   "components": [
     {
       "name": "Firebase Authentication",
@@ -40,9 +40,9 @@
       "verification": "New v7.2.3 cache identity prevents stale v7.0.x assets"
     },
     {
-      "name": "Whole-Trip Sync Experiment",
-      "state": "planned",
-      "verification": "Removed from this recovery release and deferred for isolated development"
+      "name": "Whole-Trip Sync",
+      "state": "working",
+      "verification": "Canonical trip profile, itinerary and favorites synchronize through Firestore; reservations remain cloud-backed"
     },
     {
       "name": "Cloud Trip Bootstrap",
@@ -52,11 +52,11 @@
   ],
   "releaseGates": [
     "Automated build validation passes",
-    "My Trips shows the existing trip",
-    "Cloud Reservations shows six records",
-    "Maps, Vault and Vault Sync regression checks pass",
-    "Rollback ZIP retained"
+    "Whole-Trip Sync audit reads the canonical trip",
+    "Favorites synchronize across devices",
+    "Cloud Reservations shows the canonical records",
+    "Vault sync regression checks pass"
   ],
-  "milestone": "Automatically create the packaged journey for first-time cloud users",
-  "label": "cloud-trip-bootstrap"
+  "milestone": "Synchronize the canonical trip, itinerary, favorites and cloud reservations across devices",
+  "label": "whole-trip-sync"
 }

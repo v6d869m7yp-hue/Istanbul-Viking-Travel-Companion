@@ -1,3 +1,3 @@
-Release v8.1.8 — Direct Vault Trip ID
+Release v8.2.0 — Direct Vault Trip ID
 
 Vault sync now uses the already selected canonical trip ID without performing a blocking Firestore verification request. This prevents Safari/iPad sync timeouts while preserving the canonical Storage and Firestore paths.
