@@ -1,6 +1,6 @@
-const VERSION='6.9.2';
-const BUILD_ID='v6.9.2-device-registry-sync-history';
-const CACHE='ivtc-v6.9.2-device-registry-sync-history';
+const VERSION='7.0.0';
+const BUILD_ID='v7.0.0-device-registry-sync-history';
+const CACHE='ivtc-v7.0.0-device-registry-sync-history';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",

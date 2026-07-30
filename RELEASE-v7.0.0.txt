@@ -1,0 +1,23 @@
+Istanbul–Viking–Venice Travel Companion v7.0.0
+Whole-Trip Sync Foundation
+
+Adds a trip-centered synchronization model for reservations, favorites, activity, and the encrypted Vault.
+
+Working in this release:
+- Existing trip-scoped cloud reservations remain unchanged.
+- Favorites are offline-first and synchronize to trips/{tripId}/favorites when signed in.
+- Offline favorite changes queue locally and flush after reconnecting.
+- Activity records are append-only under trips/{tripId}/activity.
+- Whole-Trip Sync status and manual queue flush page.
+- Firestore rules for favorites, notes, planner, and activity.
+- Existing encrypted Vault sync remains unchanged and trip-scoped.
+
+Not included yet:
+- Shared-trip invitations.
+- Automatic background sync while the app is closed.
+- Remote device revocation.
+- Full notes and planner user interfaces.
+- Automatic conflict-resolution UI for simultaneous edits.
+
+Deployment note:
+Publish the included firestore.rules before relying on cloud favorites.

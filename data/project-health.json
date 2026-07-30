@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "6.9.2",
+  "release": "7.0.0",
   "baseline": "6.8.1",
   "status": "backend-unification",
   "components": [

@@ -1,9 +1,9 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "6.9.2",
-  "buildId": "v6.9.2-device-registry-sync-history",
+  "version": "7.0.0",
+  "buildId": "v7.0.0-whole-trip-sync-foundation",
   "buildDate": "2026-07-29",
-  "cacheName": "ivtc-v6.9.2-device-registry-sync-history",
+  "cacheName": "ivtc-v7.0.0",
   "release": "Device Registry & Sync History",
   "pageCount": 106,
   "mapAssetCount": 27,

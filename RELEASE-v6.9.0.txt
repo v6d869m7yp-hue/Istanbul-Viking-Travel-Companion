@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v6.9.2
+Istanbul–Viking Travel Companion v7.0.0
 Encrypted Vault Sync — Stage 1
 
 Adds device-encrypted Firebase Storage snapshots, automatic synchronization while the Vault is unlocked, manual Sync now and Download latest controls, and non-destructive merge behavior. The Vault password and readable key remain on the device.
