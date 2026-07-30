@@ -1,4 +1,4 @@
-Release v8.0.3 — Canonical Trip ID Repair
+Release v8.0.4 — Canonical Trip ID Repair
 
 - Resolves the active trip to the actual Firestore document before Vault sync.
 - Replaces stale deterministic local trip IDs with the existing cloud trip ID.

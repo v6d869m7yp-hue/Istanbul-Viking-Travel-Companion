@@ -62,8 +62,55 @@ async function bootstrapPackagedTrip(packaged){
 }
 async function updateTrip(id,changes){const s=requireState();if(!id)throw new Error('Trip ID is required.');const old=readShadow().find(t=>t.id===id)||{id};upsertShadow({...old,...changes,updatedAt:new Date().toISOString()});s.api.updateDoc(s.api.doc(s.db,'trips',id),{...changes,updatedAt:s.api.serverTimestamp()}).catch(()=>{});}
 async function deleteTrip(id){const s=requireState();if(!id)throw new Error('Trip ID is required.');removeShadow(id);s.api.deleteDoc(s.api.doc(s.db,'trips',id)).catch(()=>{});if(localStorage.getItem('ivtc.activeTripId')===id){localStorage.removeItem('ivtc.activeTripId');localStorage.removeItem('ivtc.activeTripLabel');}}
+
+async function mergeTripsInto(targetId,sourceIds=[]){
+ const s=requireState();
+ if(!targetId)throw new Error('Choose the trip to keep.');
+ const unique=[...new Set(sourceIds.filter(id=>id&&id!==targetId))];
+ if(!unique.length)throw new Error('No other trips were selected to merge.');
+ const targetRef=s.api.doc(s.db,'trips',targetId);
+ const targetSnap=await timeoutResult(s.api.getDoc(targetRef),5000);
+ if(!targetSnap.value?.exists())throw new Error('The destination trip could not be verified in Firestore.');
+ const target={id:targetId,...targetSnap.value.data()};
+ const merged={...target};
+ const maxTravelers=[Number(target.travelers||0)];
+ let copiedReservations=0,copiedVaultDocs=0;
+ for(const sourceId of unique){
+  const sourceSnap=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId)),5000);
+  if(!sourceSnap.value?.exists())continue;
+  const source={id:sourceId,...sourceSnap.value.data()};
+  maxTravelers.push(Number(source.travelers||0));
+  if(!merged.startDate||String(source.startDate||'')<String(merged.startDate))merged.startDate=source.startDate||merged.startDate;
+  if(!merged.endDate||String(source.endDate||'')>String(merged.endDate))merged.endDate=source.endDate||merged.endDate;
+  if(!merged.itinerary&&source.itinerary)merged.itinerary=source.itinerary;
+  if(!merged.packagedVersion&&source.packagedVersion)merged.packagedVersion=source.packagedVersion;
+  const reservations=await timeoutResult(s.api.getDocs(s.api.collection(s.db,'trips',sourceId,'reservations')),7000);
+  if(reservations.value){
+   const batch=s.api.writeBatch(s.db);
+   reservations.value.docs.forEach(d=>{batch.set(s.api.doc(s.db,'trips',targetId,'reservations',d.id),{...d.data(),tripId:targetId,updatedAt:s.api.serverTimestamp()},{merge:true});copiedReservations++;});
+   if(copiedReservations)await timeoutResult(batch.commit(),7000);
+  }
+  const envelope=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId,'envelopes','travel-vault')),5000);
+  if(envelope.value?.exists()&&Number(envelope.value.data().firestoreChunkCount||0)>0){
+   const count=Number(envelope.value.data().firestoreChunkCount||0),batch=s.api.writeBatch(s.db);
+   for(let i=0;i<count;i++){
+    const chunk=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId,'envelopes','travel-vault','chunks',String(i))),5000);
+    if(chunk.value?.exists()){batch.set(s.api.doc(s.db,'trips',targetId,'envelopes','travel-vault','chunks',String(i)),chunk.value.data(),{merge:true});copiedVaultDocs++;}
+   }
+   batch.set(s.api.doc(s.db,'trips',targetId,'envelopes','travel-vault'),{...envelope.value.data(),storagePath:`trips/${targetId}/encrypted/travel-vault.itvcsync`,mergedFrom:sourceId,updatedAt:s.api.serverTimestamp()},{merge:true});
+   await timeoutResult(batch.commit(),7000);
+  }
+  await s.api.setDoc(s.api.doc(s.db,'trips',sourceId),{status:'archived',mergedInto:targetId,updatedAt:s.api.serverTimestamp()},{merge:true});
+  upsertShadow({...source,status:'archived',mergedInto:targetId,updatedAt:new Date().toISOString()});
+ }
+ merged.travelers=Math.max(...maxTravelers,1);merged.status='active';merged.updatedAt=new Date().toISOString();
+ await s.api.setDoc(targetRef,{label:merged.label||'Istanbul · Viking · Venice & Northern Italy 2026',startDate:merged.startDate||null,endDate:merged.endDate||null,travelers:merged.travelers,status:'active',itinerary:merged.itinerary||null,packagedVersion:merged.packagedVersion||null,updatedAt:s.api.serverTimestamp()},{merge:true});
+ upsertShadow(merged);selectTrip(merged);
+ return {trip:merged,copiedReservations,copiedVaultDocs,archived:unique.length};
+}
+
 async function duplicateTrip(id){const source=(await listTrips()).find(t=>t.id===id);if(!source)throw new Error('Trip not found.');return createTrip({label:`${source.label||'Trip'} copy`,startDate:source.startDate||null,endDate:source.endDate||null,travelers:source.travelers||1,status:'active',source:'duplicate',itinerary:source.itinerary||null});}
 function selectTrip(trip){if(!trip?.id)throw new Error('Trip is required.');localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label||'Selected trip');window.dispatchEvent(new CustomEvent('ivtc:trip-selected',{detail:trip}));}
 function selectedTrip(){return {id:localStorage.getItem('ivtc.activeTripId'),label:localStorage.getItem('ivtc.activeTripLabel')};}
-window.IVTC.tripCloud=Object.freeze({createTrip,listTrips,resolveCanonicalTrip,bootstrapPackagedTrip,updateTrip,deleteTrip,duplicateTrip,selectTrip,selectedTrip});
+window.IVTC.tripCloud=Object.freeze({createTrip,listTrips,resolveCanonicalTrip,bootstrapPackagedTrip,updateTrip,deleteTrip,duplicateTrip,mergeTripsInto,selectTrip,selectedTrip});
 })();
