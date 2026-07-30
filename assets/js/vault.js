@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='7.2.3';
+const APP_VERSION='7.2.5';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -156,14 +156,22 @@ async function discoverCloudVault(){
  cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};renderSetup();
  try{
   if(!window.IVTC?.firebase)throw new Error('Firebase components are unavailable.');
-  const state=await timeout(window.IVTC.firebase.initialize(),'Firebase sign-in check',20000),s=window.IVTC.firebase._state;
+  const state=await timeout(window.IVTC.firebase.initialize(),'Firebase sign-in check',12000),s=window.IVTC.firebase._state;
   if(!state.user||!s.db||!s.storage){cloudRestore={state:'signedout',message:'Sign in to Firebase first.',candidate:null};renderSetup();return;}
-  const candidates=[];const activeId=localStorage.getItem('ivtc.activeTripId');if(activeId)candidates.push({id:activeId,label:localStorage.getItem('ivtc.activeTripLabel')||'Active trip'});
-  const q=s.api.query(s.api.collection(s.db,'trips'),s.api.where('memberUids','array-contains',s.user.uid));
-  const trips=await timeout(s.api.getDocs(q),'Cloud trip lookup',20000);
-  for(const d of trips.docs){if(!candidates.some(x=>x.id===d.id))candidates.push({id:d.id,label:d.data()?.label||'Cloud trip'});}
-  for(const trip of candidates){const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',trip.id,'envelopes','travel-vault')),'Vault metadata lookup',15000);if(snap.exists()){const meta=snap.data();if(meta?.storagePath){localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label);cloudRestore={state:'found',message:'',candidate:{tripId:trip.id,tripLabel:trip.label,meta}};renderSetup();return;}}}
-  cloudRestore={state:'none',message:'No encrypted cloud Vault was found.',candidate:null};renderSetup();
+  const candidates=[];
+  const activeId=localStorage.getItem('ivtc.activeTripId');if(activeId)candidates.push({id:activeId,label:localStorage.getItem('ivtc.activeTripLabel')||'Active trip'});
+  const deterministicId=`istanbul-viking-2026-${s.user.uid}`;if(!candidates.some(x=>x.id===deterministicId))candidates.push({id:deterministicId,label:'Istanbul · Viking · Venice & Northern Italy 2026'});
+  // Check known IDs first. This avoids the Safari Firestore collection-query hang seen on iPad.
+  for(const trip of candidates){
+   try{const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',trip.id,'envelopes','travel-vault')),'Vault metadata lookup',6000);if(snap.exists()){const meta=snap.data();if(meta?.storagePath){localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label);cloudRestore={state:'found',message:'',candidate:{tripId:trip.id,tripLabel:trip.label,meta}};renderSetup();return;}}}catch{}
+  }
+  // A short best-effort query catches older, non-deterministic trip IDs without blocking setup.
+  try{
+   const q=s.api.query(s.api.collection(s.db,'trips'),s.api.where('memberUids','array-contains',s.user.uid));
+   const trips=await timeout(s.api.getDocs(q),'Cloud trip lookup',5000);
+   for(const d of trips.docs){const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',d.id,'envelopes','travel-vault')),'Vault metadata lookup',5000);if(snap.exists()&&snap.data()?.storagePath){const label=d.data()?.label||'Cloud trip';localStorage.setItem('ivtc.activeTripId',d.id);localStorage.setItem('ivtc.activeTripLabel',label);cloudRestore={state:'found',message:'',candidate:{tripId:d.id,tripLabel:label,meta:snap.data()}};renderSetup();return;}}
+  }catch{}
+  cloudRestore={state:'none',message:'No uploaded encrypted Vault was found. On the Mac, open Travel Vault and use “Sync now” after the Istanbul trip appears. Then tap “Check cloud again” here.',candidate:null};renderSetup();
  }catch(e){cloudRestore={state:'error',message:e?.message||'The cloud Vault check could not be completed.',candidate:null};renderSetup();}
 }
 async function restoreCloudVault(){

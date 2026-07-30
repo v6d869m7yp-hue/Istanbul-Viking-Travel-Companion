@@ -1,0 +1,7 @@
+Release v7.2.5 — Firestore Safari Recovery
+
+- Removes blocking Firestore cache reads that could hang indefinitely in Safari.
+- Creates and displays the packaged Istanbul trip from a durable local shadow immediately.
+- Continues Firestore writes in the background without trapping the Refresh button.
+- Checks deterministic and active trip IDs directly when discovering an encrypted Vault.
+- Explains when the Mac Vault has not yet been uploaded and how to trigger it.

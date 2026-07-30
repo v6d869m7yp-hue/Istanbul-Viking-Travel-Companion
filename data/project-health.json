@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "7.2.4",
+  "release": "7.2.5",
   "baseline": "6.9.2",
   "status": "cloud-trip-bootstrap",
   "components": [
