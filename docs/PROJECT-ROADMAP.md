@@ -14,7 +14,7 @@
 ## Release rule
 No feature is complete until demonstrated in the deployed application.
 
-## v7.0.2 — Encrypted Vault Sync (Stage 1)
+## v7.0.3 — Encrypted Vault Sync (Stage 1)
 - Automatic encrypted snapshot sync while unlocked
 - Manual sync and download controls
 - Firebase stores ciphertext only

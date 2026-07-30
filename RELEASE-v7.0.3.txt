@@ -1,0 +1,8 @@
+Istanbul · Viking · Venice Travel Companion
+Release v7.0.3 — Reservations Recovery
+
+- Starts the Firestore live listener before any seeding or migration work.
+- Displays cached reservations immediately when available.
+- Adds a 15-second timeout and visible Retry control.
+- Prevents the page from remaining indefinitely on “Loading cloud reservations…”.
+- Leaves navigation, maps, Vault, backup, sync, and Firebase rules unchanged.

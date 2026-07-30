@@ -92,7 +92,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'7.0.2',buildId:'v7.0.2-stability-recovery'};
+const APP_RELEASE={version:'7.0.3',buildId:'v7.0.3-reservations-recovery'};
 let updateRegistration=null;
 let appUpdatesPromise=null;
 function showUpdateBanner(reg){

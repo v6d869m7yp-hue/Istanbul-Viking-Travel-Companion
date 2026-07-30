@@ -1,9 +1,9 @@
 {
   "appName": "Istanbul–Viking Travel Companion",
-  "version": "7.0.2",
-  "buildId": "v7.0.2-stability-recovery",
+  "version": "7.0.3",
+  "buildId": "v7.0.3-reservations-recovery",
   "buildDate": "2026-07-29",
-  "cacheName": "ivtc-v7.0.2-stability-recovery",
+  "cacheName": "ivtc-v7.0.3-reservations-recovery",
   "release": "Stability Recovery",
   "pageCount": 106,
   "mapAssetCount": 27,

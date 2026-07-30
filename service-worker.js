@@ -1,6 +1,6 @@
-const VERSION='7.0.2';
-const BUILD_ID='v7.0.2-stability-recovery';
-const CACHE='ivtc-v7.0.2-stability-recovery';
+const VERSION='7.0.3';
+const BUILD_ID='v7.0.3-reservations-recovery';
+const CACHE='ivtc-v7.0.3-reservations-recovery';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",

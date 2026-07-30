@@ -1,5 +1,5 @@
 Istanbul · Viking · Venice Travel Companion
-Release v7.0.2 — Stability Recovery
+Release v7.0.3 — Stability Recovery
 
 This release restores the last fully tested v6.9.2 application foundation under a new cache and release identifier. It removes the experimental whole-trip synchronization hooks that caused navigation and cloud-reservation regressions in v7.0.0–v7.0.1.
 
