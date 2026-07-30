@@ -1,4 +1,4 @@
-Release v8.2.2 — Cross-Device Cloud Vault Locator
+Release v8.2.3 — Cross-Device Cloud Vault Locator
 
 - Publishes a private per-user Vault locator after every successful encrypted sync.
 - New iPhone/iPad devices resolve the canonical trip with one direct Firestore read.

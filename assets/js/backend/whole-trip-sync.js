@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 window.IVTC=window.IVTC||{};
-const VERSION='8.2.2';
+const VERSION='8.2.3';
 const FAVORITES_KEY='ivtc-favorites';
 const LAST_SYNC_KEY='ivtc.wholeTrip.lastSync.v1';
 function state(){const s=window.IVTC.firebase?._state;if(!s?.user||!s.db||!s.api)throw new Error('Sign in before synchronizing the trip.');return s;}
@@ -10,8 +10,25 @@ function serial(v){if(!v)return null;if(typeof v==='string')return v;if(v.toDate
 function favorites(){try{const v=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return[]}}
 function cleanFavorites(items){const map=new Map();for(const x of items||[]){if(!x?.url)continue;const prev=map.get(x.url);if(!prev||String(x.added||'')>String(prev.added||''))map.set(x.url,{url:x.url,title:x.title||x.url,added:x.added||new Date().toISOString()});}return [...map.values()].sort((a,b)=>String(b.added).localeCompare(String(a.added)));}
 function mergeFavorites(a,b){return cleanFavorites([...(a||[]),...(b||[])]);}
-async function activeTrip(){if(window.IVTC.tripRepository?.ensureActiveTrip)return window.IVTC.tripRepository.ensureActiveTrip();const t=window.IVTC.tripCloud?.selectedTrip?.();if(!t?.id)throw new Error('Choose an active trip in My Trips first.');return t;}
-async function localSnapshot(){const trip=await activeTrip();return {schema:1,tripId:trip.id,trip:{label:trip.label||null,startDate:trip.startDate||null,endDate:trip.endDate||null,travelers:Number(trip.travelers||1),status:trip.status||'active',packagedVersion:trip.packagedVersion||null,itinerary:trip.itinerary||null},favorites:cleanFavorites(favorites())};}
+function shadowTrips(){try{const v=JSON.parse(localStorage.getItem('ivtc.cloudTrips.shadow.v1')||'[]');return Array.isArray(v)?v:[]}catch{return[]}}
+function fastActiveTrip(){
+ const selected=window.IVTC.tripCloud?.selectedTrip?.()||{};
+ const id=selected.id||localStorage.getItem('ivtc.activeTripId');
+ if(!id)return null;
+ const shadow=shadowTrips().find(t=>t?.id===id)||{};
+ return {...shadow,...selected,id,label:selected.label||shadow.label||localStorage.getItem('ivtc.activeTripLabel')||'Active trip'};
+}
+async function activeTrip({allowRepositoryFallback=true}={}){
+ const fast=fastActiveTrip();if(fast?.id)return fast;
+ if(allowRepositoryFallback&&window.IVTC.tripRepository?.ensureActiveTrip){const resolved=await window.IVTC.tripRepository.ensureActiveTrip();if(resolved?.id)return resolved;}
+ throw new Error('Choose an active trip in My Trips first.');
+}
+async function enrichTrip(trip){
+ if(trip?.itinerary?.stages?.length)return trip;
+ try{const packaged=await timeout(window.IVTC.tripRepository?.packagedTrip?.(),3000,'Packaged itinerary read');if(packaged?.stages?.length)return {...trip,packagedVersion:trip.packagedVersion||packaged.version||null,itinerary:{title:packaged.title||null,subtitle:packaged.subtitle||null,ship:packaged.ship||null,stateroom:packaged.stateroom||null,hotel:packaged.hotel||null,stages:packaged.stages}};}catch{}
+ return trip;
+}
+async function localSnapshot(existingTrip=null){const trip=await enrichTrip(existingTrip||await activeTrip());return {schema:1,tripId:trip.id,trip:{label:trip.label||null,startDate:trip.startDate||null,endDate:trip.endDate||null,travelers:Number(trip.travelers||1),status:trip.status||'active',packagedVersion:trip.packagedVersion||null,itinerary:trip.itinerary||null},favorites:cleanFavorites(favorites())};}
 async function getRemote(tripId){const s=state();const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',tripId)),12000,'Whole-trip cloud read');if(!snap.exists())throw new Error('The active trip does not exist in Firestore.');return {id:snap.id,...snap.data()};}
 function applyLocal(remote){const sync=remote.wholeTripSync||{};if(Array.isArray(sync.favorites))localStorage.setItem(FAVORITES_KEY,JSON.stringify(cleanFavorites(sync.favorites)));
  const trip={id:remote.id,...remote};window.IVTC.tripCloud?.selectTrip?.(trip);try{const shadow=JSON.parse(localStorage.getItem('ivtc.cloudTrips.shadow.v1')||'[]');const i=shadow.findIndex(x=>x.id===trip.id);const clean={...trip,createdAt:serial(trip.createdAt),updatedAt:serial(trip.updatedAt)};if(i>=0)shadow[i]={...shadow[i],...clean};else shadow.unshift(clean);localStorage.setItem('ivtc.cloudTrips.shadow.v1',JSON.stringify(shadow));}catch{}
@@ -47,33 +64,49 @@ async function profileCloudReads(onEvent){
  const results=[];
  const record=e=>{results.push(e);onEvent?.(e);};
  let s;
- try{s=state();record({type:'success',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,value:{uid:s.user.uid}});}catch(error){record({type:'failure',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,error:error.message});return {ok:false,results,totalElapsed:Math.round(nowMs()-overall)};}
- const active=await profiledStep('Resolve active trip','local active-trip repository',()=>activeTrip(),6000,record);
- if(!active.ok)return {ok:false,results,totalElapsed:Math.round(nowMs()-overall)};
- const tripId=active.value.id;
- const local=await profiledStep('Build local snapshot','localStorage + packaged itinerary',()=>localSnapshot(),6000,record);
+ try{s=state();record({type:'success',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,value:{uid:s.user.uid}});}catch(error){record({type:'failure',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,error:error.message});return {ok:false,results,totalElapsed:Math.round(nowMs()-overall),reservationCount:null};}
+
+ let trip=null;
+ const fast=await profiledStep('Resolve active trip — fast path','localStorage: ivtc.activeTripId + trip shadow',()=>Promise.resolve(fastActiveTrip()),1000,record);
+ if(fast.ok&&fast.value?.id)trip=fast.value;
+ else{
+  record({type:'info',name:'Resolve active trip — fast path',path:'localStorage: ivtc.activeTripId + trip shadow',elapsed:fast.elapsed||0,error:'No stored canonical trip ID; repository fallback required.'});
+  const fallback=await profiledStep('Resolve active trip — repository fallback','tripRepository.ensureActiveTrip()',()=>activeTrip({allowRepositoryFallback:true}),6000,record);
+  if(fallback.ok&&fallback.value?.id)trip=fallback.value;
+ }
+ const tripId=trip?.id||localStorage.getItem('ivtc.activeTripId')||null;
+ if(!tripId){
+  record({type:'failure',name:'Canonical trip ID',path:'local trip state',elapsed:0,error:'No canonical trip ID is available. Open My Trips and select the trip.'});
+  const summary={ok:false,tripId:null,local:null,remote:null,reservationCount:null,totalElapsed:Math.round(nowMs()-overall),results};
+  record({type:'complete',name:'Profiler complete',path:'Whole-trip download pipeline',elapsed:summary.totalElapsed,value:summary});return summary;
+ }
+ record({type:'success',name:'Canonical trip ID',path:'trips/'+tripId,elapsed:0,value:{tripId}});
+
+ const local=await profiledStep('Build local snapshot','trip shadow + packaged itinerary + local favorites',()=>localSnapshot(trip),6000,record);
  const ref=s.api.doc(s.db,'trips',tripId);
  let remote=null;
  if(s.api.getDocFromServer){
   const server=await profiledStep('Trip document — server','trips/'+tripId,()=>s.api.getDocFromServer(ref),12000,record);
   if(server.ok&&server.value.exists())remote={id:server.value.id,...server.value.data()};
-  else if(server.ok&&!server.value.exists())record({type:'failure',name:'Trip document — server',path:'trips/'+tripId,elapsed:server.elapsed,error:'Document does not exist.'});
+  else if(server.ok&&!server.value.exists())record({type:'failure',name:'Trip document — server result',path:'trips/'+tripId,elapsed:server.elapsed,error:'Document does not exist.'});
  }else record({type:'info',name:'Trip document — server',path:'trips/'+tripId,elapsed:0,error:'getDocFromServer is unavailable in this Firebase build.'});
  if(!remote){
   const cached=await profiledStep('Trip document — default/cache fallback','trips/'+tripId,()=>s.api.getDoc(ref),8000,record);
   if(cached.ok&&cached.value.exists())remote={id:cached.value.id,...cached.value.data()};
-  else if(cached.ok&&!cached.value.exists())record({type:'failure',name:'Trip document — default/cache fallback',path:'trips/'+tripId,elapsed:cached.elapsed,error:'Document does not exist.'});
+  else if(cached.ok&&!cached.value.exists())record({type:'failure',name:'Trip document — fallback result',path:'trips/'+tripId,elapsed:cached.elapsed,error:'Document does not exist.'});
  }
+
+ if(remote){
+  await profiledStep('Inspect itinerary','trips/'+tripId+'.itinerary.stages',()=>Promise.resolve({count:Array.isArray(remote.itinerary?.stages)?remote.itinerary.stages.length:0}),1000,record);
+  await profiledStep('Inspect favorites','trips/'+tripId+'.wholeTripSync.favorites',()=>Promise.resolve({count:Array.isArray(remote.wholeTripSync?.favorites)?remote.wholeTripSync.favorites.length:0,revision:Number(remote.wholeTripSync?.revision||0)}),1000,record);
+  await profiledStep('Inspect travelers','trips/'+tripId+'.travelers',()=>Promise.resolve({count:Number(remote.travelers||1)}),1000,record);
+ }else{
+  for(const [name,path] of [['Inspect itinerary','itinerary.stages'],['Inspect favorites','wholeTripSync.favorites'],['Inspect travelers','travelers']])record({type:'info',name,path:'trips/'+tripId+'.'+path,elapsed:0,error:'Not tested because the trip document was unavailable.'});
+ }
+
  const reservations=await profiledStep('Reservations collection','trips/'+tripId+'/reservations',()=>s.api.getDocs(s.api.collection(s.db,'trips',tripId,'reservations')),10000,record);
- const summary={
-  ok:!!remote,
-  tripId,
-  local:local.ok?local.value:null,
-  remote,
-  reservationCount:reservations.ok?reservations.value.size:null,
-  totalElapsed:Math.round(nowMs()-overall),
-  results
- };
+ const merge=await profiledStep('Validate local merge','remote trip + local favorites (read-only simulation)',()=>Promise.resolve(remote?{favorites:mergeFavorites(remote.wholeTripSync?.favorites||[],local.ok?local.value.favorites:[]).length,tripId}:{skipped:true}),1000,record);
+ const summary={ok:!!remote,tripId,local:local.ok?local.value:null,remote,reservationCount:reservations.ok?reservations.value.size:null,reservationsTested:true,mergeValidated:merge.ok&&!merge.value?.skipped,totalElapsed:Math.round(nowMs()-overall),results};
  record({type:'complete',name:'Profiler complete',path:'Whole-trip download pipeline',elapsed:summary.totalElapsed,value:summary});
  return summary;
 }

@@ -1,3 +1,3 @@
-Release v8.2.2 — Distinct iPhone and iPad device identities
+Release v8.2.3 — Distinct iPhone and iPad device identities
 
 Prevents iCloud-synchronized Safari storage from causing an iPhone and iPad to share the same encrypted Vault device ID. Uses hardware class and screen size to distinguish iPhone from iPad even when desktop Safari user agents report MacIntel.

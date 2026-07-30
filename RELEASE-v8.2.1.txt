@@ -1,4 +1,4 @@
-Release v8.2.2 — Local-first whole-trip sync audit
+Release v8.2.3 — Local-first whole-trip sync audit
 
 - Displays local trip values immediately.
 - Loads cloud values independently.

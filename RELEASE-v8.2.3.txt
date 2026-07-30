@@ -1,0 +1,8 @@
+Release v8.2.3 — Fast Active Trip Resolver
+
+- Uses the already-selected canonical trip ID immediately for whole-trip sync.
+- Falls back to repository discovery only when no stored trip ID exists.
+- Prevents a slow canonical-trip lookup from blocking Firestore reads.
+- Continues the cloud profiler through trip, itinerary, favorites, travelers, reservations and merge validation.
+- Reports untested values explicitly rather than as undefined.
+- Preserves Vault sync and existing Firebase schema/rules.

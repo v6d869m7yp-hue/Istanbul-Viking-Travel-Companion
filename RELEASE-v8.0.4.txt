@@ -1,3 +1,3 @@
-v8.2.2 Duplicate Trip Merge
+v8.2.3 Duplicate Trip Merge
 
 Adds a guided one-click merge into the left-most trip. Known trip metadata, reservations, and encrypted Firestore Vault bridge chunks are merged; duplicate trips are archived and the retained trip becomes active.
