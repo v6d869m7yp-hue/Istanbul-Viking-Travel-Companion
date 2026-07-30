@@ -1,6 +1,6 @@
-const VERSION='8.2.3';
-const BUILD_ID='v8.2.3-fast-active-trip-resolver';
-const CACHE='ivtc-v8.2.3-fast-active-trip-resolver';
+const VERSION='8.2.4';
+const BUILD_ID='v8.2.4-firestore-read-profiler';
+const CACHE='ivtc-v8.2.4-firestore-read-profiler';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",

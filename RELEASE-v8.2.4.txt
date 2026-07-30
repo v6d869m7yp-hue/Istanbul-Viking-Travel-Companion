@@ -1,0 +1,17 @@
+Istanbul–Viking Travel Companion v8.2.4
+Firestore Read Profiler
+Build date: 2026-07-30
+
+Changes
+- Bounds the server-only trip document read at six seconds.
+- Continues with an explicit cache-only read and a normal Firestore read after a server timeout.
+- Continues testing reservations and members even when the parent trip document is unavailable.
+- Reports the exact Firestore API strategy used for each read.
+- Records Firebase project ID, SDK version, authentication state, and browser online state.
+- Preserves the v8.2.3 canonical active-trip fast path.
+- Prevents one pending Firestore promise from stopping the full profiler.
+
+Expected diagnostic behavior
+- Every profiler run reaches “Profiler complete.”
+- A stalled server read is reported as a timed-out stage rather than an endless spinner.
+- Reservations and members show independent success, permission errors, or timeouts.

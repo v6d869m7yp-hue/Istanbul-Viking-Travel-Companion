@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 window.IVTC=window.IVTC||{};
-const VERSION='8.2.3';
+const VERSION='8.2.4';
 const FAVORITES_KEY='ivtc-favorites';
 const LAST_SYNC_KEY='ivtc.wholeTrip.lastSync.v1';
 function state(){const s=window.IVTC.firebase?._state;if(!s?.user||!s.db||!s.api)throw new Error('Sign in before synchronizing the trip.');return s;}
@@ -64,13 +64,19 @@ async function profileCloudReads(onEvent){
  const results=[];
  const record=e=>{results.push(e);onEvent?.(e);};
  let s;
- try{s=state();record({type:'success',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,value:{uid:s.user.uid}});}catch(error){record({type:'failure',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,error:error.message});return {ok:false,results,totalElapsed:Math.round(nowMs()-overall),reservationCount:null};}
+ try{
+  s=state();
+  record({type:'success',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,value:{uid:s.user.uid,projectId:s.app?.options?.projectId||null,sdk:'12.1.0',online:navigator.onLine}});
+ }catch(error){
+  record({type:'failure',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,error:error.message});
+  return {ok:false,results,totalElapsed:Math.round(nowMs()-overall),reservationCount:null};
+ }
 
  let trip=null;
  const fast=await profiledStep('Resolve active trip — fast path','localStorage: ivtc.activeTripId + trip shadow',()=>Promise.resolve(fastActiveTrip()),1000,record);
  if(fast.ok&&fast.value?.id)trip=fast.value;
  else{
-  record({type:'info',name:'Resolve active trip — fast path',path:'localStorage: ivtc.activeTripId + trip shadow',elapsed:fast.elapsed||0,error:'No stored canonical trip ID; repository fallback required.'});
+  record({type:'info',name:'Resolve active trip — fast path result',path:'localStorage: ivtc.activeTripId + trip shadow',elapsed:fast.elapsed||0,error:'No stored canonical trip ID; repository fallback required.'});
   const fallback=await profiledStep('Resolve active trip — repository fallback','tripRepository.ensureActiveTrip()',()=>activeTrip({allowRepositoryFallback:true}),6000,record);
   if(fallback.ok&&fallback.value?.id)trip=fallback.value;
  }
@@ -78,22 +84,33 @@ async function profileCloudReads(onEvent){
  if(!tripId){
   record({type:'failure',name:'Canonical trip ID',path:'local trip state',elapsed:0,error:'No canonical trip ID is available. Open My Trips and select the trip.'});
   const summary={ok:false,tripId:null,local:null,remote:null,reservationCount:null,totalElapsed:Math.round(nowMs()-overall),results};
-  record({type:'complete',name:'Profiler complete',path:'Whole-trip download pipeline',elapsed:summary.totalElapsed,value:summary});return summary;
+  record({type:'complete',name:'Profiler complete',path:'Whole-trip download pipeline',elapsed:summary.totalElapsed,value:summary});
+  return summary;
  }
  record({type:'success',name:'Canonical trip ID',path:'trips/'+tripId,elapsed:0,value:{tripId}});
 
  const local=await profiledStep('Build local snapshot','trip shadow + packaged itinerary + local favorites',()=>localSnapshot(trip),6000,record);
  const ref=s.api.doc(s.db,'trips',tripId);
  let remote=null;
- if(s.api.getDocFromServer){
-  const server=await profiledStep('Trip document — server','trips/'+tripId,()=>s.api.getDocFromServer(ref),12000,record);
-  if(server.ok&&server.value.exists())remote={id:server.value.id,...server.value.data()};
-  else if(server.ok&&!server.value.exists())record({type:'failure',name:'Trip document — server result',path:'trips/'+tripId,elapsed:server.elapsed,error:'Document does not exist.'});
+
+ // Each Firestore strategy is independently bounded. A stalled server-only read
+ // can no longer prevent cache/default reads or the remaining collection tests.
+ if(typeof s.api.getDocFromServer==='function'){
+  const server=await profiledStep('Trip document — server','trips/'+tripId+' [getDocFromServer]',()=>s.api.getDocFromServer(ref),6000,record);
+  if(server.ok&&server.value?.exists?.())remote={id:server.value.id,...server.value.data()};
+  else if(server.ok)record({type:'failure',name:'Trip document — server result',path:'trips/'+tripId,elapsed:server.elapsed,error:'Server responded, but the document does not exist.'});
  }else record({type:'info',name:'Trip document — server',path:'trips/'+tripId,elapsed:0,error:'getDocFromServer is unavailable in this Firebase build.'});
+
+ if(!remote&&typeof s.api.getDocFromCache==='function'){
+  const cache=await profiledStep('Trip document — cache','trips/'+tripId+' [getDocFromCache]',()=>s.api.getDocFromCache(ref),3000,record);
+  if(cache.ok&&cache.value?.exists?.())remote={id:cache.value.id,...cache.value.data()};
+  else if(cache.ok)record({type:'failure',name:'Trip document — cache result',path:'trips/'+tripId,elapsed:cache.elapsed,error:'No cached trip document exists on this device.'});
+ }
+
  if(!remote){
-  const cached=await profiledStep('Trip document — default/cache fallback','trips/'+tripId,()=>s.api.getDoc(ref),8000,record);
-  if(cached.ok&&cached.value.exists())remote={id:cached.value.id,...cached.value.data()};
-  else if(cached.ok&&!cached.value.exists())record({type:'failure',name:'Trip document — fallback result',path:'trips/'+tripId,elapsed:cached.elapsed,error:'Document does not exist.'});
+  const normal=await profiledStep('Trip document — default','trips/'+tripId+' [getDoc]',()=>s.api.getDoc(ref),6000,record);
+  if(normal.ok&&normal.value?.exists?.())remote={id:normal.value.id,...normal.value.data()};
+  else if(normal.ok)record({type:'failure',name:'Trip document — default result',path:'trips/'+tripId,elapsed:normal.elapsed,error:'The document does not exist.'});
  }
 
  if(remote){
@@ -104,9 +121,24 @@ async function profileCloudReads(onEvent){
   for(const [name,path] of [['Inspect itinerary','itinerary.stages'],['Inspect favorites','wholeTripSync.favorites'],['Inspect travelers','travelers']])record({type:'info',name,path:'trips/'+tripId+'.'+path,elapsed:0,error:'Not tested because the trip document was unavailable.'});
  }
 
- const reservations=await profiledStep('Reservations collection','trips/'+tripId+'/reservations',()=>s.api.getDocs(s.api.collection(s.db,'trips',tripId,'reservations')),10000,record);
+ // Run collection probes even when the parent trip read fails. This distinguishes
+ // a single-document issue from a broader Firestore transport or rules problem.
+ const reservations=await profiledStep('Reservations collection','trips/'+tripId+'/reservations [getDocs]',()=>s.api.getDocs(s.api.collection(s.db,'trips',tripId,'reservations')),6000,record);
+ const members=await profiledStep('Members collection','trips/'+tripId+'/members [getDocs]',()=>s.api.getDocs(s.api.collection(s.db,'trips',tripId,'members')),6000,record);
  const merge=await profiledStep('Validate local merge','remote trip + local favorites (read-only simulation)',()=>Promise.resolve(remote?{favorites:mergeFavorites(remote.wholeTripSync?.favorites||[],local.ok?local.value.favorites:[]).length,tripId}:{skipped:true}),1000,record);
- const summary={ok:!!remote,tripId,local:local.ok?local.value:null,remote,reservationCount:reservations.ok?reservations.value.size:null,reservationsTested:true,mergeValidated:merge.ok&&!merge.value?.skipped,totalElapsed:Math.round(nowMs()-overall),results};
+ const summary={
+  ok:!!remote,
+  tripId,
+  local:local.ok?local.value:null,
+  remote,
+  reservationCount:reservations.ok?reservations.value.size:null,
+  reservationsTested:true,
+  memberCount:members.ok?members.value.size:null,
+  membersTested:true,
+  mergeValidated:merge.ok&&!merge.value?.skipped,
+  totalElapsed:Math.round(nowMs()-overall),
+  results
+ };
  record({type:'complete',name:'Profiler complete',path:'Whole-trip download pipeline',elapsed:summary.totalElapsed,value:summary});
  return summary;
 }

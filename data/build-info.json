@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "8.2.3",
-  "buildId": "v8.2.3-fast-active-trip-resolver",
+  "version": "8.2.4",
+  "buildId": "v8.2.4-firestore-read-profiler",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v8.2.3-fast-active-trip-resolver",
-  "release": "Local-First Trip Audit",
+  "cacheName": "ivtc-v8.2.4-firestore-read-profiler",
+  "release": "Firestore Read Profiler",
   "pageCount": 107,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "whole-trip-profiler"
+  "label": "firestore-read-profiler"
 }
