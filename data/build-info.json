@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "8.0.2",
-  "buildId": "v8.0.2-unified-trip-repository",
+  "version": "8.0.3",
+  "buildId": "v8.0.3-canonical-trip-id-repair",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v8.0.2-unified-trip-repository",
-  "release": "Unified Trip Repository",
+  "cacheName": "ivtc-v8.0.3-canonical-trip-id-repair",
+  "release": "Canonical Trip ID Repair",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "unified-trip-repository"
+  "label": "canonical-trip-id-repair"
 }

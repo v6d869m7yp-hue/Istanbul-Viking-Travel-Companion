@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.0.2';
+const APP_VERSION='8.0.3';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -119,10 +119,17 @@ function cancelCloudSync(){if(!cloudSyncBusy)return;cloudSyncRun++;cloudSyncBusy
 async function cloudContext(){
  if(!window.IVTC?.firebase)throw new Error('Firebase components are unavailable.');
  const state=await window.IVTC.firebase.initialize();
- const s=window.IVTC.firebase._state,tripId=localStorage.getItem('ivtc.activeTripId');
+ const s=window.IVTC.firebase._state;
  if(!state.user||!s.storage||!s.db)throw new Error('Sign in to Firebase first.');
+ let trip=null;
+ if(window.IVTC.tripCloud?.resolveCanonicalTrip)trip=await window.IVTC.tripCloud.resolveCanonicalTrip();
+ let tripId=trip?.id||localStorage.getItem('ivtc.activeTripId');
  if(!tripId)throw new Error('Choose an active trip in My Trips first.');
- return {s,tripId,path:`trips/${tripId}/encrypted/travel-vault.ivtcsync`};
+ const check=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',tripId)),'Active trip verification',7000);
+ if(!check.exists())throw new Error('The selected trip is not the cloud trip document. Open My Trips once, then try Sync now again.');
+ const canonical={id:check.id,...check.data()};
+ localStorage.setItem('ivtc.activeTripId',canonical.id);localStorage.setItem('ivtc.activeTripLabel',canonical.label||'Selected trip');
+ return {s,tripId:canonical.id,path:`trips/${canonical.id}/encrypted/travel-vault.ivtcsync`};
 }
 function mergeById(local=[],incoming=[]){const map=new Map(local.map(x=>[x.id,x]));for(const item of incoming){const old=map.get(item.id);if(!old||String(item.updatedAt||item.at||'')>String(old.updatedAt||old.at||''))map.set(item.id,item)}return [...map.values()]}
 function mergeRemoteData(remote){
@@ -132,9 +139,10 @@ function mergeRemoteData(remote){
 }
 async function uploadCloudSnapshot(ctx){
  const core=backupCore(loadStore()),text=JSON.stringify(core),checksum=await sha256Text(text),blob=new Blob([text],{type:'application/octet-stream'});
- const ref=ctx.s.api.ref(ctx.s.storage,ctx.path);await ctx.s.api.uploadBytes(ref,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}});
  const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);
- await ctx.s.api.setDoc(ctx.s.api.doc(ctx.s.db,'trips',ctx.tripId,'envelopes','travel-vault'),{storagePath:ctx.path,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedAt:ctx.s.api.serverTimestamp()},{merge:true});
+ let storageState='uploaded',storageError=null;
+ try{const ref=ctx.s.api.ref(ctx.s.storage,ctx.path);await ctx.s.api.uploadBytes(ref,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}});}catch(error){storageState='bridge-only';storageError=error?.message||String(error);console.warn('Storage upload failed; encrypted Firestore bridge remains available.',error)}
+ await ctx.s.api.setDoc(ctx.s.api.doc(ctx.s.db,'trips',ctx.tripId,'envelopes','travel-vault'),{storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedAt:ctx.s.api.serverTimestamp()},{merge:true});
  data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];await persist({skipCloud:true});
 }
 async function downloadCloudSnapshot(ctx,meta){

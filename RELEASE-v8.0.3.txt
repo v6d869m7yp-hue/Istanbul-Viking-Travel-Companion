@@ -1,0 +1,7 @@
+Release v8.0.3 — Canonical Trip ID Repair
+
+- Resolves the active trip to the actual Firestore document before Vault sync.
+- Replaces stale deterministic local trip IDs with the existing cloud trip ID.
+- Uses the canonical trip ID for Firebase Storage and Firestore Vault bridge paths.
+- Publishes the encrypted Firestore bridge even when Storage upload is unavailable.
+- Preserves encryption; no Vault password or plaintext is uploaded.

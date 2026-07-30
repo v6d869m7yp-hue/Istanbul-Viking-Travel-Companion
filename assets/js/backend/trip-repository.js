@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 window.IVTC=window.IVTC||{};
-const VERSION='8.0.2';
+const VERSION='8.0.3';
 async function packagedTrip(){
  const r=await fetch('data/trip.json',{cache:'no-store'});
  if(!r.ok)throw new Error('Unable to load the packaged Istanbul itinerary.');
@@ -9,6 +9,7 @@ async function packagedTrip(){
 }
 function activeTrip(){return window.IVTC.tripCloud?.selectedTrip?.()||{id:localStorage.getItem('ivtc.activeTripId'),label:localStorage.getItem('ivtc.activeTripLabel')};}
 async function ensureActiveTrip(){
+ if(window.IVTC.tripCloud?.resolveCanonicalTrip){const canonical=await window.IVTC.tripCloud.resolveCanonicalTrip();if(canonical?.id)return canonical;}
  let active=activeTrip();if(active?.id)return active;
  if(!window.IVTC.tripCloud)throw new Error('Trip data service is unavailable.');
  const local=await window.IVTC.tripCloud.listTrips({timeoutMs:1200});

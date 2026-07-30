@@ -37,12 +37,25 @@ async function listTrips({includeArchived=true,timeoutMs=6000}={}){
  Object.defineProperty(items,'cloudError',{value:remote.error?.message||null,enumerable:false});
  return items;
 }
+async function resolveCanonicalTrip(){
+ const s=requireState(),current=selectedTrip(),deterministicId=`istanbul-viking-2026-${s.user.uid}`;
+ if(current?.id){
+  const check=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',current.id)),2200);
+  if(check.value?.exists()){const trip={id:check.value.id,...check.value.data(),cloudState:'synced'};upsertShadow(trip);selectTrip(trip);return trip;}
+ }
+ const items=await listTrips({timeoutMs:5000});
+ const canonical=items.find(t=>t.cloudState==='synced'&&t.id!==deterministicId)||items.find(t=>t.cloudState==='synced')||items.find(t=>t.id!==deterministicId)||items[0]||null;
+ if(canonical){selectTrip(canonical);return canonical;}
+ return current?.id?current:null;
+}
 async function bootstrapPackagedTrip(packaged){
  if(!packaged||!Array.isArray(packaged.stages))throw new Error('The packaged itinerary could not be read.');
  const s=requireState();const deterministicId=`istanbul-viking-2026-${s.user.uid}`;
- const local=readShadow().find(t=>t.id===deterministicId);
+ const existing=await listTrips({timeoutMs:5000});
+ const canonical=existing.find(t=>t.cloudState==='synced'&&t.id!==deterministicId)||existing.find(t=>t.cloudState==='synced')||existing.find(t=>t.id!==deterministicId);
+ if(canonical){selectTrip(canonical);return {created:false,trip:canonical};}
+ const local=existing.find(t=>t.id===deterministicId)||readShadow().find(t=>t.id===deterministicId);
  if(local){selectTrip(local);return {created:false,trip:local,queued:local.cloudState!=='synced'};}
- const existing=await listTrips({timeoutMs:2500});if(existing.length){selectTrip(existing[0]);return {created:false,trip:existing[0]};}
  const travelerCount=String(packaged.travelers||'').split(/\s*(?:&|,|and)\s*/i).filter(Boolean).length||1;
  const created=await createTrip({id:deterministicId,label:'Istanbul · Viking · Venice & Northern Italy 2026',startDate:packaged.start||'2026-08-13',endDate:'2026-09-13',travelers:travelerCount,status:'active',source:'packaged-bootstrap',packagedVersion:packaged.version||null,itinerary:{title:packaged.title||null,subtitle:packaged.subtitle||null,ship:packaged.ship||null,stateroom:packaged.stateroom||null,hotel:packaged.hotel||null,stages:packaged.stages}});
  selectTrip(created.trip);return {created:true,trip:created.trip,queued:true};
@@ -52,5 +65,5 @@ async function deleteTrip(id){const s=requireState();if(!id)throw new Error('Tri
 async function duplicateTrip(id){const source=(await listTrips()).find(t=>t.id===id);if(!source)throw new Error('Trip not found.');return createTrip({label:`${source.label||'Trip'} copy`,startDate:source.startDate||null,endDate:source.endDate||null,travelers:source.travelers||1,status:'active',source:'duplicate',itinerary:source.itinerary||null});}
 function selectTrip(trip){if(!trip?.id)throw new Error('Trip is required.');localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label||'Selected trip');window.dispatchEvent(new CustomEvent('ivtc:trip-selected',{detail:trip}));}
 function selectedTrip(){return {id:localStorage.getItem('ivtc.activeTripId'),label:localStorage.getItem('ivtc.activeTripLabel')};}
-window.IVTC.tripCloud=Object.freeze({createTrip,listTrips,bootstrapPackagedTrip,updateTrip,deleteTrip,duplicateTrip,selectTrip,selectedTrip});
+window.IVTC.tripCloud=Object.freeze({createTrip,listTrips,resolveCanonicalTrip,bootstrapPackagedTrip,updateTrip,deleteTrip,duplicateTrip,selectTrip,selectedTrip});
 })();
