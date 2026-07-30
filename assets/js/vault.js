@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.1.2';
+const APP_VERSION='8.1.3';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -151,28 +151,34 @@ async function downloadCloudSnapshot(ctx,meta){
 async function cloudSyncNow(reason='manual'){
  if(cloudSyncBusy||!masterKey||!data)return;
  const run=++cloudSyncRun;cloudSyncBusy=true;
- cloudSync={state:'syncing',message:'Preparing encrypted Vault sync…',lastAt:cloudSync.lastAt,remoteRevision:cloudSync.remoteRevision,detail:'',stages:syncStages(['Prepare local snapshot','Connect to Firebase','Read cloud metadata','Download and merge newer snapshot','Upload encrypted snapshot','Write sync metadata','Finalize local status'])};renderUnlocked();
+ cloudSync={state:'syncing',message:'Preparing encrypted Vault sync…',lastAt:cloudSync.lastAt,remoteRevision:cloudSync.remoteRevision,detail:'',stages:syncStages(['Prepare local snapshot','Connect to Firebase','Optional cloud conflict check','Upload encrypted snapshot','Write sync metadata','Finalize local status'])};renderUnlocked();
  try{
   await Promise.resolve();ensureSyncRun(run);setSyncStage(0,'done');setSyncStage(1,'active');cloudSync.message='Connecting to Firebase…';
-  const ctx=await timeout(cloudContext(),'Firebase connection',20000);ensureSyncRun(run);setSyncStage(1,'done');setSyncStage(2,'active');cloudSync.message='Reading cloud metadata…';
+  const ctx=await timeout(cloudContext(),'Firebase connection',20000);ensureSyncRun(run);setSyncStage(1,'done');
   const ref=ctx.s.api.doc(ctx.s.db,'trips',ctx.tripId,'envelopes','travel-vault');
-  const snap=await timeout(ctx.s.api.getDoc(ref),'Cloud metadata read',20000);ensureSyncRun(run);setSyncStage(2,'done');
-  if(snap.exists()){
-   const meta=snap.data(),remoteRev=Number(meta.revision||0);cloudSync.remoteRevision=remoteRev;
-   if(remoteRev>Number(data.sync?.remoteRevision??-1)){
-    setSyncStage(3,'active');cloudSync.message='Downloading and merging newer encrypted Vault…';
-    await timeout(downloadCloudSnapshot(ctx,meta),'Encrypted snapshot download',30000);ensureSyncRun(run);setSyncStage(3,'done');
-   }else setSyncStage(3,'done','no newer cloud copy');
-  }else setSyncStage(3,'done','first cloud snapshot');
-  setSyncStage(4,'active');cloudSync.message='Uploading encrypted Vault snapshot…';
+  setSyncStage(2,'active');cloudSync.message='Checking cloud revision without blocking upload…';
+  try{
+   const snap=await timeout(ctx.s.api.getDoc(ref),'Cloud conflict check',4000);ensureSyncRun(run);
+   if(snap.exists()){
+    const remoteRev=Number(snap.data()?.revision||0);cloudSync.remoteRevision=remoteRev;
+    setSyncStage(2,'done',remoteRev>Number(data.sync?.remoteRevision??-1)?'newer cloud revision noted; upload continues':'cloud revision checked');
+   }else setSyncStage(2,'done','first cloud snapshot');
+  }catch(error){
+   ensureSyncRun(run);setSyncStage(2,'done','cloud check unavailable; upload continues');console.warn('Optional cloud conflict check skipped.',error);
+  }
+  setSyncStage(3,'active');cloudSync.message='Uploading encrypted Vault snapshot…';
   const core=backupCore(loadStore()),text=JSON.stringify(core),checksum=await sha256Text(text),blob=new Blob([text],{type:'application/octet-stream'});
-  const storageRef=ctx.s.api.ref(ctx.s.storage,ctx.path);
-  await timeout(ctx.s.api.uploadBytes(storageRef,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}}),'Encrypted snapshot upload',30000);ensureSyncRun(run);
-  const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);ensureSyncRun(run);setSyncStage(4,'done',`${blob.size.toLocaleString()} bytes · Firestore bridge ${firestoreChunkCount} chunk${firestoreChunkCount===1?'':'s'}`);
-  setSyncStage(5,'active');cloudSync.message='Writing sync metadata…';
-  await timeout(ctx.s.api.setDoc(ref,{storagePath:ctx.path,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()},{merge:true}),'Sync metadata write',20000);ensureSyncRun(run);setSyncStage(5,'done');
-  setSyncStage(6,'active');data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];addSyncHistory('upload','completed',reason==='auto'?'Automatic sync':'Manual sync',blob.size);await timeout(persist({skipCloud:true}),'Local sync finalization',15000);ensureSyncRun(run);setSyncStage(6,'done');
-  cloudSync={state:'synced',message:'Encrypted Vault synced through Firebase',lastAt:now(),remoteRevision:Number(data.revision||0),detail:'',stages:cloudSync.stages};
+  let storageState='uploaded',storageError=null;
+  try{
+   const storageRef=ctx.s.api.ref(ctx.s.storage,ctx.path);
+   await timeout(ctx.s.api.uploadBytes(storageRef,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}}),'Encrypted snapshot Storage upload',30000);
+  }catch(error){storageState='bridge-only';storageError=error?.message||String(error);console.warn('Storage upload failed; continuing with encrypted Firestore bridge.',error)}
+  const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);ensureSyncRun(run);
+  setSyncStage(3,'done',`${blob.size.toLocaleString()} bytes · ${storageState==='uploaded'?'Storage + ':''}Firestore bridge ${firestoreChunkCount} chunk${firestoreChunkCount===1?'':'s'}`);
+  setSyncStage(4,'active');cloudSync.message='Writing sync metadata…';
+  await timeout(ctx.s.api.setDoc(ref,{storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()},{merge:true}),'Sync metadata write',20000);ensureSyncRun(run);setSyncStage(4,'done');
+  setSyncStage(5,'active');data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];addSyncHistory('upload','completed',reason==='auto'?'Automatic upload-first sync':'Manual upload-first sync',blob.size);await timeout(persist({skipCloud:true}),'Local sync finalization',15000);ensureSyncRun(run);setSyncStage(5,'done');
+  cloudSync={state:'synced',message:storageState==='uploaded'?'Encrypted Vault synced through Firebase':'Encrypted Vault synced through the Firestore recovery bridge',lastAt:now(),remoteRevision:Number(data.revision||0),detail:storageError?`Storage was unavailable, but the encrypted Firestore bridge completed successfully. ${storageError}`:'',stages:cloudSync.stages};
  }catch(e){
   if(run!==cloudSyncRun)return;
   const message=e?.message||'Encrypted cloud sync failed.';

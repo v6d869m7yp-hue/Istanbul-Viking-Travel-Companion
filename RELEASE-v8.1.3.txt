@@ -1,0 +1,10 @@
+Istanbul · Viking Travel Companion v8.1.3
+
+UPLOAD-FIRST VAULT SYNC
+
+- Sync now no longer blocks on the Firestore metadata read.
+- A four-second conflict check is best-effort only; timeout does not stop upload.
+- The encrypted snapshot is published to Storage when available and always to the Firestore recovery bridge.
+- Fresh sync metadata is written after the encrypted snapshot.
+- Download latest remains metadata-first for safe recovery.
+- Detailed stage reporting distinguishes Storage from the Firestore bridge.
