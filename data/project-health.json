@@ -1,17 +1,54 @@
 {
   "schemaVersion": 1,
-  "release": "7.1.0",
+  "release": "7.2.1",
   "baseline": "6.9.2",
-  "status": "stability-recovery",
+  "status": "cloud-trip-bootstrap",
   "components": [
-    {"name":"Firebase Authentication","state":"working","verification":"Proven v6.9.2 persisted-session implementation restored unchanged"},
-    {"name":"Firestore Trips","state":"working","verification":"Proven memberUids array-contains query restored unchanged"},
-    {"name":"Cloud Reservations","state":"working","verification":"Proven active-trip reservation model restored unchanged"},
-    {"name":"Interactive Maps","state":"working","verification":"No map code changed from the tested baseline"},
-    {"name":"Travel Vault","state":"working","verification":"Encryption, backup, restore and document workflow preserved"},
-    {"name":"Encrypted Vault Sync","state":"working","verification":"Tested v6.9.2 sync, device registry and sync history preserved"},
-    {"name":"Offline App Cache","state":"working","verification":"New v7.1.0 cache identity prevents stale v7.0.x assets"},
-    {"name":"Whole-Trip Sync Experiment","state":"planned","verification":"Removed from this recovery release and deferred for isolated development"}
+    {
+      "name": "Firebase Authentication",
+      "state": "working",
+      "verification": "Proven v6.9.2 persisted-session implementation restored unchanged"
+    },
+    {
+      "name": "Firestore Trips",
+      "state": "working",
+      "verification": "Proven memberUids array-contains query restored unchanged"
+    },
+    {
+      "name": "Cloud Reservations",
+      "state": "working",
+      "verification": "Proven active-trip reservation model restored unchanged"
+    },
+    {
+      "name": "Interactive Maps",
+      "state": "working",
+      "verification": "No map code changed from the tested baseline"
+    },
+    {
+      "name": "Travel Vault",
+      "state": "working",
+      "verification": "Encryption, backup, restore and document workflow preserved"
+    },
+    {
+      "name": "Encrypted Vault Sync",
+      "state": "working",
+      "verification": "Tested v6.9.2 sync, device registry and sync history preserved"
+    },
+    {
+      "name": "Offline App Cache",
+      "state": "working",
+      "verification": "New v7.2.1 cache identity prevents stale v7.0.x assets"
+    },
+    {
+      "name": "Whole-Trip Sync Experiment",
+      "state": "planned",
+      "verification": "Removed from this recovery release and deferred for isolated development"
+    },
+    {
+      "name": "Cloud Trip Bootstrap",
+      "state": "working",
+      "verification": "Zero-trip accounts import and select the packaged itinerary"
+    }
   ],
   "releaseGates": [
     "Automated build validation passes",
@@ -20,6 +57,6 @@
     "Maps, Vault and Vault Sync regression checks pass",
     "Rollback ZIP retained"
   ],
-  "milestone": "Restore the proven v6.9.2 data layer",
-  "label": "data-layer-recovery"
+  "milestone": "Automatically create the packaged journey for first-time cloud users",
+  "label": "cloud-trip-bootstrap"
 }

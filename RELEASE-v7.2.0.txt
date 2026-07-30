@@ -1,0 +1,9 @@
+Istanbul–Viking Travel Companion v7.2.1
+Cloud Trip Bootstrap
+Build date: July 30, 2026
+
+- Automatically imports the packaged Istanbul, Viking, Venice and Northern Italy journey when a signed-in account has no cloud trips.
+- Selects the imported journey as the active trip.
+- Adds a manual Import Istanbul Journey recovery action.
+- Makes Refresh show progress, success and actionable error messages.
+- Stores a packaged itinerary snapshot in the trip document for future cloud migration work.
