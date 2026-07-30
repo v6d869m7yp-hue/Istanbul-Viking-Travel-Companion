@@ -1,0 +1,4 @@
+Istanbul–Viking–Venice Travel Companion v7.0.1
+Navigation Hotfix
+
+Fixes a JavaScript parser error introduced in v7.0.0 that prevented the shared application shell, menus, header, and footer from rendering. Restores canonical page handling and removes an obsolete duplicate Favorites renderer. Whole-trip sync features remain intact.

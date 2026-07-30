@@ -3,6 +3,6 @@ Build date: 2026-07-28
 Expected cache: ivtc-v6.4.1-robust-service-worker-install
 Primary fixes: Safari service-worker registration visibility and consistent footer version.
 
-RELEASE-v7.0.0.txt
+RELEASE-v7.0.1.txt
 trip-sync.html
 assets/js/backend/trip-sync-model.js

@@ -1,4 +1,4 @@
-Istanbul–Viking–Venice Travel Companion v7.0.0
+Istanbul–Viking–Venice Travel Companion v7.0.1
 Whole-Trip Sync Foundation
 
 Adds a trip-centered synchronization model for reservations, favorites, activity, and the encrypted Vault.
