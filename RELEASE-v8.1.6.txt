@@ -1,0 +1,7 @@
+Release v8.1.6 — Cross-Device Cloud Vault Locator
+
+- Publishes a private per-user Vault locator after every successful encrypted sync.
+- New iPhone/iPad devices resolve the canonical trip with one direct Firestore read.
+- Discovery no longer depends on stale localStorage, guessed trip IDs, or a potentially hanging trip-list query.
+- Firestore bridge recovery can be discovered even when Firebase Storage is unavailable.
+- Adds the required authenticated-owner rule for users/{uid}/vaultLocator/{documentId}.

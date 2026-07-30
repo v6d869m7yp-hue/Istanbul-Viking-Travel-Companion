@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.1.5';
+const APP_VERSION='8.1.6';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null,candidates:[]};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -99,6 +99,11 @@ async function downloadStorageBytes(s,path,maxBytes=25*1024*1024){
 
 const FIRESTORE_CHUNK_SIZE=420000;
 function vaultChunkRef(s,tripId,index){return s.api.doc(s.db,'trips',tripId,'vaultChunks',String(index).padStart(4,'0'))}
+function vaultLocatorRef(s){return s.api.doc(s.db,'users',s.user.uid,'vaultLocator','current')}
+async function publishVaultLocator(ctx,meta){
+ const payload={tripId:ctx.tripId,tripLabel:localStorage.getItem('ivtc.activeTripLabel')||'Istanbul · Viking · Venice & Northern Italy 2026',revision:Number(meta.revision||0),storageState:meta.storageState||'unknown',firestoreChunkCount:Number(meta.firestoreChunkCount||0),checksum:meta.checksum||'',updatedAt:ctx.s.api.serverTimestamp(),updatedByDevice:deviceId,updatedByDeviceName:deviceName(),appVersion:APP_VERSION};
+ await timeout(ctx.s.api.setDoc(vaultLocatorRef(ctx.s),payload,{merge:true}),'Vault locator write',12000);
+}
 async function writeFirestoreVaultMirror(ctx,text,checksum){
  const chunks=[];for(let i=0;i<text.length;i+=FIRESTORE_CHUNK_SIZE)chunks.push(text.slice(i,i+FIRESTORE_CHUNK_SIZE));
  for(let i=0;i<chunks.length;i++)await timeout(ctx.s.api.setDoc(vaultChunkRef(ctx.s,ctx.tripId,i),{index:i,data:chunks[i],checksum,updatedAt:ctx.s.api.serverTimestamp()}),'Encrypted Vault Firestore bridge upload',20000);
@@ -141,7 +146,9 @@ async function uploadCloudSnapshot(ctx){
  const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);
  let storageState='uploaded',storageError=null;
  try{const ref=ctx.s.api.ref(ctx.s.storage,ctx.path);await ctx.s.api.uploadBytes(ref,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}});}catch(error){storageState='bridge-only';storageError=error?.message||String(error);console.warn('Storage upload failed; encrypted Firestore bridge remains available.',error)}
- await ctx.s.api.setDoc(ctx.s.api.doc(ctx.s.db,'trips',ctx.tripId,'envelopes','travel-vault'),{storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedAt:ctx.s.api.serverTimestamp()},{merge:true});
+ const envelopeMeta={storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedAt:ctx.s.api.serverTimestamp()};
+ await ctx.s.api.setDoc(ctx.s.api.doc(ctx.s.db,'trips',ctx.tripId,'envelopes','travel-vault'),envelopeMeta,{merge:true});
+ await publishVaultLocator(ctx,envelopeMeta);
  data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];await persist({skipCloud:true});
 }
 async function downloadCloudSnapshot(ctx,meta){
@@ -176,7 +183,9 @@ async function cloudSyncNow(reason='manual'){
   const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);ensureSyncRun(run);
   setSyncStage(3,'done',`${blob.size.toLocaleString()} bytes · ${storageState==='uploaded'?'Storage + ':''}Firestore bridge ${firestoreChunkCount} chunk${firestoreChunkCount===1?'':'s'}`);
   setSyncStage(4,'active');cloudSync.message='Writing sync metadata…';
-  await timeout(ctx.s.api.setDoc(ref,{storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()},{merge:true}),'Sync metadata write',20000);ensureSyncRun(run);setSyncStage(4,'done');
+  const syncMeta={storagePath:ctx.path,storageState,storageError,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()};
+  await timeout(ctx.s.api.setDoc(ref,syncMeta,{merge:true}),'Sync metadata write',20000);ensureSyncRun(run);
+  await publishVaultLocator(ctx,syncMeta);ensureSyncRun(run);setSyncStage(4,'done','metadata + cross-device locator');
   setSyncStage(5,'active');data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];addSyncHistory('upload','completed',reason==='auto'?'Automatic upload-first sync':'Manual upload-first sync',blob.size);await timeout(persist({skipCloud:true}),'Local sync finalization',15000);ensureSyncRun(run);setSyncStage(5,'done');
   cloudSync={state:'synced',message:storageState==='uploaded'?'Encrypted Vault synced through Firebase':'Encrypted Vault synced through the Firestore recovery bridge',lastAt:now(),remoteRevision:Number(data.revision||0),detail:storageError?`Storage was unavailable, but the encrypted Firestore bridge completed successfully. ${storageError}`:'',stages:cloudSync.stages};
  }catch(e){
@@ -212,8 +221,22 @@ async function discoverCloudVault(){
  try{
   if(!window.IVTC?.firebase)throw new Error('Firebase components are unavailable.');
   const state=await timeout(window.IVTC.firebase.initialize(),'Firebase sign-in check',12000),s=window.IVTC.firebase._state;
-  if(!state.user||!s.db||!s.storage){cloudRestore={state:'signedout',message:'Sign in to Firebase first.',candidate:null,candidates:[]};renderSetup();return;}
+  if(!state.user||!s.db){cloudRestore={state:'signedout',message:'Sign in to Firebase first.',candidate:null,candidates:[]};renderSetup();return;}
   const tripMap=new Map();
+  // New devices have no active-trip localStorage. Resolve the canonical Vault directly
+  // through the authenticated user's locator before trying any trip enumeration.
+  try{
+   const locatorSnap=await timeout(s.api.getDoc(vaultLocatorRef(s)),'Cloud Vault locator lookup',8000);
+   if(locatorSnap.exists()){
+    const locator=locatorSnap.data()||{};
+    const locatorTripId=String(locator.tripId||'');
+    if(locatorTripId){
+     const label=locator.tripLabel||'Istanbul · Viking · Venice & Northern Italy 2026';
+     tripMap.set(locatorTripId,{id:locatorTripId,label});
+     localStorage.setItem('ivtc.activeTripId',locatorTripId);localStorage.setItem('ivtc.activeTripLabel',label);
+    }
+   }
+  }catch(error){console.warn('Direct Vault locator unavailable; using compatibility discovery.',error)}
   const activeId=localStorage.getItem('ivtc.activeTripId');if(activeId)tripMap.set(activeId,{id:activeId,label:localStorage.getItem('ivtc.activeTripLabel')||'Active trip'});
   const deterministicId=`istanbul-viking-2026-${s.user.uid}`;if(!tripMap.has(deterministicId))tripMap.set(deterministicId,{id:deterministicId,label:'Istanbul · Viking · Venice & Northern Italy 2026'});
   // Include every accessible trip because an older duplicate may still contain a stale Vault envelope.
