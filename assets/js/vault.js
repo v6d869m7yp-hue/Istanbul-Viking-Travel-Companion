@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.0.1';
+const APP_VERSION='8.0.2';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -96,6 +96,24 @@ async function downloadStorageBytes(s,path,maxBytes=25*1024*1024){
  }
  return timeout(s.api.getBytes(storageRef,maxBytes),'Encrypted Vault download',20000);
 }
+
+const FIRESTORE_CHUNK_SIZE=420000;
+function vaultChunkRef(s,tripId,index){return s.api.doc(s.db,'trips',tripId,'vaultChunks',String(index).padStart(4,'0'))}
+async function writeFirestoreVaultMirror(ctx,text,checksum){
+ const chunks=[];for(let i=0;i<text.length;i+=FIRESTORE_CHUNK_SIZE)chunks.push(text.slice(i,i+FIRESTORE_CHUNK_SIZE));
+ for(let i=0;i<chunks.length;i++)await timeout(ctx.s.api.setDoc(vaultChunkRef(ctx.s,ctx.tripId,i),{index:i,data:chunks[i],checksum,updatedAt:ctx.s.api.serverTimestamp()}),'Encrypted Vault Firestore bridge upload',20000);
+ return chunks.length;
+}
+async function readFirestoreVaultMirror(s,tripId,meta){
+ const count=Number(meta?.firestoreChunkCount||0);if(!count)return null;
+ const parts=[];for(let i=0;i<count;i++){const snap=await timeout(s.api.getDoc(vaultChunkRef(s,tripId,i)),'Encrypted Vault Firestore bridge download',12000);if(!snap.exists())throw new Error(`Encrypted Vault bridge chunk ${i+1} is missing.`);parts.push(String(snap.data()?.data||''));}
+ return parts.join('');
+}
+async function downloadSnapshotText(s,tripId,meta){
+ try{const mirrored=await readFirestoreVaultMirror(s,tripId,meta);if(mirrored)return mirrored;}catch(error){console.warn('Firestore Vault bridge unavailable; falling back to Storage.',error)}
+ const bytes=await downloadStorageBytes(s,meta.storagePath||`trips/${tripId}/encrypted/travel-vault.ivtcsync`);return dec.decode(bytes);
+}
+
 function ensureSyncRun(run){if(run!==cloudSyncRun)throw new Error('Sync canceled.')}
 function cancelCloudSync(){if(!cloudSyncBusy)return;cloudSyncRun++;cloudSyncBusy=false;cloudSync={...cloudSync,state:'error',message:'Sync canceled. No local Vault data was changed.',detail:'You can safely try again.',stages:(cloudSync.stages||[]).map(x=>x.state==='active'?{...x,state:'canceled',note:'canceled'}:x),lastAt:now()};renderUnlocked()}
 async function cloudContext(){
@@ -115,11 +133,12 @@ function mergeRemoteData(remote){
 async function uploadCloudSnapshot(ctx){
  const core=backupCore(loadStore()),text=JSON.stringify(core),checksum=await sha256Text(text),blob=new Blob([text],{type:'application/octet-stream'});
  const ref=ctx.s.api.ref(ctx.s.storage,ctx.path);await ctx.s.api.uploadBytes(ref,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}});
- await ctx.s.api.setDoc(ctx.s.api.doc(ctx.s.db,'trips',ctx.tripId,'envelopes','travel-vault'),{storagePath:ctx.path,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedAt:ctx.s.api.serverTimestamp()},{merge:true});
+ const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);
+ await ctx.s.api.setDoc(ctx.s.api.doc(ctx.s.db,'trips',ctx.tripId,'envelopes','travel-vault'),{storagePath:ctx.path,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedAt:ctx.s.api.serverTimestamp()},{merge:true});
  data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];await persist({skipCloud:true});
 }
 async function downloadCloudSnapshot(ctx,meta){
- const bytes=await downloadStorageBytes(ctx.s,meta.storagePath||ctx.path),remoteStore=JSON.parse(dec.decode(bytes));
+ const text=await downloadSnapshotText(ctx.s,ctx.tripId,meta),remoteStore=JSON.parse(text);
  const remoteData=await open(masterKey,remoteStore.vault,'ivtc-vault-data-v1');mergeRemoteData(remoteData);recordAudit('Merged encrypted Firebase vault snapshot');await persist({skipCloud:true});
 }
 async function cloudSyncNow(reason='manual'){
@@ -141,9 +160,10 @@ async function cloudSyncNow(reason='manual'){
   setSyncStage(4,'active');cloudSync.message='Uploading encrypted Vault snapshot…';
   const core=backupCore(loadStore()),text=JSON.stringify(core),checksum=await sha256Text(text),blob=new Blob([text],{type:'application/octet-stream'});
   const storageRef=ctx.s.api.ref(ctx.s.storage,ctx.path);
-  await timeout(ctx.s.api.uploadBytes(storageRef,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}}),'Encrypted snapshot upload',30000);ensureSyncRun(run);setSyncStage(4,'done',`${blob.size.toLocaleString()} bytes`);
+  await timeout(ctx.s.api.uploadBytes(storageRef,blob,{contentType:'application/octet-stream',customMetadata:{format:'ivtc-encrypted-vault',revision:String(data.revision||0),deviceId}}),'Encrypted snapshot upload',30000);ensureSyncRun(run);
+  const firestoreChunkCount=await writeFirestoreVaultMirror(ctx,text,checksum);ensureSyncRun(run);setSyncStage(4,'done',`${blob.size.toLocaleString()} bytes · Firestore bridge ${firestoreChunkCount} chunk${firestoreChunkCount===1?'':'s'}`);
   setSyncStage(5,'active');cloudSync.message='Writing sync metadata…';
-  await timeout(ctx.s.api.setDoc(ref,{storagePath:ctx.path,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()},{merge:true}),'Sync metadata write',20000);ensureSyncRun(run);setSyncStage(5,'done');
+  await timeout(ctx.s.api.setDoc(ref,{storagePath:ctx.path,firestoreChunkCount,firestoreBridgeVersion:1,format:'ivtc-encrypted-vault',schema:1,revision:Number(data.revision||0),checksum,updatedBy:ctx.s.user.uid,updatedByDevice:deviceId,updatedByDeviceName:deviceName(),updatedByAppVersion:APP_VERSION,updatedAt:ctx.s.api.serverTimestamp()},{merge:true}),'Sync metadata write',20000);ensureSyncRun(run);setSyncStage(5,'done');
   setSyncStage(6,'active');data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];addSyncHistory('upload','completed',reason==='auto'?'Automatic sync':'Manual sync',blob.size);await timeout(persist({skipCloud:true}),'Local sync finalization',15000);ensureSyncRun(run);setSyncStage(6,'done');
   cloudSync={state:'synced',message:'Encrypted Vault synced through Firebase',lastAt:now(),remoteRevision:Number(data.revision||0),detail:'',stages:cloudSync.stages};
  }catch(e){
@@ -199,8 +219,8 @@ async function discoverCloudVault(){
 async function restoreCloudVault(){
  const button=qs('#vault-cloud-restore'),password=qs('#vault-cloud-password')?.value||'',candidate=cloudRestore.candidate;if(!candidate)return;
  if(!password)return renderSetup('Enter the Vault password you use on your Mac.');
- try{button.disabled=true;button.textContent='Downloading encrypted Vault…';const s=window.IVTC.firebase._state;const bytes=await downloadStorageBytes(s,candidate.meta.storagePath);const restored=JSON.parse(dec.decode(bytes));button.textContent='Verifying password…';const unlocked=await decryptBackup(restored,password);saveStore(restored);masterKey=unlocked.key;data=unlocked.contents;normalizeData();recordAudit('Existing encrypted cloud Vault restored on this device');await persist({skipCloud:true});startCloudReservations();renderUnlocked();cloudSyncNow('device restore');
- }catch(e){renderSetup(e?.message?.includes('operation')?'That Vault password did not unlock the cloud copy. Check the password and try again.':(e?.message||'The encrypted cloud Vault could not be restored.'));}
+ try{button.disabled=true;button.textContent='Downloading encrypted Vault…';const s=window.IVTC.firebase._state;const text=await downloadSnapshotText(s,candidate.tripId,candidate.meta);const restored=JSON.parse(text);button.textContent='Verifying password…';const unlocked=await decryptBackup(restored,password);saveStore(restored);masterKey=unlocked.key;data=unlocked.contents;normalizeData();recordAudit('Existing encrypted cloud Vault restored on this device');await persist({skipCloud:true});startCloudReservations();renderUnlocked();cloudSyncNow('device restore');
+ }catch(e){renderSetup(e?.message?.includes('operation')?'That Vault password did not unlock the cloud copy. Check the password and try again.':(e?.message||'The encrypted cloud Vault could not be restored. On the Mac, open the Vault and tap Sync now once to publish the Safari-compatible copy.'));}
 }
 async function createVault(){
  const password=qs('#vault-password').value,confirm=qs('#vault-confirm').value,owner=qs('#vault-owner').value.trim();

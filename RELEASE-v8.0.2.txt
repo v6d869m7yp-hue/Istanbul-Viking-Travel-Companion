@@ -1,0 +1,7 @@
+Version 8.0.2 — Firestore Vault Bridge
+
+- Adds a Safari-compatible encrypted Vault transport through chunked Firestore documents.
+- Mac sync now publishes the same encrypted Vault snapshot to Firebase Storage and the Firestore bridge.
+- iPad restore tries the Firestore bridge first and falls back to Storage.
+- No password or decrypted Vault contents are written to Firebase.
+- After deployment, open the Mac Vault and run Sync now once before restoring on iPad.

@@ -1,6 +1,0 @@
-Release v8.0.1: Safari encrypted Vault download recovery
-
-- Uses Firebase signed download URLs with native fetch on Safari/iPadOS.
-- Adds an abortable 20-second network timeout.
-- Retains Firebase getBytes only as a compatibility fallback.
-- Does not alter or re-encrypt the cloud Vault.
