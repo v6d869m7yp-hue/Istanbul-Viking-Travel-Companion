@@ -1,6 +1,6 @@
-const VERSION='8.0.0';
-const BUILD_ID='v8.0.0-unified-trip-repository';
-const CACHE='ivtc-v8.0.0-unified-trip-repository';
+const VERSION='8.0.1';
+const BUILD_ID='v8.0.1-unified-trip-repository';
+const CACHE='ivtc-v8.0.1-unified-trip-repository';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",

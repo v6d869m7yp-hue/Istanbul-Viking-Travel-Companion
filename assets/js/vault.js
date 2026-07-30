@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.0.0';
+const APP_VERSION='8.0.1';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -74,6 +74,28 @@ function syncStatusMarkup(){
 function syncStages(labels){return labels.map((label,i)=>({label,state:i===0?'active':'pending'}))}
 function setSyncStage(index,state,note=''){if(!cloudSync.stages?.[index])return;cloudSync.stages=cloudSync.stages.map((x,i)=>i===index?{...x,state,note}:x);renderUnlocked()}
 function timeout(promise,label,ms=20000){let id;const timer=new Promise((_,reject)=>{id=setTimeout(()=>reject(new Error(`${label} timed out after ${Math.round(ms/1000)} seconds.`)),ms)});return Promise.race([promise,timer]).finally(()=>clearTimeout(id))}
+async function downloadStorageBytes(s,path,maxBytes=25*1024*1024){
+ const storageRef=s.api.ref(s.storage,path);
+ // Firebase getBytes can remain pending indefinitely in Safari/iPadOS. Fetching the
+ // signed download URL uses Safari's native networking stack and is more reliable.
+ if(typeof s.api.getDownloadURL==='function'){
+  const url=await timeout(s.api.getDownloadURL(storageRef),'Encrypted Vault URL lookup',12000);
+  const controller=new AbortController(),id=setTimeout(()=>controller.abort(),20000);
+  try{
+   const response=await fetch(url,{cache:'no-store',credentials:'omit',signal:controller.signal});
+   if(!response.ok)throw new Error(`Encrypted Vault download failed (${response.status}).`);
+   const length=Number(response.headers.get('content-length')||0);
+   if(length&&length>maxBytes)throw new Error('Encrypted Vault exceeds the 25 MB safety limit.');
+   const buffer=await response.arrayBuffer();
+   if(buffer.byteLength>maxBytes)throw new Error('Encrypted Vault exceeds the 25 MB safety limit.');
+   return new Uint8Array(buffer);
+  }catch(error){
+   if(error?.name==='AbortError')throw new Error('Encrypted Vault download timed out after 20 seconds.');
+   throw error;
+  }finally{clearTimeout(id)}
+ }
+ return timeout(s.api.getBytes(storageRef,maxBytes),'Encrypted Vault download',20000);
+}
 function ensureSyncRun(run){if(run!==cloudSyncRun)throw new Error('Sync canceled.')}
 function cancelCloudSync(){if(!cloudSyncBusy)return;cloudSyncRun++;cloudSyncBusy=false;cloudSync={...cloudSync,state:'error',message:'Sync canceled. No local Vault data was changed.',detail:'You can safely try again.',stages:(cloudSync.stages||[]).map(x=>x.state==='active'?{...x,state:'canceled',note:'canceled'}:x),lastAt:now()};renderUnlocked()}
 async function cloudContext(){
@@ -97,7 +119,7 @@ async function uploadCloudSnapshot(ctx){
  data.sync.remoteRevision=Number(data.revision||0);data.sync.lastSyncedAt=now();data.outbox=[];await persist({skipCloud:true});
 }
 async function downloadCloudSnapshot(ctx,meta){
- const bytes=await ctx.s.api.getBytes(ctx.s.api.ref(ctx.s.storage,meta.storagePath||ctx.path),25*1024*1024),remoteStore=JSON.parse(dec.decode(bytes));
+ const bytes=await downloadStorageBytes(ctx.s,meta.storagePath||ctx.path),remoteStore=JSON.parse(dec.decode(bytes));
  const remoteData=await open(masterKey,remoteStore.vault,'ivtc-vault-data-v1');mergeRemoteData(remoteData);recordAudit('Merged encrypted Firebase vault snapshot');await persist({skipCloud:true});
 }
 async function cloudSyncNow(reason='manual'){
@@ -177,7 +199,7 @@ async function discoverCloudVault(){
 async function restoreCloudVault(){
  const button=qs('#vault-cloud-restore'),password=qs('#vault-cloud-password')?.value||'',candidate=cloudRestore.candidate;if(!candidate)return;
  if(!password)return renderSetup('Enter the Vault password you use on your Mac.');
- try{button.disabled=true;button.textContent='Downloading encrypted Vault…';const s=window.IVTC.firebase._state;const bytes=await timeout(s.api.getBytes(s.api.ref(s.storage,candidate.meta.storagePath),25*1024*1024),'Encrypted Vault download',30000);const restored=JSON.parse(dec.decode(bytes));button.textContent='Verifying password…';const unlocked=await decryptBackup(restored,password);saveStore(restored);masterKey=unlocked.key;data=unlocked.contents;normalizeData();recordAudit('Existing encrypted cloud Vault restored on this device');await persist({skipCloud:true});startCloudReservations();renderUnlocked();cloudSyncNow('device restore');
+ try{button.disabled=true;button.textContent='Downloading encrypted Vault…';const s=window.IVTC.firebase._state;const bytes=await downloadStorageBytes(s,candidate.meta.storagePath);const restored=JSON.parse(dec.decode(bytes));button.textContent='Verifying password…';const unlocked=await decryptBackup(restored,password);saveStore(restored);masterKey=unlocked.key;data=unlocked.contents;normalizeData();recordAudit('Existing encrypted cloud Vault restored on this device');await persist({skipCloud:true});startCloudReservations();renderUnlocked();cloudSyncNow('device restore');
  }catch(e){renderSetup(e?.message?.includes('operation')?'That Vault password did not unlock the cloud copy. Check the password and try again.':(e?.message||'The encrypted cloud Vault could not be restored.'));}
 }
 async function createVault(){
