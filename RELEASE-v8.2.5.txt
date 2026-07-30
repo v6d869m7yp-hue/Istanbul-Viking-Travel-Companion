@@ -1,0 +1,16 @@
+Release v8.2.5 — Safari Firestore Transport Recovery
+
+Purpose
+- Repair Firestore reads that remained pending in Safari Private Browsing and VPN/proxy conditions.
+
+Changes
+- Replaced IndexedDB-backed persistentLocalCache with Firebase memoryLocalCache.
+- Enabled automatic long-polling detection for general browsers.
+- Forces long polling in Safari to bypass WebChannel buffering stalls.
+- Reuses the existing Firebase/Firestore singleton if another module initialized it first.
+- Exposes the active Firestore transport/cache mode in backend state for diagnostics.
+- Preserves local trip shadow, favorites, Vault encryption, Storage sync and cloud schema.
+
+Expected result
+- Trip document, reservations and members reads settle instead of timing out.
+- The Whole-trip cloud profiler proceeds through all Firestore stages.

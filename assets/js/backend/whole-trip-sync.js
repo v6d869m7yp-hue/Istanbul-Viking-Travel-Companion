@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 window.IVTC=window.IVTC||{};
-const VERSION='8.2.4';
+const VERSION='8.2.5';
 const FAVORITES_KEY='ivtc-favorites';
 const LAST_SYNC_KEY='ivtc.wholeTrip.lastSync.v1';
 function state(){const s=window.IVTC.firebase?._state;if(!s?.user||!s.db||!s.api)throw new Error('Sign in before synchronizing the trip.');return s;}

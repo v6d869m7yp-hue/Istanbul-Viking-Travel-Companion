@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v8.2.4
+Istanbul–Viking Travel Companion v8.2.5
 Firestore Read Profiler
 Build date: 2026-07-30
 

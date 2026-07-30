@@ -1,5 +1,4 @@
-Current release: v7.2.3 Data Layer Recovery
-Build date: 2026-07-29
-Expected cache: ivtc-v7.2.3-data-layer-recovery
-Recovery baseline: v6.9.2 Device Registry & Sync History
-Primary objective: restore the proven My Trips and Cloud Reservations data layer without carrying forward v7.0.x experimental code.
+Current release: v8.2.5 Safari Firestore Transport Recovery
+Build date: 2026-07-30
+Expected cache: ivtc-v8.2.5-safari-firestore-transport-recovery
+Primary objective: replace the stalled Safari persistent-cache/WebChannel path with memory cache and long polling.

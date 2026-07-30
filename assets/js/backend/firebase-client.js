@@ -3,7 +3,7 @@
 window.IVTC=window.IVTC||{};
 if(window.IVTC.firebase)return;
 const SDK_VERSION='12.1.0';
-const state={configured:false,connected:false,user:null,error:null,app:null,auth:null,db:null,storage:null,api:null,initializing:null,authReady:false};
+const state={configured:false,connected:false,user:null,error:null,app:null,auth:null,db:null,storage:null,api:null,initializing:null,authReady:false,firestoreMode:null};
 const config=window.IVTC_FIREBASE_CONFIG||{};
 function userView(user){
  if(!user)return null;
@@ -17,8 +17,12 @@ function userView(user){
   lastSignInTime:user.metadata?.lastSignInTime||null
  };
 }
-function publicState(){return {configured:state.configured,connected:state.connected,user:userView(state.user),error:state.error,authReady:state.authReady};}
+function publicState(){return {configured:state.configured,connected:state.connected,user:userView(state.user),error:state.error,authReady:state.authReady,firestoreMode:state.firestoreMode};}
 function emit(){window.dispatchEvent(new CustomEvent('ivtc:backend-state',{detail:publicState()}));}
+function isSafari(){
+ const ua=navigator.userAgent||'';
+ return /Safari/i.test(ua)&&!/Chrome|CriOS|FxiOS|EdgiOS|OPiOS|Android/i.test(ua);
+}
 async function initialize(){
  if(state.initializing)return state.initializing;
  state.initializing=(async()=>{
@@ -32,13 +36,34 @@ async function initialize(){
    const storageSdk=await import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-storage.js`);
    state.app=appSdk.getApps().length?appSdk.getApp():appSdk.initializeApp(config);
    state.auth=authSdk.getAuth(state.app);
-   try{state.db=fsSdk.initializeFirestore(state.app,{localCache:fsSdk.persistentLocalCache({tabManager:fsSdk.persistentMultipleTabManager()})});}
-   catch{state.db=fsSdk.getFirestore(state.app);}
+
+   // Safari Private Browsing and some VPN/proxy combinations can leave the
+   // IndexedDB-backed persistent cache or WebChannel transport pending forever.
+   // Use the documented memory cache and long-polling auto detection so reads
+   // always settle. The Travel Companion already stores its offline trip shadow
+   // and encrypted vault separately, so Firestore disk persistence is optional.
+   const firestoreSettings={
+    localCache:fsSdk.memoryLocalCache(),
+    experimentalAutoDetectLongPolling:true
+   };
+   if(isSafari()){
+    // Safari is the environment where the profiler demonstrated the stall.
+    // Forced long polling avoids WebChannel buffering by private/VPN proxies.
+    firestoreSettings.experimentalForceLongPolling=true;
+    delete firestoreSettings.experimentalAutoDetectLongPolling;
+   }
+   try{
+    state.db=fsSdk.initializeFirestore(state.app,firestoreSettings);
+    state.firestoreMode=isSafari()?'memory cache + forced long polling':'memory cache + auto-detected long polling';
+   }catch(error){
+    // initializeFirestore throws when another module already initialized this
+    // app. Reuse that exact singleton rather than creating a second instance.
+    state.db=fsSdk.getFirestore(state.app);
+    state.firestoreMode='existing Firestore singleton';
+   }
    state.storage=storageSdk.getStorage(state.app);
    state.api={...authSdk,...fsSdk,...storageSdk};state.configured=true;state.error=null;
 
-   // Firebase restores persisted authentication asynchronously. Do not report the
-   // backend as signed out until the first authoritative auth state has arrived.
    await new Promise(resolve=>{
     let settled=false;
     const finish=(user)=>{

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "release": "8.2.4",
+  "release": "8.2.5",
   "baseline": "6.9.2",
-  "status": "whole-trip-sync",
+  "status": "firestore-transport-recovery",
   "components": [
     {
       "name": "Firebase Authentication",
@@ -12,7 +12,7 @@
     {
       "name": "Firestore Trips",
       "state": "working",
-      "verification": "Proven memberUids array-contains query restored unchanged"
+      "verification": "Memory cache and Safari long-polling transport prevent private-browsing IndexedDB/WebChannel stalls"
     },
     {
       "name": "Cloud Reservations",
@@ -58,5 +58,5 @@
     "Vault sync regression checks pass"
   ],
   "milestone": "Synchronize the canonical trip, itinerary, favorites and cloud reservations across devices",
-  "label": "whole-trip-sync"
+  "label": "firestore-transport-recovery"
 }

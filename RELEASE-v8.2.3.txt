@@ -1,4 +1,4 @@
-Release v8.2.4 — Fast Active Trip Resolver
+Release v8.2.5 — Fast Active Trip Resolver
 
 - Uses the already-selected canonical trip ID immediately for whole-trip sync.
 - Falls back to repository discovery only when no stored trip ID exists.
