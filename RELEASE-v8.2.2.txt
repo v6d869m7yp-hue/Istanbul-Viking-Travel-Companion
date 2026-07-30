@@ -1,0 +1,6 @@
+Release v8.2.2 — Whole-Trip Cloud Profiler
+
+- Adds a live step-by-step profiler for whole-trip cloud reads.
+- Separately times active-trip resolution, local snapshot creation, server trip-document read, cached fallback, and reservations collection read.
+- Shows exact Firestore paths, elapsed milliseconds, and precise timeout/error messages.
+- Does not alter trip data or Vault contents.

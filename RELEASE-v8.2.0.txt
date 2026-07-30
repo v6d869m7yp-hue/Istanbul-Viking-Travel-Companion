@@ -1,4 +1,4 @@
-Release v8.2.1 — Whole-Trip Sync
+Release v8.2.2 — Whole-Trip Sync
 
 - Synchronizes the canonical trip profile, dates, travelers and full itinerary through Firestore.
 - Synchronizes guide favorites across Mac, iPad and iPhone.

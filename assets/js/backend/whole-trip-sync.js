@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 window.IVTC=window.IVTC||{};
-const VERSION='8.2.1';
+const VERSION='8.2.2';
 const FAVORITES_KEY='ivtc-favorites';
 const LAST_SYNC_KEY='ivtc.wholeTrip.lastSync.v1';
 function state(){const s=window.IVTC.firebase?._state;if(!s?.user||!s.db||!s.api)throw new Error('Sign in before synchronizing the trip.');return s;}
@@ -25,6 +25,59 @@ async function push({force=false}={}){const s=state(),local=await localSnapshot(
 }
 async function pull(){const local=await localSnapshot(),remote=await getRemote(local.tripId),sync=remote.wholeTripSync||{};applyLocal(remote);localStorage.setItem(LAST_SYNC_KEY,new Date().toISOString());localStorage.setItem(LAST_SYNC_KEY+'.revision',String(sync.revision||0));return {tripId:remote.id,revision:Number(sync.revision||0),favorites:(sync.favorites||[]).length,updatedAt:serial(sync.updatedAt||remote.wholeTripSyncUpdatedAt||remote.updatedAt),mode:'downloaded'};}
 async function synchronize(){const local=await localSnapshot(),remote=await getRemote(local.tripId),cloud=remote.wholeTripSync||{},cloudRev=Number(cloud.revision||0),localRev=Number(localStorage.getItem(LAST_SYNC_KEY+'.revision')||0);if(cloudRev>localRev){applyLocal(remote);localStorage.setItem(LAST_SYNC_KEY+'.revision',String(cloudRev));return {tripId:remote.id,revision:cloudRev,favorites:(cloud.favorites||[]).length,mode:'downloaded',updatedAt:serial(cloud.updatedAt)};}return push();}
+
+function nowMs(){return (window.performance&&performance.now)?performance.now():Date.now();}
+async function profiledStep(name,path,operation,limitMs=12000,onEvent){
+ const started=nowMs();
+ onEvent?.({type:'start',name,path,startedAt:new Date().toISOString()});
+ try{
+  const value=await timeout(operation(),limitMs,name);
+  const elapsed=Math.round(nowMs()-started);
+  onEvent?.({type:'success',name,path,elapsed,value});
+  return {ok:true,value,elapsed};
+ }catch(error){
+  const elapsed=Math.round(nowMs()-started);
+  const message=error?.message||String(error);
+  onEvent?.({type:'failure',name,path,elapsed,error:message});
+  return {ok:false,error:message,elapsed};
+ }
+}
+async function profileCloudReads(onEvent){
+ const overall=nowMs();
+ const results=[];
+ const record=e=>{results.push(e);onEvent?.(e);};
+ let s;
+ try{s=state();record({type:'success',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,value:{uid:s.user.uid}});}catch(error){record({type:'failure',name:'Firebase session',path:'Authentication + Firestore initialization',elapsed:0,error:error.message});return {ok:false,results,totalElapsed:Math.round(nowMs()-overall)};}
+ const active=await profiledStep('Resolve active trip','local active-trip repository',()=>activeTrip(),6000,record);
+ if(!active.ok)return {ok:false,results,totalElapsed:Math.round(nowMs()-overall)};
+ const tripId=active.value.id;
+ const local=await profiledStep('Build local snapshot','localStorage + packaged itinerary',()=>localSnapshot(),6000,record);
+ const ref=s.api.doc(s.db,'trips',tripId);
+ let remote=null;
+ if(s.api.getDocFromServer){
+  const server=await profiledStep('Trip document — server','trips/'+tripId,()=>s.api.getDocFromServer(ref),12000,record);
+  if(server.ok&&server.value.exists())remote={id:server.value.id,...server.value.data()};
+  else if(server.ok&&!server.value.exists())record({type:'failure',name:'Trip document — server',path:'trips/'+tripId,elapsed:server.elapsed,error:'Document does not exist.'});
+ }else record({type:'info',name:'Trip document — server',path:'trips/'+tripId,elapsed:0,error:'getDocFromServer is unavailable in this Firebase build.'});
+ if(!remote){
+  const cached=await profiledStep('Trip document — default/cache fallback','trips/'+tripId,()=>s.api.getDoc(ref),8000,record);
+  if(cached.ok&&cached.value.exists())remote={id:cached.value.id,...cached.value.data()};
+  else if(cached.ok&&!cached.value.exists())record({type:'failure',name:'Trip document — default/cache fallback',path:'trips/'+tripId,elapsed:cached.elapsed,error:'Document does not exist.'});
+ }
+ const reservations=await profiledStep('Reservations collection','trips/'+tripId+'/reservations',()=>s.api.getDocs(s.api.collection(s.db,'trips',tripId,'reservations')),10000,record);
+ const summary={
+  ok:!!remote,
+  tripId,
+  local:local.ok?local.value:null,
+  remote,
+  reservationCount:reservations.ok?reservations.value.size:null,
+  totalElapsed:Math.round(nowMs()-overall),
+  results
+ };
+ record({type:'complete',name:'Profiler complete',path:'Whole-trip download pipeline',elapsed:summary.totalElapsed,value:summary});
+ return summary;
+}
+
 async function auditLocal(){const trip=await activeTrip();const local=await localSnapshot();return {tripId:trip.id,label:trip.label||'Active trip',localRevision:Number(localStorage.getItem(LAST_SYNC_KEY+'.revision')||0),favoritesLocal:local.favorites.length,travelersLocal:Number(local.trip.travelers||1),itineraryDaysLocal:Array.isArray(local.trip.itinerary?.stages)?local.trip.itinerary.stages.length:0,lastDeviceSync:localStorage.getItem(LAST_SYNC_KEY)};}
 async function auditCloud(tripId){const s=state();let remote=null;let readError=null;const ref=s.api.doc(s.db,'trips',tripId);try{const reader=s.api.getDocFromServer? s.api.getDocFromServer(ref):s.api.getDoc(ref);const snap=await timeout(reader,18000,'Cloud trip audit');if(!snap.exists())throw new Error('The canonical trip was not found in Firestore.');remote={id:snap.id,...snap.data()};}catch(error){readError=error?.message||String(error);try{const snap=await timeout(s.api.getDoc(ref),8000,'Cached trip audit');if(snap.exists())remote={id:snap.id,...snap.data()};}catch{} }
  let reservations=null,reservationError=null;try{const q=await timeout(s.api.getDocs(s.api.collection(s.db,'trips',tripId,'reservations')),10000,'Reservation audit');reservations=q.size;}catch(error){reservationError=error?.message||String(error);}
@@ -32,5 +85,5 @@ async function auditCloud(tripId){const s=state();let remote=null;let readError=
  const sync=remote.wholeTripSync||{};return {available:true,tripId:remote.id,label:remote.label||'Active trip',cloudRevision:Number(sync.revision||0),cloudUpdatedAt:serial(sync.updatedAt||remote.wholeTripSyncUpdatedAt||remote.updatedAt),favoritesCloud:Array.isArray(sync.favorites)?sync.favorites.length:0,reservationsCloud:reservations,reservationError,travelersCloud:Number(remote.travelers||1),itineraryDaysCloud:Array.isArray(remote.itinerary?.stages)?remote.itinerary.stages.length:0,readWarning:readError};}
 async function audit(){const local=await auditLocal();const cloud=await auditCloud(local.tripId);return {local,cloud};}
 let timer=null;function schedule(){clearTimeout(timer);timer=setTimeout(()=>synchronize().catch(()=>{}),2500);}window.addEventListener('ivtc:favorites-changed',schedule);window.addEventListener('online',()=>setTimeout(()=>synchronize().catch(()=>{}),1000));
-window.IVTC.wholeTripSync=Object.freeze({version:VERSION,localSnapshot,getRemote,push,pull,synchronize,auditLocal,auditCloud,audit,schedule});
+window.IVTC.wholeTripSync=Object.freeze({version:VERSION,localSnapshot,getRemote,push,pull,synchronize,auditLocal,auditCloud,audit,profileCloudReads,schedule});
 })();

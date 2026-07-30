@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "8.2.1",
+  "release": "8.2.2",
   "baseline": "6.9.2",
   "status": "whole-trip-sync",
   "components": [

@@ -1,6 +1,6 @@
-const VERSION='8.2.1';
-const BUILD_ID='v8.2.1-local-first-trip-audit';
-const CACHE='ivtc-v8.2.1-local-first-trip-audit';
+const VERSION='8.2.2';
+const BUILD_ID='v8.2.2-whole-trip-profiler';
+const CACHE='ivtc-v8.2.2-whole-trip-profiler';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
