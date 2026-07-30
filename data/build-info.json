@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "8.2.0",
-  "buildId": "v8.2.0-whole-trip-sync",
+  "version": "8.2.1",
+  "buildId": "v8.2.1-local-first-trip-audit",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v8.2.0-whole-trip-sync",
-  "release": "Whole-Trip Sync",
+  "cacheName": "ivtc-v8.2.1-local-first-trip-audit",
+  "release": "Local-First Trip Audit",
   "pageCount": 107,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "whole-trip-sync"
+  "label": "local-first-trip-audit"
 }

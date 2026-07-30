@@ -1,0 +1,7 @@
+Release v8.2.1 — Local-first whole-trip sync audit
+
+- Displays local trip values immediately.
+- Loads cloud values independently.
+- Preserves local audit results when Firestore times out.
+- Adds server-read attempt, cached fallback, and retry-ready messaging.
+- Does not change Vault encryption or synchronization.

@@ -1,4 +1,4 @@
-Release v8.2.0 — Storage-primary Vault sync
+Release v8.2.1 — Storage-primary Vault sync
 
 - Treats the Firestore encrypted bridge as optional when Firebase Storage upload succeeds.
 - Continues metadata and locator publication after a bridge timeout.

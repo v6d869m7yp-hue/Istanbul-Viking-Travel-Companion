@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 window.IVTC=window.IVTC||{};
-const VERSION='8.2.0';
+const VERSION='8.2.1';
 const FAVORITES_KEY='ivtc-favorites';
 const LAST_SYNC_KEY='ivtc.wholeTrip.lastSync.v1';
 function state(){const s=window.IVTC.firebase?._state;if(!s?.user||!s.db||!s.api)throw new Error('Sign in before synchronizing the trip.');return s;}
@@ -25,8 +25,12 @@ async function push({force=false}={}){const s=state(),local=await localSnapshot(
 }
 async function pull(){const local=await localSnapshot(),remote=await getRemote(local.tripId),sync=remote.wholeTripSync||{};applyLocal(remote);localStorage.setItem(LAST_SYNC_KEY,new Date().toISOString());localStorage.setItem(LAST_SYNC_KEY+'.revision',String(sync.revision||0));return {tripId:remote.id,revision:Number(sync.revision||0),favorites:(sync.favorites||[]).length,updatedAt:serial(sync.updatedAt||remote.wholeTripSyncUpdatedAt||remote.updatedAt),mode:'downloaded'};}
 async function synchronize(){const local=await localSnapshot(),remote=await getRemote(local.tripId),cloud=remote.wholeTripSync||{},cloudRev=Number(cloud.revision||0),localRev=Number(localStorage.getItem(LAST_SYNC_KEY+'.revision')||0);if(cloudRev>localRev){applyLocal(remote);localStorage.setItem(LAST_SYNC_KEY+'.revision',String(cloudRev));return {tripId:remote.id,revision:cloudRev,favorites:(cloud.favorites||[]).length,mode:'downloaded',updatedAt:serial(cloud.updatedAt)};}return push();}
-async function audit(){const s=state(),trip=await activeTrip();const remote=await getRemote(trip.id);let reservations=0;try{const q=await timeout(s.api.getDocs(s.api.collection(s.db,'trips',trip.id,'reservations')),12000,'Reservation audit');reservations=q.size;}catch{}
- const sync=remote.wholeTripSync||{};return {tripId:trip.id,label:remote.label||trip.label,cloudRevision:Number(sync.revision||0),cloudUpdatedAt:serial(sync.updatedAt||remote.wholeTripSyncUpdatedAt||remote.updatedAt),favoritesLocal:favorites().length,favoritesCloud:(sync.favorites||[]).length,reservationsCloud:reservations,travelers:Number(remote.travelers||1),itineraryDays:Array.isArray(remote.itinerary?.stages)?remote.itinerary.stages.length:0,lastDeviceSync:localStorage.getItem(LAST_SYNC_KEY)};}
+async function auditLocal(){const trip=await activeTrip();const local=await localSnapshot();return {tripId:trip.id,label:trip.label||'Active trip',localRevision:Number(localStorage.getItem(LAST_SYNC_KEY+'.revision')||0),favoritesLocal:local.favorites.length,travelersLocal:Number(local.trip.travelers||1),itineraryDaysLocal:Array.isArray(local.trip.itinerary?.stages)?local.trip.itinerary.stages.length:0,lastDeviceSync:localStorage.getItem(LAST_SYNC_KEY)};}
+async function auditCloud(tripId){const s=state();let remote=null;let readError=null;const ref=s.api.doc(s.db,'trips',tripId);try{const reader=s.api.getDocFromServer? s.api.getDocFromServer(ref):s.api.getDoc(ref);const snap=await timeout(reader,18000,'Cloud trip audit');if(!snap.exists())throw new Error('The canonical trip was not found in Firestore.');remote={id:snap.id,...snap.data()};}catch(error){readError=error?.message||String(error);try{const snap=await timeout(s.api.getDoc(ref),8000,'Cached trip audit');if(snap.exists())remote={id:snap.id,...snap.data()};}catch{} }
+ let reservations=null,reservationError=null;try{const q=await timeout(s.api.getDocs(s.api.collection(s.db,'trips',tripId,'reservations')),10000,'Reservation audit');reservations=q.size;}catch(error){reservationError=error?.message||String(error);}
+ if(!remote)return {available:false,error:readError||'Cloud values unavailable.',reservationsCloud:reservations,reservationError};
+ const sync=remote.wholeTripSync||{};return {available:true,tripId:remote.id,label:remote.label||'Active trip',cloudRevision:Number(sync.revision||0),cloudUpdatedAt:serial(sync.updatedAt||remote.wholeTripSyncUpdatedAt||remote.updatedAt),favoritesCloud:Array.isArray(sync.favorites)?sync.favorites.length:0,reservationsCloud:reservations,reservationError,travelersCloud:Number(remote.travelers||1),itineraryDaysCloud:Array.isArray(remote.itinerary?.stages)?remote.itinerary.stages.length:0,readWarning:readError};}
+async function audit(){const local=await auditLocal();const cloud=await auditCloud(local.tripId);return {local,cloud};}
 let timer=null;function schedule(){clearTimeout(timer);timer=setTimeout(()=>synchronize().catch(()=>{}),2500);}window.addEventListener('ivtc:favorites-changed',schedule);window.addEventListener('online',()=>setTimeout(()=>synchronize().catch(()=>{}),1000));
-window.IVTC.wholeTripSync=Object.freeze({version:VERSION,localSnapshot,getRemote,push,pull,synchronize,audit,schedule});
+window.IVTC.wholeTripSync=Object.freeze({version:VERSION,localSnapshot,getRemote,push,pull,synchronize,auditLocal,auditCloud,audit,schedule});
 })();
