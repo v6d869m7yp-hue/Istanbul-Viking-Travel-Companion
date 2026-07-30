@@ -1,4 +1,4 @@
-Release v8.1.3 — Firestore Safari Recovery
+Release v8.1.4 — Firestore Safari Recovery
 
 - Removes blocking Firestore cache reads that could hang indefinitely in Safari.
 - Creates and displays the packaged Istanbul trip from a durable local shadow immediately.

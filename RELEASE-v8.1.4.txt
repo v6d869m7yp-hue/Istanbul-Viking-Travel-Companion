@@ -1,0 +1,7 @@
+Release v8.1.4 — Multi-copy Vault recovery
+
+- Discovers all accessible encrypted Vault envelopes instead of accepting the first trip match.
+- Sorts cloud copies by update time and revision.
+- Verifies the encrypted snapshot checksum before decryption.
+- Tries each available encrypted copy with the supplied Vault password, avoiding stale duplicate-trip snapshots.
+- Keeps the password and decrypted Vault contents local to the device.

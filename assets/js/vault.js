@@ -11,8 +11,8 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.1.3';
-let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
+const APP_VERSION='8.1.4';
+let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null,candidates:[]};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
 const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
@@ -208,32 +208,69 @@ function renderSetup(message=''){
 }
 async function discoverCloudVault(){
  if(loadStore())return;
- cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};renderSetup();
+ cloudRestore={state:'checking',message:'Checking your Firebase account for existing encrypted Vault copies…',candidate:null,candidates:[]};renderSetup();
  try{
   if(!window.IVTC?.firebase)throw new Error('Firebase components are unavailable.');
   const state=await timeout(window.IVTC.firebase.initialize(),'Firebase sign-in check',12000),s=window.IVTC.firebase._state;
-  if(!state.user||!s.db||!s.storage){cloudRestore={state:'signedout',message:'Sign in to Firebase first.',candidate:null};renderSetup();return;}
-  const candidates=[];
-  const activeId=localStorage.getItem('ivtc.activeTripId');if(activeId)candidates.push({id:activeId,label:localStorage.getItem('ivtc.activeTripLabel')||'Active trip'});
-  const deterministicId=`istanbul-viking-2026-${s.user.uid}`;if(!candidates.some(x=>x.id===deterministicId))candidates.push({id:deterministicId,label:'Istanbul · Viking · Venice & Northern Italy 2026'});
-  // Check known IDs first. This avoids the Safari Firestore collection-query hang seen on iPad.
-  for(const trip of candidates){
-   try{const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',trip.id,'envelopes','travel-vault')),'Vault metadata lookup',6000);if(snap.exists()){const meta=snap.data();if(meta?.storagePath){localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label);cloudRestore={state:'found',message:'',candidate:{tripId:trip.id,tripLabel:trip.label,meta}};renderSetup();return;}}}catch{}
-  }
-  // A short best-effort query catches older, non-deterministic trip IDs without blocking setup.
+  if(!state.user||!s.db||!s.storage){cloudRestore={state:'signedout',message:'Sign in to Firebase first.',candidate:null,candidates:[]};renderSetup();return;}
+  const tripMap=new Map();
+  const activeId=localStorage.getItem('ivtc.activeTripId');if(activeId)tripMap.set(activeId,{id:activeId,label:localStorage.getItem('ivtc.activeTripLabel')||'Active trip'});
+  const deterministicId=`istanbul-viking-2026-${s.user.uid}`;if(!tripMap.has(deterministicId))tripMap.set(deterministicId,{id:deterministicId,label:'Istanbul · Viking · Venice & Northern Italy 2026'});
+  // Include every accessible trip because an older duplicate may still contain a stale Vault envelope.
   try{
    const q=s.api.query(s.api.collection(s.db,'trips'),s.api.where('memberUids','array-contains',s.user.uid));
-   const trips=await timeout(s.api.getDocs(q),'Cloud trip lookup',5000);
-   for(const d of trips.docs){const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',d.id,'envelopes','travel-vault')),'Vault metadata lookup',5000);if(snap.exists()&&snap.data()?.storagePath){const label=d.data()?.label||'Cloud trip';localStorage.setItem('ivtc.activeTripId',d.id);localStorage.setItem('ivtc.activeTripLabel',label);cloudRestore={state:'found',message:'',candidate:{tripId:d.id,tripLabel:label,meta:snap.data()}};renderSetup();return;}}
-  }catch{}
-  cloudRestore={state:'none',message:'No uploaded encrypted Vault was found. On the Mac, open Travel Vault and use “Sync now” after the Istanbul trip appears. Then tap “Check cloud again” here.',candidate:null};renderSetup();
- }catch(e){cloudRestore={state:'error',message:e?.message||'The cloud Vault check could not be completed.',candidate:null};renderSetup();}
+   const trips=await timeout(s.api.getDocs(q),'Cloud trip lookup',7000);
+   for(const d of trips.docs)tripMap.set(d.id,{id:d.id,label:d.data()?.label||'Cloud trip'});
+  }catch(error){console.warn('Cloud trip list unavailable; checking known trip IDs only.',error)}
+  const found=[];
+  for(const trip of tripMap.values()){
+   try{
+    const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',trip.id,'envelopes','travel-vault')),'Vault metadata lookup',6000);
+    if(snap.exists()){
+     const meta=snap.data();
+     if(meta?.storagePath||Number(meta?.firestoreChunkCount||0)>0){
+      const ts=meta?.updatedAt?.toMillis?.()||meta?.updatedAt?.seconds*1000||0;
+      found.push({tripId:trip.id,tripLabel:trip.label,meta,sortTime:Number(ts||0),revision:Number(meta?.revision||0)});
+     }
+    }
+   }catch(error){console.warn(`Vault metadata unavailable for ${trip.id}.`,error)}
+  }
+  found.sort((a,b)=>(b.sortTime-a.sortTime)||(b.revision-a.revision));
+  if(found.length){
+   const candidate=found[0];
+   localStorage.setItem('ivtc.activeTripId',candidate.tripId);localStorage.setItem('ivtc.activeTripLabel',candidate.tripLabel);
+   cloudRestore={state:'found',message:'',candidate,candidates:found};renderSetup();return;
+  }
+  cloudRestore={state:'none',message:'No uploaded encrypted Vault was found. On the Mac, open Travel Vault and use “Sync now,” then tap “Check cloud again” here.',candidate:null,candidates:[]};renderSetup();
+ }catch(e){cloudRestore={state:'error',message:e?.message||'The cloud Vault check could not be completed.',candidate:null,candidates:[]};renderSetup();}
 }
 async function restoreCloudVault(){
- const button=qs('#vault-cloud-restore'),password=qs('#vault-cloud-password')?.value||'',candidate=cloudRestore.candidate;if(!candidate)return;
+ const button=qs('#vault-cloud-restore'),password=qs('#vault-cloud-password')?.value||'';
+ const candidates=(cloudRestore.candidates?.length?cloudRestore.candidates:[cloudRestore.candidate]).filter(Boolean);
+ if(!candidates.length)return;
  if(!password)return renderSetup('Enter the Vault password you use on your Mac.');
- try{button.disabled=true;button.textContent='Downloading encrypted Vault…';const s=window.IVTC.firebase._state;const text=await downloadSnapshotText(s,candidate.tripId,candidate.meta);const restored=JSON.parse(text);button.textContent='Verifying password…';const unlocked=await decryptBackup(restored,password);saveStore(restored);masterKey=unlocked.key;data=unlocked.contents;normalizeData();recordAudit('Existing encrypted cloud Vault restored on this device');await persist({skipCloud:true});startCloudReservations();renderUnlocked();cloudSyncNow('device restore');
- }catch(e){renderSetup(e?.message?.includes('operation')?'That Vault password did not unlock the cloud copy. Check the password and try again.':(e?.message||'The encrypted cloud Vault could not be restored. On the Mac, open the Vault and tap Sync now once to publish the Safari-compatible copy.'));}
+ let lastError=null;
+ try{
+  button.disabled=true;
+  const s=window.IVTC.firebase._state;
+  for(let i=0;i<candidates.length;i++){
+   const candidate=candidates[i];
+   try{
+    button.textContent=candidates.length>1?`Checking encrypted copy ${i+1} of ${candidates.length}…`:'Downloading encrypted Vault…';
+    const text=await downloadSnapshotText(s,candidate.tripId,candidate.meta);
+    if(candidate.meta?.checksum){const actual=await sha256Text(text);if(actual!==candidate.meta.checksum)throw new Error('Encrypted Vault checksum mismatch.');}
+    const restored=JSON.parse(text);
+    button.textContent='Verifying password…';
+    const unlocked=await decryptBackup(restored,password);
+    localStorage.setItem('ivtc.activeTripId',candidate.tripId);localStorage.setItem('ivtc.activeTripLabel',candidate.tripLabel);
+    saveStore(restored);masterKey=unlocked.key;data=unlocked.contents;normalizeData();recordAudit('Existing encrypted cloud Vault restored on this device');await persist({skipCloud:true});startCloudReservations();renderUnlocked();cloudSyncNow('device restore');return;
+   }catch(error){lastError=error;console.warn(`Encrypted Vault copy for ${candidate.tripId} did not unlock; trying next available copy.`,error)}
+  }
+  throw lastError||new Error('No encrypted Vault copy could be unlocked.');
+ }catch(e){
+  const cryptographicFailure=e?.name==='OperationError'||e?.message?.includes('operation')||e?.message?.includes('decrypt');
+  renderSetup(cryptographicFailure?'The password did not unlock any available cloud Vault copy. Check the exact password used on the Mac and try again.':(e?.message||'The encrypted cloud Vault could not be restored.'));
+ }
 }
 async function createVault(){
  const password=qs('#vault-password').value,confirm=qs('#vault-confirm').value,owner=qs('#vault-owner').value.trim();

@@ -1,6 +1,6 @@
-const VERSION='8.1.3';
-const BUILD_ID='v8.1.3-canonical-trip-id-repair';
-const CACHE='ivtc-v8.1.3-canonical-trip-id-repair';
+const VERSION='8.1.4';
+const BUILD_ID='v8.1.4-canonical-trip-id-repair';
+const CACHE='ivtc-v8.1.4-canonical-trip-id-repair';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
