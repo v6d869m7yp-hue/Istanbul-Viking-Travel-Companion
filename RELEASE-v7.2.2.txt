@@ -1,0 +1,7 @@
+Istanbul · Viking Travel Companion v7.2.2
+Cloud Write Recovery
+
+- Removes the unrelated encrypted connection-test subcollection write from trip creation.
+- Saves the trip document directly to Firestore.
+- Adds a 15-second timeout so Refresh cannot remain stuck indefinitely.
+- Retains automatic Istanbul itinerary bootstrap and active-trip selection.

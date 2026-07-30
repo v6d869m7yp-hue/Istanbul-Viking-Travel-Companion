@@ -1,7 +1,7 @@
-Istanbul Viking Travel Companion v7.2.1 — Trip Import Repair
+Istanbul Viking Travel Companion v7.2.2 — Trip Import Repair
 
 - Repairs the Hotel & Lodging “Import known itinerary” action when no trip is selected.
 - Creates the packaged Istanbul/Viking/Venice trip when the account has no cloud trips.
 - Selects an existing trip when one exists but no active trip is stored on the device.
 - Shows visible Importing, success, and failure status instead of silently returning.
-- Keeps My Trips automatic cloud-trip bootstrap from v7.2.1.
+- Keeps My Trips automatic cloud-trip bootstrap from v7.2.2.

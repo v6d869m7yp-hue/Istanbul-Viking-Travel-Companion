@@ -1,6 +1,6 @@
-const VERSION='7.2.1';
-const BUILD_ID='v7.2.1-cloud-trip-bootstrap';
-const CACHE='ivtc-v7.2.1-cloud-trip-bootstrap';
+const VERSION='7.2.2';
+const BUILD_ID='v7.2.2-cloud-trip-bootstrap';
+const CACHE='ivtc-v7.2.2-cloud-trip-bootstrap';
 const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
