@@ -63,50 +63,65 @@ async function bootstrapPackagedTrip(packaged){
 async function updateTrip(id,changes){const s=requireState();if(!id)throw new Error('Trip ID is required.');const old=readShadow().find(t=>t.id===id)||{id};upsertShadow({...old,...changes,updatedAt:new Date().toISOString()});s.api.updateDoc(s.api.doc(s.db,'trips',id),{...changes,updatedAt:s.api.serverTimestamp()}).catch(()=>{});}
 async function deleteTrip(id){const s=requireState();if(!id)throw new Error('Trip ID is required.');removeShadow(id);s.api.deleteDoc(s.api.doc(s.db,'trips',id)).catch(()=>{});if(localStorage.getItem('ivtc.activeTripId')===id){localStorage.removeItem('ivtc.activeTripId');localStorage.removeItem('ivtc.activeTripLabel');}}
 
-async function mergeTripsInto(targetId,sourceIds=[]){
+async function mergeTripsInto(preferredId,otherIds=[]){
  const s=requireState();
- if(!targetId)throw new Error('Choose the trip to keep.');
- const unique=[...new Set(sourceIds.filter(id=>id&&id!==targetId))];
- if(!unique.length)throw new Error('No other trips were selected to merge.');
- const targetRef=s.api.doc(s.db,'trips',targetId);
- const targetSnap=await timeoutResult(s.api.getDoc(targetRef),5000);
- if(!targetSnap.value?.exists())throw new Error('The destination trip could not be verified in Firestore.');
- const target={id:targetId,...targetSnap.value.data()};
- const merged={...target};
- const maxTravelers=[Number(target.travelers||0)];
+ if(!preferredId)throw new Error('Choose the trip to keep.');
+ const candidateIds=[preferredId,...new Set(otherIds.filter(Boolean))];
+ const localById=new Map(readShadow().map(t=>[t.id,t]));
+ const cloud=new Map();
+ for(const id of candidateIds){
+  const snap=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',id)),3500);
+  if(snap.value?.exists())cloud.set(id,{id,...snap.value.data()});
+ }
+ // The visually preferred left trip may be local-only. In that case retain the
+ // existing Firestore document as the canonical ID and overwrite its display
+ // metadata with the richer left-trip data.
+ const canonicalId=cloud.has(preferredId)?preferredId:[...candidateIds].find(id=>cloud.has(id));
+ if(!canonicalId)throw new Error('No cloud trip could be verified for the migration.');
+ const preferred=localById.get(preferredId)||cloud.get(preferredId)||{};
+ const canonicalCloud=cloud.get(canonicalId)||{};
+ const merged={...canonicalCloud,...preferred,id:canonicalId};
+ const allSources=candidateIds.filter(id=>id!==canonicalId);
  let copiedReservations=0,copiedVaultDocs=0;
- for(const sourceId of unique){
-  const sourceSnap=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId)),5000);
-  if(!sourceSnap.value?.exists())continue;
-  const source={id:sourceId,...sourceSnap.value.data()};
+ const maxTravelers=[Number(preferred.travelers||0),Number(canonicalCloud.travelers||0)];
+ for(const sourceId of allSources){
+  const source=cloud.get(sourceId)||localById.get(sourceId)||{};
   maxTravelers.push(Number(source.travelers||0));
   if(!merged.startDate||String(source.startDate||'')<String(merged.startDate))merged.startDate=source.startDate||merged.startDate;
   if(!merged.endDate||String(source.endDate||'')>String(merged.endDate))merged.endDate=source.endDate||merged.endDate;
   if(!merged.itinerary&&source.itinerary)merged.itinerary=source.itinerary;
   if(!merged.packagedVersion&&source.packagedVersion)merged.packagedVersion=source.packagedVersion;
-  const reservations=await timeoutResult(s.api.getDocs(s.api.collection(s.db,'trips',sourceId,'reservations')),7000);
-  if(reservations.value){
-   const batch=s.api.writeBatch(s.db);
-   reservations.value.docs.forEach(d=>{batch.set(s.api.doc(s.db,'trips',targetId,'reservations',d.id),{...d.data(),tripId:targetId,updatedAt:s.api.serverTimestamp()},{merge:true});copiedReservations++;});
-   if(copiedReservations)await timeoutResult(batch.commit(),7000);
-  }
-  const envelope=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId,'envelopes','travel-vault')),5000);
-  if(envelope.value?.exists()&&Number(envelope.value.data().firestoreChunkCount||0)>0){
-   const count=Number(envelope.value.data().firestoreChunkCount||0),batch=s.api.writeBatch(s.db);
-   for(let i=0;i<count;i++){
-    const chunk=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId,'envelopes','travel-vault','chunks',String(i))),5000);
-    if(chunk.value?.exists()){batch.set(s.api.doc(s.db,'trips',targetId,'envelopes','travel-vault','chunks',String(i)),chunk.value.data(),{merge:true});copiedVaultDocs++;}
+  if(cloud.has(sourceId)){
+   const reservations=await timeoutResult(s.api.getDocs(s.api.collection(s.db,'trips',sourceId,'reservations')),6000);
+   if(reservations.value?.docs?.length){
+    const batch=s.api.writeBatch(s.db);
+    reservations.value.docs.forEach(d=>{batch.set(s.api.doc(s.db,'trips',canonicalId,'reservations',d.id),{...d.data(),tripId:canonicalId,updatedAt:s.api.serverTimestamp()},{merge:true});copiedReservations++;});
+    await timeoutResult(batch.commit(),6000);
    }
-   batch.set(s.api.doc(s.db,'trips',targetId,'envelopes','travel-vault'),{...envelope.value.data(),storagePath:`trips/${targetId}/encrypted/travel-vault.itvcsync`,mergedFrom:sourceId,updatedAt:s.api.serverTimestamp()},{merge:true});
-   await timeoutResult(batch.commit(),7000);
+   const envelope=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId,'envelopes','travel-vault')),4000);
+   if(envelope.value?.exists()&&Number(envelope.value.data().firestoreChunkCount||0)>0){
+    const count=Number(envelope.value.data().firestoreChunkCount||0),batch=s.api.writeBatch(s.db);
+    for(let i=0;i<count;i++){
+     const chunk=await timeoutResult(s.api.getDoc(s.api.doc(s.db,'trips',sourceId,'envelopes','travel-vault','chunks',String(i))),4000);
+     if(chunk.value?.exists()){batch.set(s.api.doc(s.db,'trips',canonicalId,'envelopes','travel-vault','chunks',String(i)),chunk.value.data(),{merge:true});copiedVaultDocs++;}
+    }
+    batch.set(s.api.doc(s.db,'trips',canonicalId,'envelopes','travel-vault'),{...envelope.value.data(),storagePath:`trips/${canonicalId}/encrypted/travel-vault.itvcsync`,mergedFrom:sourceId,updatedAt:s.api.serverTimestamp()},{merge:true});
+    await timeoutResult(batch.commit(),6000);
+   }
+   await timeoutResult(s.api.setDoc(s.api.doc(s.db,'trips',sourceId),{status:'archived',mergedInto:canonicalId,updatedAt:s.api.serverTimestamp()},{merge:true}),5000);
   }
-  await s.api.setDoc(s.api.doc(s.db,'trips',sourceId),{status:'archived',mergedInto:targetId,updatedAt:s.api.serverTimestamp()},{merge:true});
-  upsertShadow({...source,status:'archived',mergedInto:targetId,updatedAt:new Date().toISOString()});
+  removeShadow(sourceId);
  }
- merged.travelers=Math.max(...maxTravelers,1);merged.status='active';merged.updatedAt=new Date().toISOString();
- await s.api.setDoc(targetRef,{label:merged.label||'Istanbul · Viking · Venice & Northern Italy 2026',startDate:merged.startDate||null,endDate:merged.endDate||null,travelers:merged.travelers,status:'active',itinerary:merged.itinerary||null,packagedVersion:merged.packagedVersion||null,updatedAt:s.api.serverTimestamp()},{merge:true});
- upsertShadow(merged);selectTrip(merged);
- return {trip:merged,copiedReservations,copiedVaultDocs,archived:unique.length};
+ merged.label=preferred.label||merged.label||'Istanbul · Viking · Venice & Northern Italy 2026';
+ merged.startDate=preferred.startDate||merged.startDate||null;
+ merged.endDate=preferred.endDate||merged.endDate||null;
+ merged.travelers=Math.max(...maxTravelers,1);
+ merged.status='active';merged.updatedAt=new Date().toISOString();
+ const targetRef=s.api.doc(s.db,'trips',canonicalId);
+ const write=await timeoutResult(s.api.setDoc(targetRef,{label:merged.label,startDate:merged.startDate,endDate:merged.endDate,travelers:merged.travelers,status:'active',itinerary:merged.itinerary||null,packagedVersion:merged.packagedVersion||null,ownerUid:canonicalCloud.ownerUid||s.user.uid,memberUids:canonicalCloud.memberUids||[s.user.uid],roles:canonicalCloud.roles||{[s.user.uid]:'owner'},migratedFrom:[...new Set(candidateIds.filter(id=>id!==canonicalId))],updatedAt:s.api.serverTimestamp()},{merge:true}),7000);
+ if(!write.value&&!write.timeout)throw write.error||new Error('The canonical trip update failed.');
+ removeShadow(preferredId);upsertShadow(merged);selectTrip(merged);
+ return {trip:merged,copiedReservations,copiedVaultDocs,archived:allSources.length,canonicalId};
 }
 
 async function duplicateTrip(id){const source=(await listTrips()).find(t=>t.id===id);if(!source)throw new Error('Trip not found.');return createTrip({label:`${source.label||'Trip'} copy`,startDate:source.startDate||null,endDate:source.endDate||null,travelers:source.travelers||1,status:'active',source:'duplicate',itinerary:source.itinerary||null});}

@@ -1,0 +1,9 @@
+Istanbul · Viking Travel Companion v8.1.0
+
+Canonical Trip Migration
+
+- Migrates the richer left-hand itinerary metadata into the existing verified Firestore trip document.
+- Preserves the canonical cloud document ID used by Firebase Storage security rules.
+- Copies reservations and encrypted Vault bridge chunks from duplicate cloud trips.
+- Archives duplicate cloud documents and removes local-only duplicate shadows.
+- Leaves one active trip labeled Istanbul · Viking · Venice & Northern Italy 2026.

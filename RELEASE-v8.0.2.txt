@@ -1,4 +1,4 @@
-Version 8.0.4 — Firestore Vault Bridge
+Version 8.1.0 — Firestore Vault Bridge
 
 - Adds a Safari-compatible encrypted Vault transport through chunked Firestore documents.
 - Mac sync now publishes the same encrypted Vault snapshot to Firebase Storage and the Firestore bridge.
