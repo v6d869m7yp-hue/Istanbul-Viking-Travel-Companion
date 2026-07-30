@@ -1,4 +1,4 @@
-Release v7.2.6 — Safari Reservation Recovery
+Release v8.0.0 — Safari Reservation Recovery
 
 - Renders the six known lodging records immediately from a durable device copy.
 - Removes blocking Firestore reads from reservation startup.

@@ -11,7 +11,7 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='7.2.6';
+const APP_VERSION='8.0.0';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -225,13 +225,21 @@ function unifiedReservationsPanel(records){
 async function startCloudReservations(){
  if(!masterKey||!data)return;
  try{
-  if(!window.IVTC?.firebase||!window.IVTC?.reservations){cloudReservationMeta={status:'error',message:'Cloud reservation components did not load.'};renderUnlocked();return}
-  const state=await window.IVTC.firebase.initialize();
-  if(!state.user){cloudReservationMeta={status:'signed-out'};cloudReservations=[];renderUnlocked();return}
-  if(!localStorage.getItem('ivtc.activeTripId')){cloudReservationMeta={status:'no-trip'};cloudReservations=[];renderUnlocked();return}
-  cloudReservationUnsub?.();cloudReservationMeta={status:'loading'};
-  cloudReservationUnsub=window.IVTC.reservations.subscribe((items,meta)=>{cloudReservations=items;cloudReservationMeta={status:'ready',...meta};renderUnlocked()},err=>{cloudReservationMeta={status:'error',message:err.message};renderUnlocked()});
- }catch(e){cloudReservationMeta={status:'error',message:e.message};renderUnlocked()}
+  if(!window.IVTC?.tripRepository){cloudReservationMeta={status:'error',message:'Unified trip repository did not load.'};renderUnlocked();return}
+  cloudReservationUnsub?.();cloudReservationMeta={status:'loading'};renderUnlocked();
+  cloudReservationUnsub=await window.IVTC.tripRepository.subscribeReservations((items,meta)=>{
+   cloudReservations=items;cloudReservationMeta={status:'ready',...meta};renderUnlocked();
+  },err=>{
+   const local=window.IVTC.tripRepository.localReservations();
+   if(local.length){cloudReservations=local;cloudReservationMeta={status:'ready',fromCache:true,cloudError:err?.message||''};renderUnlocked();}
+   else{cloudReservationMeta={status:'error',message:err?.message||'Reservations could not load.'};renderUnlocked();}
+  });
+ }catch(e){
+  const local=window.IVTC?.tripRepository?.localReservations?.()||[];
+  if(local.length){cloudReservations=local;cloudReservationMeta={status:'ready',fromCache:true,cloudError:e.message};}
+  else cloudReservationMeta={status:'error',message:e.message};
+  renderUnlocked();
+ }
 }
 function renderUnlocked(){
  if(!data||!masterKey)return renderLocked();normalizeData();

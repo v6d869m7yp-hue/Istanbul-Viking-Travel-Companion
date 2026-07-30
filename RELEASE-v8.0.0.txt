@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v8.0.0
+
+Unified Trip Repository
+- Adds one local-first repository for active trip and reservation access.
+- Loads Vault cloud itinerary from the same reservation source used by Reservations.
+- Includes Firebase, trip, and reservation components on the Vault page.
+- Seeds the known six-trip lodging records immediately and syncs in the background.
+- Removes blocking dependency on Firestore for initial rendering.
