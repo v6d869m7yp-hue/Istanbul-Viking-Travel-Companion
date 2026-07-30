@@ -5,13 +5,14 @@ if(!HOST)return;
 const STORAGE='ivtc.travelVault.v1';
 const SESSION='ivtc.travelVault.autoLock';
 const DEVICE_KEY='ivtc.travelVault.deviceId';
-const deviceId=localStorage.getItem(DEVICE_KEY)||crypto.randomUUID();localStorage.setItem(DEVICE_KEY,deviceId);
+const DEVICE_CLASS_KEY='ivtc.travelVault.deviceClass';
+let deviceId=localStorage.getItem(DEVICE_KEY)||crypto.randomUUID();localStorage.setItem(DEVICE_KEY,deviceId);
 const ITERATIONS=310000;
 const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='8.1.6';
+const APP_VERSION='8.1.7';
 let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null,candidates:[]};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
@@ -39,8 +40,10 @@ async function open(key,box,aad='ivtc-vault',raw=false){
 }
 async function exportRawKey(key){return new Uint8Array(await crypto.subtle.exportKey('raw',key))}
 function defaultData(owner){return {schema:3,revision:0,sync:{remoteRevision:-1,lastSyncedAt:null,history:[]},backup:{lastExportAt:null,lastExportRevision:-1},createdAt:now(),updatedAt:now(),travelers:[{id:crypto.randomUUID(),name:owner||'Traveler 1',role:'Owner'}],records:[],documents:[],settings:{autoLockMinutes:15},audit:[],devices:[{id:deviceId,name:deviceName(),addedAt:now(),lastSeen:now()}],outbox:[]}}
-function deviceName(){const ua=navigator.userAgent||'';const platform=navigator.platform||'';const touchPoints=Number(navigator.maxTouchPoints||0);const isIPad=/iPad/i.test(ua)||(platform==='MacIntel'&&touchPoints>1)||/Macintosh.*Mobile/i.test(ua);const kind=/iPhone/i.test(ua)?'iPhone':isIPad?'iPad':/Macintosh|MacIntel/i.test(ua)?'Mac':'Apple device';return `${kind} · Safari`}
-function normalizeData(){data.schema=3;data.revision=Number(data.revision||0);data.sync=data.sync||{remoteRevision:-1,lastSyncedAt:null,history:[]};data.sync.history=data.sync.history||[];data.backup=data.backup||{lastExportAt:null,lastExportRevision:-1};data.travelers=data.travelers||[];data.records=data.records||[];data.documents=data.documents||[];data.audit=data.audit||[];data.settings=data.settings||{autoLockMinutes:15};data.devices=data.devices||[];data.outbox=data.outbox||[];let d=data.devices.find(x=>x.id===deviceId);if(!d){d={id:deviceId,name:deviceName(),addedAt:now(),lastSeen:now(),lastSyncedAt:null,syncCount:0,appVersion:APP_VERSION};data.devices.push(d)}d.name=deviceName();d.lastSeen=now();d.appVersion=APP_VERSION;for(const r of data.records){r.attachments=r.attachments||[];r.status=r.status||'confirmed';r.updatedAt=r.updatedAt||data.updatedAt}}
+function deviceClass(){const ua=navigator.userAgent||'';const platform=navigator.platform||'';const touchPoints=Number(navigator.maxTouchPoints||0);const shortSide=Math.min(Number(screen?.width||0),Number(screen?.height||0));if(/iPhone|iPod/i.test(ua))return 'iphone';if(/iPad/i.test(ua))return 'ipad';if((platform==='MacIntel'||/Macintosh/i.test(ua))&&touchPoints>1)return shortSide&&shortSide<600?'iphone':'ipad';if(/Macintosh|MacIntel/i.test(ua))return 'mac';return 'apple';}
+function deviceName(){const kind={iphone:'iPhone',ipad:'iPad',mac:'Mac',apple:'Apple device'}[deviceClass()]||'Apple device';return `${kind} · Safari`}
+function classFromDeviceName(name){const n=String(name||'').toLowerCase();return n.startsWith('iphone')?'iphone':n.startsWith('ipad')?'ipad':n.startsWith('mac')?'mac':'apple'}
+function normalizeData(){data.schema=3;data.revision=Number(data.revision||0);data.sync=data.sync||{remoteRevision:-1,lastSyncedAt:null,history:[]};data.sync.history=data.sync.history||[];data.backup=data.backup||{lastExportAt:null,lastExportRevision:-1};data.travelers=data.travelers||[];data.records=data.records||[];data.documents=data.documents||[];data.audit=data.audit||[];data.settings=data.settings||{autoLockMinutes:15};data.devices=data.devices||[];data.outbox=data.outbox||[];const detectedClass=deviceClass();const storedClass=localStorage.getItem(DEVICE_CLASS_KEY);let d=data.devices.find(x=>x.id===deviceId);const inheritedMismatch=(storedClass&&storedClass!==detectedClass)||(d&&classFromDeviceName(d.name)!==detectedClass&&classFromDeviceName(d.name)!=='apple');if(inheritedMismatch){deviceId=crypto.randomUUID();localStorage.setItem(DEVICE_KEY,deviceId);d=null}localStorage.setItem(DEVICE_CLASS_KEY,detectedClass);if(!d){d={id:deviceId,name:deviceName(),addedAt:now(),lastSeen:now(),lastSyncedAt:null,syncCount:0,appVersion:APP_VERSION};data.devices.push(d)}d.name=deviceName();d.lastSeen=now();d.appVersion=APP_VERSION;for(const r of data.records){r.attachments=r.attachments||[];r.status=r.status||'confirmed';r.updatedAt=r.updatedAt||data.updatedAt}}
 
 function currentDevice(){return data?.devices?.find(x=>x.id===deviceId)}
 function addSyncHistory(direction,status,note='',bytes=0){
