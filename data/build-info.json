@@ -1,12 +1,12 @@
 {
-  "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "7.0.1",
-  "buildId": "v7.0.1-navigation-hotfix",
+  "appName": "Istanbul–Viking Travel Companion",
+  "version": "7.0.2",
+  "buildId": "v7.0.2-stability-recovery",
   "buildDate": "2026-07-29",
-  "cacheName": "ivtc-v7.0.1",
-  "release": "Device Registry & Sync History",
+  "cacheName": "ivtc-v7.0.2-stability-recovery",
+  "release": "Stability Recovery",
   "pageCount": 106,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "device-registry-sync-history"
+  "label": "stability-recovery"
 }

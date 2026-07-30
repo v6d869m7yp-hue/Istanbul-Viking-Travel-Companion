@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v7.0.1
+Istanbul–Viking Travel Companion v7.0.2
 Device Registry & Sync History
 
 - Adds visible step-by-step encrypted Vault sync progress.
