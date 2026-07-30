@@ -1,0 +1,7 @@
+Release v7.2.6 — Safari Reservation Recovery
+
+- Renders the six known lodging records immediately from a durable device copy.
+- Removes blocking Firestore reads from reservation startup.
+- Continues cloud synchronization in the background.
+- Guarantees the loading status clears even when Safari leaves Firestore pending.
+- Updates the reservations page release marker for unambiguous deployment verification.

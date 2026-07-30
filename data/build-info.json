@@ -1,9 +1,9 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "7.2.5",
-  "buildId": "v7.2.5-offline-trip-recovery",
+  "version": "7.2.6",
+  "buildId": "v7.2.6-offline-trip-recovery",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v7.2.5-offline-trip-recovery",
+  "cacheName": "ivtc-v7.2.6-offline-trip-recovery",
   "release": "Cloud Trip Bootstrap",
   "pageCount": 106,
   "mapAssetCount": 27,
