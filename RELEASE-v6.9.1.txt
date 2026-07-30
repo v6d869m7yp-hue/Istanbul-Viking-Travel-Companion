@@ -1,5 +1,5 @@
-Istanbul–Viking Travel Companion v7.0.3
-Device Registry & Sync History
+Istanbul–Viking Travel Companion v7.1.0
+Data Layer Recovery
 
 - Adds visible step-by-step encrypted Vault sync progress.
 - Adds timeouts for Firebase connection, metadata, upload, download, and finalization.

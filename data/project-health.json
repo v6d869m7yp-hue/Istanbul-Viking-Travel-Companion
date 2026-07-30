@@ -1,56 +1,25 @@
 {
   "schemaVersion": 1,
-  "release": "7.0.3",
-  "baseline": "6.8.1",
-  "status": "backend-unification",
+  "release": "7.1.0",
+  "baseline": "6.9.2",
+  "status": "stability-recovery",
   "components": [
-    {
-      "name": "Firebase Authentication",
-      "state": "working",
-      "verification": "Shared persisted session on My Trips, Reservations, and Backend Readiness"
-    },
-    {
-      "name": "Firestore Trips",
-      "state": "working",
-      "verification": "My Trips read/write test"
-    },
-    {
-      "name": "Cloud Reservations",
-      "state": "working",
-      "verification": "Six active-trip lodging records confirmed"
-    },
-    {
-      "name": "Interactive Maps",
-      "state": "working",
-      "verification": "Destination and marker navigation regression test"
-    },
-    {
-      "name": "Travel Vault",
-      "state": "working",
-      "verification": "Lock, unlock, upload, preview, export, verify, restore"
-    },
-    {
-      "name": "Offline App Cache",
-      "state": "working",
-      "verification": "Service-worker registration and cache check"
-    },
-    {
-      "name": "Automatic Encrypted Vault Sync",
-      "state": "planned",
-      "verification": "Required before finished release"
-    },
-    {
-      "name": "Automatic iCloud Sync",
-      "state": "not-supported",
-      "verification": "Manual encrypted backup to iCloud Drive remains supported"
-    }
+    {"name":"Firebase Authentication","state":"working","verification":"Proven v6.9.2 persisted-session implementation restored unchanged"},
+    {"name":"Firestore Trips","state":"working","verification":"Proven memberUids array-contains query restored unchanged"},
+    {"name":"Cloud Reservations","state":"working","verification":"Proven active-trip reservation model restored unchanged"},
+    {"name":"Interactive Maps","state":"working","verification":"No map code changed from the tested baseline"},
+    {"name":"Travel Vault","state":"working","verification":"Encryption, backup, restore and document workflow preserved"},
+    {"name":"Encrypted Vault Sync","state":"working","verification":"Tested v6.9.2 sync, device registry and sync history preserved"},
+    {"name":"Offline App Cache","state":"working","verification":"New v7.1.0 cache identity prevents stale v7.0.x assets"},
+    {"name":"Whole-Trip Sync Experiment","state":"planned","verification":"Removed from this recovery release and deferred for isolated development"}
   ],
   "releaseGates": [
     "Automated build validation passes",
-    "Manual regression checklist completed",
-    "Rollback ZIP retained",
-    "Running build identifiers match"
+    "My Trips shows the existing trip",
+    "Cloud Reservations shows six records",
+    "Maps, Vault and Vault Sync regression checks pass",
+    "Rollback ZIP retained"
   ],
-  "milestone": "Encrypted Vault Sync \u2014 Stage 1",
-  "label": "device-registry-sync-history"
+  "milestone": "Restore the proven v6.9.2 data layer",
+  "label": "data-layer-recovery"
 }

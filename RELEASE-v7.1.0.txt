@@ -1,0 +1,13 @@
+Istanbul–Viking Travel Companion v7.1.0
+Data Layer Recovery
+Build date: July 29, 2026
+
+Recovery basis
+- Rebuilt directly from the user-tested v6.9.2 release.
+- Restores the proven My Trips query and active-trip selection logic.
+- Restores the proven Cloud Reservations subscription and seeding logic.
+- Preserves Authentication, Maps, Travel Vault, encrypted sync, device registry and sync history.
+- Removes all v7.0.x whole-trip synchronization experiment code.
+- Uses a new service-worker cache identity so broken v7.0.x assets cannot remain active.
+
+No Firebase rules changes are required for this release.

@@ -1,6 +1,6 @@
-Istanbul–Viking Travel Companion v7.0.3
+Istanbul–Viking Travel Companion v7.1.0
 
-Device Registry & Sync History
+Data Layer Recovery
 
 - Preserves the tested v6.9.1 encrypted snapshot sync.
 - Adds an encrypted device registry with last-seen, app-version, and completed-sync details.
