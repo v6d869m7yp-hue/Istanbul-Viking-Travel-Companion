@@ -1,0 +1,6 @@
+Istanbul–Viking Travel Companion v7.2.3
+Cross-Device Vault Discovery
+
+On a device without a local Travel Vault, the Vault page now checks the signed-in Firebase account and all accessible cloud trips for an existing encrypted Vault snapshot. When found, it asks for the same Vault password used on the original device, downloads the encrypted snapshot, decrypts it locally, and establishes the local encrypted copy without requiring a new device-specific password.
+
+The password never leaves the device. Manual encrypted backup restoration and intentional creation of a separate Vault remain available as fallback options.

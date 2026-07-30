@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v7.2.2
+Istanbul–Viking Travel Companion v7.2.3
 Data Layer Recovery
 
 - Adds visible step-by-step encrypted Vault sync progress.

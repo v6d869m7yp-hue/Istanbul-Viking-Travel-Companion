@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "7.2.2",
+  "release": "7.2.3",
   "baseline": "6.9.2",
   "status": "cloud-trip-bootstrap",
   "components": [
@@ -37,7 +37,7 @@
     {
       "name": "Offline App Cache",
       "state": "working",
-      "verification": "New v7.2.2 cache identity prevents stale v7.0.x assets"
+      "verification": "New v7.2.3 cache identity prevents stale v7.0.x assets"
     },
     {
       "name": "Whole-Trip Sync Experiment",

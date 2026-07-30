@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v7.2.2
+Istanbul–Viking Travel Companion v7.2.3
 Cloud Trip Bootstrap
 Build date: July 30, 2026
 

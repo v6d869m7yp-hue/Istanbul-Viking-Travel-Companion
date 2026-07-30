@@ -11,7 +11,8 @@ const enc=new TextEncoder(),dec=new TextDecoder();
 let masterKey=null,data=null,lockTimer=null;
 let cloudReservations=[],cloudReservationMeta={status:'loading'},cloudReservationUnsub=null,activePanel='documents';
 let cloudSync={state:'idle',message:'Sign in and choose an active trip to enable encrypted sync.',lastAt:null,remoteRevision:null,stages:[],detail:''};
-const APP_VERSION='7.2.2';
+const APP_VERSION='7.2.3';
+let cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};
 let cloudSyncTimer=null,cloudSyncBusy=false,cloudSyncRun=0;
 const qs=(s,r=HOST)=>r.querySelector(s),qsa=(s,r=HOST)=>[...r.querySelectorAll(s)];
 const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
@@ -141,8 +142,35 @@ function scheduleLock(){clearTimeout(lockTimer);if(!data)return;const mins=Numbe
 function lock(){cloudReservationUnsub?.();cloudReservationUnsub=null;masterKey=null;data=null;clearTimeout(lockTimer);renderLocked()}
 function statusBadge(){return `<span class="vault-status secure">● Encrypted offline</span>`}
 function renderSetup(message=''){
- HOST.innerHTML=`<section class="vault-auth card"><div class="vault-lock-icon">🔐</div><div><div class="meta">First-time setup</div><h2>Create or restore this device’s Travel Vault</h2><p>Create a new encrypted vault, or restore an existing encrypted backup. The Vault password is separate from your Firebase sign-in password.</p></div>${message?`<p class="vault-error">${esc(message)}</p>`:''}<div class="vault-form-grid"><label>Owner name<input id="vault-owner" autocomplete="name" value="John"></label><label>New Vault password<input id="vault-password" type="password" autocomplete="new-password" minlength="12"></label><label>Confirm password<input id="vault-confirm" type="password" autocomplete="new-password" minlength="12"></label></div><div class="button-row"><button class="btn" id="vault-create" type="button">Create new encrypted vault</button><button class="btn outline" id="vault-restore-first" type="button">Restore existing backup</button></div><input id="vault-import-file-first" type="file" accept="application/json,.ivtcvault" hidden><p class="notice">Use at least 12 characters and save it in a password manager. Properly encrypted vaults have no password reset.</p></section>`;
- qs('#vault-create').addEventListener('click',createVault);qs('#vault-restore-first').addEventListener('click',()=>qs('#vault-import-file-first').click());qs('#vault-import-file-first').addEventListener('change',importBackup);
+ if(cloudRestore.state==='found'&&cloudRestore.candidate){
+  const c=cloudRestore.candidate;
+  HOST.innerHTML=`<section class="vault-auth card"><div class="vault-lock-icon">☁️🔐</div><div><div class="meta">Encrypted cloud Vault found</div><h2>Unlock your existing Travel Vault</h2><p>An encrypted Vault associated with <strong>${esc(c.tripLabel||'your trip')}</strong> was found in your Firebase account. Enter the same Vault password you use on your Mac. A separate iPad password is not required.</p></div>${message?`<p class="vault-error">${esc(message)}</p>`:''}<label>Existing Vault password<input id="vault-cloud-password" type="password" autocomplete="current-password"></label><div class="button-row"><button class="btn" id="vault-cloud-restore" type="button">Download and unlock existing Vault</button><button class="btn outline" id="vault-restore-first" type="button">Restore from backup file</button><button class="btn outline" id="vault-show-create" type="button">Create a separate Vault</button></div><input id="vault-import-file-first" type="file" accept="application/json,.ivtcvault" hidden><p class="notice">The encrypted copy is downloaded first and decrypted only on this iPad. Your Vault password is never sent to Firebase.</p></section>`;
+  qs('#vault-cloud-restore').addEventListener('click',restoreCloudVault);qs('#vault-cloud-password').addEventListener('keydown',e=>{if(e.key==='Enter')restoreCloudVault()});qs('#vault-restore-first').addEventListener('click',()=>qs('#vault-import-file-first').click());qs('#vault-import-file-first').addEventListener('change',importBackup);qs('#vault-show-create').addEventListener('click',()=>{cloudRestore={state:'none',message:'',candidate:null};renderSetup()});return;
+ }
+ const checking=cloudRestore.state==='checking'?'<p class="notice"><strong>Checking Firebase for your existing encrypted Vault…</strong></p>':cloudRestore.state==='error'?`<p class="vault-error">${esc(cloudRestore.message)}</p>`:cloudRestore.state==='signedout'?'<p class="notice">Sign in to Firebase to look for a Vault already created on another device.</p>':'<p class="notice">No encrypted cloud Vault was found for your cloud trips. You may create one here or restore an exported backup file.</p>';
+ HOST.innerHTML=`<section class="vault-auth card"><div class="vault-lock-icon">🔐</div><div><div class="meta">First-time setup on this device</div><h2>Create or restore your Travel Vault</h2><p>The app first checks for the encrypted Vault you may already use on another device. The Vault password is separate from your Firebase sign-in password.</p></div>${message?`<p class="vault-error">${esc(message)}</p>`:''}${checking}<div class="vault-form-grid"><label>Owner name<input id="vault-owner" autocomplete="name" value="John"></label><label>New Vault password<input id="vault-password" type="password" autocomplete="new-password" minlength="12"></label><label>Confirm password<input id="vault-confirm" type="password" autocomplete="new-password" minlength="12"></label></div><div class="button-row"><button class="btn" id="vault-create" type="button" ${cloudRestore.state==='checking'?'disabled':''}>Create new encrypted vault</button><button class="btn outline" id="vault-restore-first" type="button">Restore existing backup</button><button class="btn outline" id="vault-check-cloud" type="button">Check cloud again</button></div><input id="vault-import-file-first" type="file" accept="application/json,.ivtcvault" hidden><p class="notice">Use at least 12 characters and save it in a password manager. Properly encrypted vaults have no password reset.</p></section>`;
+ qs('#vault-create').addEventListener('click',createVault);qs('#vault-restore-first').addEventListener('click',()=>qs('#vault-import-file-first').click());qs('#vault-import-file-first').addEventListener('change',importBackup);qs('#vault-check-cloud').addEventListener('click',discoverCloudVault);
+}
+async function discoverCloudVault(){
+ if(loadStore())return;
+ cloudRestore={state:'checking',message:'Checking your Firebase account for an existing encrypted Vault…',candidate:null};renderSetup();
+ try{
+  if(!window.IVTC?.firebase)throw new Error('Firebase components are unavailable.');
+  const state=await timeout(window.IVTC.firebase.initialize(),'Firebase sign-in check',20000),s=window.IVTC.firebase._state;
+  if(!state.user||!s.db||!s.storage){cloudRestore={state:'signedout',message:'Sign in to Firebase first.',candidate:null};renderSetup();return;}
+  const candidates=[];const activeId=localStorage.getItem('ivtc.activeTripId');if(activeId)candidates.push({id:activeId,label:localStorage.getItem('ivtc.activeTripLabel')||'Active trip'});
+  const q=s.api.query(s.api.collection(s.db,'trips'),s.api.where('memberUids','array-contains',s.user.uid));
+  const trips=await timeout(s.api.getDocs(q),'Cloud trip lookup',20000);
+  for(const d of trips.docs){if(!candidates.some(x=>x.id===d.id))candidates.push({id:d.id,label:d.data()?.label||'Cloud trip'});}
+  for(const trip of candidates){const snap=await timeout(s.api.getDoc(s.api.doc(s.db,'trips',trip.id,'envelopes','travel-vault')),'Vault metadata lookup',15000);if(snap.exists()){const meta=snap.data();if(meta?.storagePath){localStorage.setItem('ivtc.activeTripId',trip.id);localStorage.setItem('ivtc.activeTripLabel',trip.label);cloudRestore={state:'found',message:'',candidate:{tripId:trip.id,tripLabel:trip.label,meta}};renderSetup();return;}}}
+  cloudRestore={state:'none',message:'No encrypted cloud Vault was found.',candidate:null};renderSetup();
+ }catch(e){cloudRestore={state:'error',message:e?.message||'The cloud Vault check could not be completed.',candidate:null};renderSetup();}
+}
+async function restoreCloudVault(){
+ const button=qs('#vault-cloud-restore'),password=qs('#vault-cloud-password')?.value||'',candidate=cloudRestore.candidate;if(!candidate)return;
+ if(!password)return renderSetup('Enter the Vault password you use on your Mac.');
+ try{button.disabled=true;button.textContent='Downloading encrypted Vault…';const s=window.IVTC.firebase._state;const bytes=await timeout(s.api.getBytes(s.api.ref(s.storage,candidate.meta.storagePath),25*1024*1024),'Encrypted Vault download',30000);const restored=JSON.parse(dec.decode(bytes));button.textContent='Verifying password…';const unlocked=await decryptBackup(restored,password);saveStore(restored);masterKey=unlocked.key;data=unlocked.contents;normalizeData();recordAudit('Existing encrypted cloud Vault restored on this device');await persist({skipCloud:true});startCloudReservations();renderUnlocked();cloudSyncNow('device restore');
+ }catch(e){renderSetup(e?.message?.includes('operation')?'That Vault password did not unlock the cloud copy. Check the password and try again.':(e?.message||'The encrypted cloud Vault could not be restored.'));}
 }
 async function createVault(){
  const password=qs('#vault-password').value,confirm=qs('#vault-confirm').value,owner=qs('#vault-owner').value.trim();
@@ -281,5 +309,5 @@ async function unlockBiometric(){try{const store=loadStore(),b=store.biometric,a
 async function disableBiometric(){if(!confirm('Disable biometric unlock for this device?'))return;const store=loadStore();delete store.biometric;saveStore(store);recordAudit('Biometric unlock disabled');await persist();qs('[data-vault-panel="security"]')?.click()}
 function deleteVault(){if(!confirm('Permanently delete the encrypted Travel Vault from this browser?'))return;if(!confirm('This cannot be undone without an exported backup. Delete it now?'))return;localStorage.removeItem(STORAGE);masterKey=null;data=null;renderSetup('The local vault was deleted.')}
 window.addEventListener('pagehide',()=>{masterKey=null;data=null});document.addEventListener('visibilitychange',()=>{if(document.hidden&&data?.settings?.autoLockMinutes===1)scheduleLock()});
-loadStore()?renderLocked():renderSetup();
+if(loadStore())renderLocked();else{renderSetup();setTimeout(discoverCloudVault,250);}
 })();
