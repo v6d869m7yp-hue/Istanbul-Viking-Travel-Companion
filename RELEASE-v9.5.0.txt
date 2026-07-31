@@ -1,0 +1,14 @@
+Istanbul–Viking Travel Companion v9.5.0 — Trip Binder
+
+New
+- Trip Binder hub groups reservations and unlinked documents by travel workflow.
+- Linked documents appear directly beneath their reservation.
+- Readiness panel checks core reservations and attached confirmations.
+- Binder-wide search finds reservations, confirmation numbers, notes and files.
+- Device-first loading with Firebase refresh and live synchronization.
+- Trip Binder added to primary navigation, dashboard quick actions and footer.
+
+Build
+- Version: 9.5.0
+- Build ID: v9.5.0-trip-binder
+- Cache: ivtc-v9.5.0-trip-binder

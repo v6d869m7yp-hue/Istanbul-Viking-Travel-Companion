@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v9.4.2 — Travel Documents
+Istanbul–Viking Travel Companion v9.5.0 — Travel Documents
 
 - Adds a cloud-synchronized Travel Documents library.
 - Uploads PDFs and images to trip-scoped Firebase Storage.

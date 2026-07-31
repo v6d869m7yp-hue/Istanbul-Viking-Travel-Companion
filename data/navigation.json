@@ -11,6 +11,11 @@
       "key": "glance"
     },
     {
+      "label": "Trip Binder",
+      "href": "/trip-binder.html",
+      "key": "binder"
+    },
+    {
       "label": "Itinerary",
       "href": "/timeline.html",
       "key": "timeline"
