@@ -46,6 +46,11 @@
       "key": "documents"
     },
     {
+      "label": "Journal",
+      "href": "/journal.html",
+      "key": "journal"
+    },
+    {
       "label": "Istanbul",
       "href": "/istanbul/index.html",
       "key": "istanbul"
@@ -99,19 +104,19 @@
       "href": "/istanbul/sultanahmet/index.html"
     },
     {
-      "label": "Day 1 · Arrival",
+      "label": "Day 1 \u00b7 Arrival",
       "href": "/istanbul/days/arrival.html"
     },
     {
-      "label": "Day 2 · Old City",
+      "label": "Day 2 \u00b7 Old City",
       "href": "/istanbul/days/old-city.html"
     },
     {
-      "label": "Day 3 · Bosphorus",
+      "label": "Day 3 \u00b7 Bosphorus",
       "href": "/istanbul/days/bosphorus.html"
     },
     {
-      "label": "Day 4 · Markets",
+      "label": "Day 4 \u00b7 Markets",
       "href": "/istanbul/days/markets.html"
     },
     {
@@ -292,7 +297,7 @@
       "href": "/ports/athens/index.html"
     },
     {
-      "label": "Day 1 · Acropolis & Plaka",
+      "label": "Day 1 \u00b7 Acropolis & Plaka",
       "href": "/ports/athens/day-one.html"
     },
     {
@@ -304,7 +309,7 @@
       "href": "/ports/athens/plaka.html"
     },
     {
-      "label": "Day 2 · Panoramic Athens",
+      "label": "Day 2 \u00b7 Panoramic Athens",
       "href": "/ports/athens/day-two.html"
     },
     {
@@ -422,7 +427,7 @@
       "href": "/ports/split/riviera.html"
     },
     {
-      "label": "Diocletian’s Palace",
+      "label": "Diocletian\u2019s Palace",
       "href": "/ports/split/palace.html"
     },
     {
@@ -440,11 +445,11 @@
       "href": "/ports/venice/index.html"
     },
     {
-      "label": "St. Mark’s Square",
+      "label": "St. Mark\u2019s Square",
       "href": "/ports/venice/st-marks.html"
     },
     {
-      "label": "Doge’s Palace",
+      "label": "Doge\u2019s Palace",
       "href": "/ports/venice/doges-palace.html"
     },
     {

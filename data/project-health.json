@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "release": "9.8.0",
+  "release": "9.9.0",
   "baseline": "6.9.2",
-  "status": "daily-briefing",
+  "status": "travel-journal",
   "components": [
     {
       "name": "Firebase Authentication",

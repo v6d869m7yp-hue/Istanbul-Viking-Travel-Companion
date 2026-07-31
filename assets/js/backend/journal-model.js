@@ -1,0 +1,19 @@
+(()=>{
+'use strict';
+window.IVTC=window.IVTC||{};
+const SHADOW_PREFIX='ivtc.journal.shadow.v1.';
+function state(){const s=window.IVTC.firebase?._state;if(!s?.user||!s.db||!s.storage||!s.api)throw new Error('Sign in to synchronize the Travel Journal.');return s;}
+function activeId(){return localStorage.getItem('ivtc.activeTripId')||'istanbul-viking-2026';}
+function key(){return SHADOW_PREFIX+activeId();}
+function normalize(value,id){const clean={};for(const [k,v] of Object.entries(value||{})){if(v!==undefined)clean[k]=typeof v==='string'?v.trim():v;}clean.id=id||clean.id;return clean;}
+function sortItems(items){return items.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));}
+function readShadow(){try{const v=JSON.parse(localStorage.getItem(key())||'[]');return Array.isArray(v)?sortItems(v.map(x=>normalize(x,x.id))):[]}catch{return []}}
+function writeShadow(items){const clean=sortItems(items.map(x=>normalize(x,x.id)));localStorage.setItem(key(),JSON.stringify(clean));return clean;}
+function mergeShadow(items){const map=new Map(readShadow().map(x=>[x.id,x]));for(const item of items)map.set(item.id,{...map.get(item.id),...normalize(item,item.id)});return writeShadow([...map.values()]);}
+function collectionRef(){const s=state(),tripId=activeId();return {s,tripId,ref:s.api.collection(s.db,'trips',tripId,'journal')};}
+async function uploadFile(entryId,file,onProgress){if(!file)return null;const s=state(),tripId=activeId();const safe=String(file.name||'journal-photo').replace(/[^a-zA-Z0-9._-]+/g,'-').slice(0,120);const path=`trips/${tripId}/journal/${entryId}/${Date.now()}-${safe}`;const ref=s.api.ref(s.storage,path);let snapshot;if(typeof s.api.uploadBytesResumable==='function')snapshot=await new Promise((resolve,reject)=>{const task=s.api.uploadBytesResumable(ref,file,{contentType:file.type||'application/octet-stream'});task.on('state_changed',x=>onProgress?.(x.totalBytes?Math.round(x.bytesTransferred/x.totalBytes*100):0),reject,()=>resolve(task.snapshot));});else snapshot=await s.api.uploadBytes(ref,file,{contentType:file.type||'application/octet-stream'});return {name:file.name||safe,path,url:await s.api.getDownloadURL(snapshot.ref),size:file.size||0,contentType:file.type||'application/octet-stream',uploadedAt:new Date().toISOString()};}
+async function upsert(value,{file,onProgress}={}){let id=value.id||crypto.randomUUID();let existing=readShadow().find(x=>x.id===id)||{};let attachment=existing.attachment||null;const local={...existing,...value,id,attachment,updatedAt:new Date().toISOString(),createdAt:existing.createdAt||new Date().toISOString()};writeShadow([...readShadow().filter(x=>x.id!==id),local]);try{const {s,ref}=collectionRef();if(file)attachment=await uploadFile(id,file,onProgress);const payload=normalize({...local,attachment,tripId:activeId(),updatedBy:s.user.uid,updatedAt:s.api.serverTimestamp()},id);await s.api.setDoc(s.api.doc(ref,id),payload,{merge:true});mergeShadow([{...payload,updatedAt:new Date().toISOString()}]);}catch(error){if(file)throw error;}return id;}
+async function remove(id){const existing=readShadow().find(x=>x.id===id);writeShadow(readShadow().filter(x=>x.id!==id));try{const {s,ref}=collectionRef();if(existing?.attachment?.path)try{await s.api.deleteObject(s.api.ref(s.storage,existing.attachment.path));}catch{}await s.api.deleteDoc(s.api.doc(ref,id));}catch{} }
+function subscribe(onItems,onError){const {s,ref}=collectionRef();return s.api.onSnapshot(ref,snapshot=>onItems?.(mergeShadow(snapshot.docs.map(d=>normalize(d.data(),d.id))),{fromCache:snapshot.metadata.fromCache,hasPendingWrites:snapshot.metadata.hasPendingWrites}),onError);}
+window.IVTC.journal=Object.freeze({local:readShadow,upsert,remove,subscribe});
+})();

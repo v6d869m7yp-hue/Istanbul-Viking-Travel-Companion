@@ -1,0 +1,13 @@
+Istanbul–Viking Travel Companion v9.9.0
+Travel Journal & Receipts
+
+- Daily travel journal with notes, place, mood and category
+- Photo and PDF receipt capture from phone, tablet or desktop
+- Expense amounts with EUR, TRY, USD and GBP support
+- Reservation linking
+- Search and focused filters
+- Per-currency expense totals
+- CSV export
+- Device-first storage and Firebase synchronization
+- Firestore and Storage rules for shared trip journal entries
+- Offline service-worker support

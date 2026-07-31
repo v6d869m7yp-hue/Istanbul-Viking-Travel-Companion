@@ -1,7 +1,7 @@
-const VERSION='9.8.0';
-const BUILD_ID='v9.8.0-daily-briefing';
-const CACHE='ivtc-v9.8.0-daily-briefing';
-const ESSENTIAL = ["./daily-briefing.html", "./assets/js/daily-briefing.js", "./index.html", "./diagnostics.html", "./documents.html", "./trip-binder.html", "./traveler-assistant.html", "./trip-map.html", "./assets/js/trip-map.js", "./assets/js/traveler-assistant.js", "./assets/js/trip-binder.js", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/dashboard.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
+const VERSION='9.9.0';
+const BUILD_ID='v9.9.0-travel-journal';
+const CACHE='ivtc-v9.9.0-travel-journal';
+const ESSENTIAL = ["./daily-briefing.html", "./journal.html", "./assets/js/journal.js", "./assets/js/backend/journal-model.js", "./assets/js/daily-briefing.js", "./index.html", "./diagnostics.html", "./documents.html", "./trip-binder.html", "./traveler-assistant.html", "./trip-map.html", "./assets/js/trip-map.js", "./assets/js/traveler-assistant.js", "./assets/js/trip-binder.js", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/dashboard.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
   "./docs/PROJECT-ROADMAP.md",

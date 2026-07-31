@@ -1,12 +1,12 @@
 {
-  "appName": "Istanbul–Viking Travel Companion",
-  "version": "9.8.0",
-  "buildId": "v9.8.0-daily-briefing",
+  "appName": "Istanbul\u2013Viking Travel Companion",
+  "version": "9.9.0",
+  "buildId": "v9.9.0-travel-journal",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v9.8.0-daily-briefing",
-  "release": "9.8.0",
-  "pageCount": 112,
+  "cacheName": "ivtc-v9.9.0-travel-journal",
+  "release": "9.9.0",
+  "pageCount": 113,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "daily-briefing"
+  "label": "travel-journal"
 }

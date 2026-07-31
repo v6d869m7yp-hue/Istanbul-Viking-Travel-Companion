@@ -38,6 +38,10 @@ service cloud.firestore {
         allow read: if isMember(tripId);
         allow create, update, delete: if canEdit(tripId);
       }
+      match /journal/{entryId} {
+        allow read: if isMember(tripId);
+        allow create, update, delete: if canEdit(tripId);
+      }
       match /activity/{entryId} {
         allow read: if isMember(tripId);
         allow create: if canEdit(tripId) && request.resource.data.actorUid == request.auth.uid;
