@@ -1,0 +1,9 @@
+Istanbul–Viking Travel Companion v9.0.1
+Unified Reservations
+
+- Replaces Add Lodging with Add Reservation.
+- Adds hotel, vacation rental, restaurant, flight, cruise, train, transportation, activity/tour and other reservation types.
+- Keeps all existing lodging records and Firestore paths compatible.
+- Adds type-aware forms and reservation cards.
+- Adds reservation type filters with counts.
+- Preserves offline shadow storage and multi-device cloud synchronization.
