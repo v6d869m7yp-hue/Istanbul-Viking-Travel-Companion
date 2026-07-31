@@ -1,0 +1,22 @@
+Istanbul–Viking Travel Companion v9.3.0 — Travel Dashboard
+Release date: July 30, 2026
+
+Highlights
+- Replaces the static home briefing with a responsive day-of-travel dashboard.
+- Shows pre-trip countdown, current trip day, or completed-trip status automatically.
+- Combines itinerary and synchronized reservations to identify the next event.
+- Adds a Today / departure-day agenda with times and travel details.
+- Shows current or next hotel, vacation rental, or cruise stay with directions and details.
+- Adds cloud/device-copy synchronization status.
+- Adds trip-progress visualization using the complete reservation date range.
+- Adds prominent quick actions for reservations, timeline, Vault documents, and maps.
+- Supports direct “Add reservation” links from the dashboard.
+- Preserves all v9.2 Smart Timeline and cross-device synchronization behavior.
+
+Testing focus
+1. Confirm the dashboard loads existing reservations immediately from the device copy.
+2. Confirm signed-in cloud synchronization changes the status indicator to green.
+3. Confirm Next Up matches the first upcoming itinerary or reservation event.
+4. Confirm lodging shows the current stay during the trip or the next stay before departure.
+5. Confirm Add reservation opens the unified reservation form.
+6. Confirm the dashboard adapts correctly on iPhone, iPad, and desktop.

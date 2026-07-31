@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "9.2.0",
-  "buildId": "v9.2.0-smart-timeline",
+  "version": "9.3.0",
+  "buildId": "v9.3.0-travel-dashboard",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v9.2.0-smart-timeline",
-  "release": "Smart Timeline",
+  "cacheName": "ivtc-v9.3.0-travel-dashboard",
+  "release": "Travel Dashboard",
   "pageCount": 107,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "smart-timeline"
+  "label": "travel-dashboard"
 }

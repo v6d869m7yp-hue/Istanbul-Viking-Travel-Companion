@@ -1,7 +1,7 @@
-const VERSION='9.2.0';
-const BUILD_ID='v9.2.0-smart-timeline';
-const CACHE='ivtc-v9.2.0-smart-timeline';
-const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
+const VERSION='9.3.0';
+const BUILD_ID='v9.3.0-travel-dashboard';
+const CACHE='ivtc-v9.3.0-travel-dashboard';
+const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/dashboard.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
   "./docs/PROJECT-ROADMAP.md",
