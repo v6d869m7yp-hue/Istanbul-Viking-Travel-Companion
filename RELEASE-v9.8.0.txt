@@ -1,0 +1,20 @@
+Istanbul–Viking Travel Companion v9.8.0
+Daily Briefing
+
+New
+- Daily Briefing page with today’s schedule, next event countdown and tonight’s lodging.
+- Documents linked to today’s reservations or travel date appear automatically.
+- Device-saved daily checklist with custom reminders, completion state and reset control.
+- Current destination summary, device local clock and one-tap live weather search.
+- Cloud/device synchronization status for reservations and documents.
+- Daily Briefing added to primary navigation, dashboard quick actions and offline cache.
+
+Reliability
+- Briefing renders immediately from local reservation and document shadows.
+- Firebase subscriptions refresh the briefing when other devices make changes.
+- Missing schedules, lodging, documents and addresses use safe empty states.
+
+Build
+- Version: 9.8.0
+- Build ID: v9.8.0-daily-briefing
+- Cache: ivtc-v9.8.0-daily-briefing

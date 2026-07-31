@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "release": "9.7.0",
+  "release": "9.8.0",
   "baseline": "6.9.2",
-  "status": "smart-timeline",
+  "status": "daily-briefing",
   "components": [
     {
       "name": "Firebase Authentication",
@@ -53,6 +53,11 @@
       "name": "Smart Timeline",
       "state": "working",
       "verification": "Merges curated itinerary and synchronized reservation events with offline-first rendering"
+    },
+    {
+      "name": "Daily Briefing",
+      "state": "working",
+      "verification": "Offline-first daily schedule, lodging, linked documents, countdown and device-saved checklist"
     }
   ],
   "releaseGates": [
@@ -63,5 +68,5 @@
     "Vault sync regression checks pass"
   ],
   "milestone": "Synchronize the canonical trip, itinerary, favorites and cloud reservations across devices",
-  "label": "firestore-transport-recovery"
+  "label": "daily-briefing"
 }

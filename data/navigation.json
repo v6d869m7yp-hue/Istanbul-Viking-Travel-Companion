@@ -6,6 +6,11 @@
       "key": "home"
     },
     {
+      "label": "Daily Briefing",
+      "href": "/daily-briefing.html",
+      "key": "briefing"
+    },
+    {
       "label": "Assistant",
       "href": "/traveler-assistant.html",
       "key": "assistant"

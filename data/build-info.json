@@ -1,12 +1,12 @@
 {
   "appName": "Istanbul–Viking Travel Companion",
-  "version": "9.7.0",
-  "buildId": "v9.7.0-smart-maps-navigation",
+  "version": "9.8.0",
+  "buildId": "v9.8.0-daily-briefing",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v9.7.0-smart-maps-navigation",
-  "release": "9.7.0",
-  "pageCount": 110,
+  "cacheName": "ivtc-v9.8.0-daily-briefing",
+  "release": "9.8.0",
+  "pageCount": 112,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "traveler-assistant"
+  "label": "daily-briefing"
 }
