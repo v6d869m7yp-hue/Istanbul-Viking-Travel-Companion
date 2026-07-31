@@ -1,0 +1,13 @@
+Istanbul · Viking Travel Companion v9.4.2
+Travel Documents Modal Visibility Repair
+
+- Adds the missing fixed-position modal backdrop styling for Travel Documents.
+- Ensures Add document opens visibly above the page on Safari, iPad and iPhone.
+- Adds a high z-index, scrolling, responsive form layout and explicit hidden-state rules.
+- Preserves the v9.4.1 reservation-loading and Firebase permission fixes.
+
+Test:
+1. Open Documents.
+2. Tap Add document or Add your first document.
+3. Confirm the form appears centered over a dark backdrop.
+4. Close with X, Cancel, or by tapping the backdrop.
