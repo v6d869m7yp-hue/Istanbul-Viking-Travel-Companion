@@ -92,7 +92,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'9.9.0',buildId:'v9.9.0-travel-journal'};
+const APP_RELEASE={version:'9.9.5',buildId:'v9.9.5-travel-mode'};
 let updateRegistration=null;
 let appUpdatesPromise=null;
 function showUpdateBanner(reg){
@@ -265,6 +265,51 @@ async function diagnosticsPage(){
   }
 }
 
+
+const TRAVEL_MODE_KEY='ivtc.travelMode.v1';
+function isTravelMode(){return localStorage.getItem(TRAVEL_MODE_KEY)==='on'}
+function setTravelMode(enabled){
+  localStorage.setItem(TRAVEL_MODE_KEY,enabled?'on':'off');
+  document.documentElement.classList.toggle('travel-mode',enabled);
+  document.body.classList.toggle('travel-mode',enabled);
+  document.querySelectorAll('[data-travel-mode-toggle]').forEach(button=>{
+    button.setAttribute('aria-pressed',String(enabled));
+    button.title=enabled?'Switch to planning mode':'Switch to travel mode';
+    const label=button.querySelector('[data-travel-mode-label]');
+    if(label)label.textContent=enabled?'Travel mode on':'Travel mode';
+  });
+  document.querySelectorAll('[data-travel-mode-status]').forEach(el=>el.textContent=enabled?'Travel mode is on':'Planning mode is on');
+  window.dispatchEvent(new CustomEvent('ivtc:travel-mode',{detail:{enabled}}));
+}
+function setupTravelMode(){
+  const enabled=isTravelMode();
+  document.documentElement.classList.toggle('travel-mode',enabled);
+  document.body.classList.toggle('travel-mode',enabled);
+  const tools=document.querySelector('.header-tools');
+  if(tools&&!tools.querySelector('[data-travel-mode-toggle]')){
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='travel-mode-toggle';
+    button.setAttribute('data-travel-mode-toggle','');
+    button.innerHTML='<span aria-hidden="true">✈</span><span data-travel-mode-label>Travel mode</span>';
+    button.addEventListener('click',()=>setTravelMode(!isTravelMode()));
+    tools.prepend(button);
+  }
+  if(!document.querySelector('.travel-dock')){
+    const dock=document.createElement('nav');
+    dock.className='travel-dock';
+    dock.setAttribute('aria-label','Travel mode shortcuts');
+    dock.innerHTML=`<a href="${abs('/daily-briefing.html')}"><span>☀</span>Today</a><a href="${abs('/trip-map.html')}"><span>⌖</span>Map</a><a href="${abs('/documents.html')}"><span>▤</span>Docs</a><a href="${abs('/traveler-assistant.html')}"><span>✦</span>Ask</a>`;
+    document.body.appendChild(dock);
+  }
+  let skip=document.querySelector('.skip-link');
+  if(!skip){
+    skip=document.createElement('a');skip.className='skip-link';skip.href='#main-content';skip.textContent='Skip to main content';document.body.prepend(skip);
+  }
+  const main=document.querySelector('main');if(main&&!main.id)main.id='main-content';
+  setTravelMode(enabled);
+}
+
 document.addEventListener('DOMContentLoaded',async()=>{
   // Diagnostics must initialize before shell, trip-data, or service-worker startup.
   // This keeps its controls usable even when another startup task stalls on Safari.
@@ -278,6 +323,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   let trip=null;
   try{trip=await shell();}catch(err){console.error('App shell failed',err);}
+  try{setupTravelMode();}catch(err){console.warn('Travel mode setup failed',err);}
   try{unifiedJourneySwitcher();}catch(err){console.warn('Journey switcher failed',err);}
   try{await Promise.race([setupAppUpdates(),new Promise(resolve=>setTimeout(resolve,6000))]);}catch(err){console.warn('App update setup failed',err);}
 

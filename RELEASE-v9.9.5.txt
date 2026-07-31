@@ -1,0 +1,14 @@
+Istanbul–Viking Travel Companion v9.9.5
+Travel Mode & Accessibility Polish
+
+New
+- Persistent Travel Mode toggle in the application header and dashboard.
+- Bottom travel dock for one-tap access to Today, Map, Documents and Traveler Assistant.
+- Larger essential controls and simplified travel-focused navigation while Travel Mode is active.
+- Travel Mode preference is remembered independently on each device.
+
+Polish
+- Keyboard skip link and stronger visible focus indicators.
+- Reduced-motion support for users who request it.
+- Improved mobile sizing and safe-area spacing for installed iPhone/iPad use.
+- Updated offline cache, build metadata and release identifiers.
