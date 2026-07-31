@@ -1,0 +1,11 @@
+Istanbul–Viking Travel Companion v9.7.0
+Smart Maps & Navigation
+
+- Added synchronized Trip Map page.
+- Maps every reservation with an address, city, or map query.
+- Added Today’s Route and next-destination fallback.
+- Added one-tap directions, reservation details, calls, websites, and documents.
+- Added optional current-location support for route origins and nearby essentials.
+- Added nearby coffee, restaurants, pharmacy, ATM, transit, and medical searches.
+- Added responsive mobile/iPad layouts and offline reservation fallback.
+- Added Trip Map to primary navigation, dashboard, footer, and service-worker cache.

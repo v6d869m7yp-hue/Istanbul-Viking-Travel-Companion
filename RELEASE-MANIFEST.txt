@@ -2,3 +2,5 @@ Current release: v8.2.5 Safari Firestore Transport Recovery
 Build date: 2026-07-30
 Expected cache: ivtc-v8.2.5-safari-firestore-transport-recovery
 Primary objective: replace the stalled Safari persistent-cache/WebChannel path with memory cache and long polling.
+
+9.7.0 - Smart Maps & Navigation

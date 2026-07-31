@@ -11,6 +11,11 @@
       "key": "assistant"
     },
     {
+      "label": "Trip Map",
+      "href": "/trip-map.html",
+      "key": "map"
+    },
+    {
       "label": "Trip at a Glance",
       "href": "/trip-at-a-glance.html",
       "key": "glance"
