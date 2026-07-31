@@ -1,0 +1,12 @@
+Istanbul–Viking Travel Companion v9.5.1
+Trip Binder Polish
+
+Changes
+- Binder sections can be collapsed and remember their state on the device.
+- Reservation and document rows now show Ready, Cloud synced, Missing document, or Metadata only badges.
+- Empty and filtered binder states remain actionable.
+- Desktop drag-and-drop upload added to Travel Documents.
+- File selection now displays the chosen filename and upload size before saving.
+- Reservation links from the Binder carry the reservation identifier for direct navigation support.
+- Mobile layouts refined for status badges and collapsible section headers.
+- Application version and offline cache advanced to v9.5.1.

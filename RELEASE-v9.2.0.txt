@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v9.5.0 — Smart Timeline
+Istanbul–Viking Travel Companion v9.5.1 — Smart Timeline
 Release date: July 30, 2026
 
 Highlights
@@ -12,7 +12,7 @@ Highlights
 - Preserves the existing reservation collection, offline shadow and Firebase rules.
 
 Test
-1. Deploy the ZIP contents and confirm the footer/version shows 9.5.0.
+1. Deploy the ZIP contents and confirm the footer/version shows 9.5.1.
 2. Open Timeline and confirm the six lodging/cruise records appear alongside the itinerary.
 3. Add a restaurant reservation on the phone and verify it appears on Timeline on the phone, Mac and iPad.
 4. Test the Dining filter and the Directions action.
