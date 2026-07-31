@@ -1,0 +1,14 @@
+Istanbul · Viking Travel Companion v9.4.1
+Document Modal Repair
+
+Fixes:
+- Corrects the reservation loader on Travel Documents. The reservation API returns an array, while v9.4.0 incorrectly expected an .items property.
+- Prevents reservations.map from running on undefined.
+- Adds a direct Add document button handler so the upload form opens even if document-library loading is delayed.
+- Keeps related-reservation linking optional and safely falls back to an empty list.
+
+Test:
+1. Open Documents and confirm no reservations.map error appears.
+2. Tap Add document and confirm the modal opens.
+3. Save a metadata-only document.
+4. Upload a PDF or image and confirm it appears on another device.
