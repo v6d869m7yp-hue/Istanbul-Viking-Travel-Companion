@@ -1,10 +1,10 @@
 {
   "name": "istanbul-viking-travel-companion",
   "private": true,
-  "version": "8.2.5",
+  "version": "9.2.0",
   "scripts": {
     "validate": "node tools/validate-build.mjs .",
-    "check:js": "node --check assets/js/app.js && node --check assets/js/map-explorer.js && node --check assets/js/vault.js && node --check assets/js/core/runtime.js && node --check assets/js/sync/adapter.js && node --check assets/js/backend/firebase-config.js && node --check assets/js/backend/firebase-client.js && node --check assets/js/sync/firebase-adapter.js && node --check assets/js/backend/trip-model.js && node --check assets/js/backend/backend-readiness.js",
+    "check:js": "node --check assets/js/app.js && node --check assets/js/map-explorer.js && node --check assets/js/vault.js && node --check assets/js/core/runtime.js && node --check assets/js/sync/adapter.js && node --check assets/js/backend/firebase-config.js && node --check assets/js/backend/firebase-client.js && node --check assets/js/sync/firebase-adapter.js && node --check assets/js/backend/trip-model.js && node --check assets/js/backend/backend-readiness.js && node --check assets/js/smart-timeline.js",
     "test": "npm run check:js && npm run validate"
   }
 }

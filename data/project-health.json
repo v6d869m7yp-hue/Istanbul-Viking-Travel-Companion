@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "release": "8.2.5",
+  "release": "9.2.0",
   "baseline": "6.9.2",
-  "status": "firestore-transport-recovery",
+  "status": "smart-timeline",
   "components": [
     {
       "name": "Firebase Authentication",
@@ -48,6 +48,11 @@
       "name": "Cloud Trip Bootstrap",
       "state": "working",
       "verification": "Zero-trip accounts import and select the packaged itinerary"
+    },
+    {
+      "name": "Smart Timeline",
+      "state": "working",
+      "verification": "Merges curated itinerary and synchronized reservation events with offline-first rendering"
     }
   ],
   "releaseGates": [

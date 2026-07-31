@@ -1,7 +1,7 @@
-const VERSION='9.0.1';
-const BUILD_ID='v9.0.1-unified-reservations';
-const CACHE='ivtc-v9.0.1-unified-reservations';
-const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
+const VERSION='9.2.0';
+const BUILD_ID='v9.2.0-smart-timeline';
+const CACHE='ivtc-v9.2.0-smart-timeline';
+const ESSENTIAL = ["./index.html", "./diagnostics.html", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
   "./docs/PROJECT-ROADMAP.md",
