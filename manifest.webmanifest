@@ -13,6 +13,6 @@
       "purpose": "any maskable"
     }
   ],
-  "version": "9.8.0",
-  "description": "Offline travel companion with Daily Briefing, dashboard, reservations, documents, Trip Binder, Smart Maps, search, favorites, Istanbul, Viking ports and Northern Italy handoff."
+  "version": "10.0.0",
+  "description": "Travel-ready offline companion with Daily Briefing, Smart Maps, reservations, documents, Trip Binder, Traveler Assistant, encrypted Vault, journal and recovery tools."
 }

@@ -92,7 +92,7 @@ function unifiedJourneySwitcher(){
   window.resetJourneySwitcherPosition=()=>{localStorage.removeItem(storageKey);restore();nav.classList.add('position-reset');setTimeout(()=>nav.classList.remove('position-reset'),500)};
 }
 
-const APP_RELEASE={version:'9.9.5',buildId:'v9.9.5-travel-mode'};
+const APP_RELEASE={version:'10.0.0',buildId:'v10.0.0-travel-ready'};
 let updateRegistration=null;
 let appUpdatesPromise=null;
 function showUpdateBanner(reg){
@@ -211,6 +211,8 @@ async function diagnosticsPage(){
     const note=document.querySelector('[data-navigation-position-status]');
     if(note)note.textContent='Navigation button returned to its default position.';
   };
+  const snapshotButton=document.querySelector('[data-export-device-snapshot]');
+  if(snapshotButton)snapshotButton.onclick=()=>{downloadDeviceSnapshot();const note=document.querySelector('[data-snapshot-status]');if(note)note.textContent='Device snapshot downloaded. Store it securely.';};
   const install=document.querySelector('[data-activate-update]');
   if(install)install.onclick=activateWaitingWorker;
 
@@ -250,6 +252,8 @@ async function diagnosticsPage(){
     try{const r=await timeout(fetch(abs(u),{cache:'no-store'}),5000,null);return [u,Boolean(r?.ok)]}catch(e){return[u,false]}
   }));
   if(checks)checks.innerHTML=results.map(([u,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${u}</p>`).join('');
+  const ready=document.querySelector('[data-production-readiness]');
+  if(ready){const localOK=(()=>{try{localStorage.setItem('ivtc.readiness.test','1');localStorage.removeItem('ivtc.readiness.test');return true}catch(e){return false}})();const checksReady=[['Critical files',results.every(x=>x[1])],['Offline worker',Boolean(reg?.active||navigator.serviceWorker?.controller)],['Local device storage',localOK],['Internet state known',typeof navigator.onLine==='boolean'],['Release metadata',String(info.version)===APP_RELEASE.version]];const passed=checksReady.filter(x=>x[1]).length;ready.innerHTML=`<div class="readiness-score"><strong>${passed}/${checksReady.length}</strong><span>${passed===checksReady.length?'Travel ready':'Needs attention'}</span></div><div class="diagnostic-checks">${checksReady.map(([label,ok])=>`<p class="diagnostic-check ${ok?'ok':'bad'}"><strong>${ok?'✓':'✕'}</strong> ${label}</p>`).join('')}</div>`;}
 
   const healthTarget=document.querySelector('[data-project-health]');
   if(healthTarget){
@@ -265,6 +269,64 @@ async function diagnosticsPage(){
   }
 }
 
+
+
+
+function setupConnectivityStatus(){
+  let pill=document.querySelector('[data-connectivity-status]');
+  if(!pill){
+    pill=document.createElement('div');
+    pill.className='connectivity-status';
+    pill.setAttribute('data-connectivity-status','');
+    pill.setAttribute('role','status');
+    pill.setAttribute('aria-live','polite');
+    document.body.appendChild(pill);
+  }
+  let timer=0;
+  const render=()=>{
+    const online=navigator.onLine;
+    pill.classList.toggle('offline',!online);
+    pill.textContent=online?'Online':'Offline — saved trip data remains available';
+    pill.classList.add('show');
+    clearTimeout(timer);
+    timer=setTimeout(()=>pill.classList.remove('show'),online?2200:7000);
+  };
+  window.addEventListener('online',render);
+  window.addEventListener('offline',render);
+  if(!navigator.onLine)render();
+}
+function showRecoveryNotice(message){
+  if(document.querySelector('.recovery-notice'))return;
+  const box=document.createElement('aside');
+  box.className='recovery-notice';
+  box.setAttribute('role','alert');
+  box.innerHTML=`<div><strong>This page hit a problem.</strong><span>${message||'Your saved trip data has not been erased.'}</span></div><a href="${abs('/diagnostics.html')}">Open diagnostics</a><button type="button" aria-label="Dismiss">×</button>`;
+  box.querySelector('button').onclick=()=>box.remove();
+  document.body.appendChild(box);
+}
+function setupGlobalRecovery(){
+  window.addEventListener('error',event=>{
+    const message=String(event?.message||'Unexpected page error');
+    console.error('[IVTC recovery]',message);
+    showRecoveryNotice('Reload this page or use Diagnostics. Your device copy remains intact.');
+  });
+  window.addEventListener('unhandledrejection',event=>{
+    const message=String(event?.reason?.message||event?.reason||'Unhandled request failure');
+    console.error('[IVTC recovery]',message);
+    if(!/network|fetch|offline/i.test(message))showRecoveryNotice('A background task failed. Core offline information is still available.');
+  });
+}
+function downloadDeviceSnapshot(){
+  const values={};
+  for(let i=0;i<localStorage.length;i++){
+    const key=localStorage.key(i);
+    if(key&&key.startsWith('ivtc'))values[key]=localStorage.getItem(key);
+  }
+  const snapshot={app:'Istanbul–Viking Travel Companion',version:APP_RELEASE.version,exportedAt:new Date().toISOString(),note:'Encrypted vault values remain encrypted. Keep this file private.',localStorage:values};
+  const blob=new Blob([JSON.stringify(snapshot,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`IVTC-device-snapshot-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
 
 const TRAVEL_MODE_KEY='ivtc.travelMode.v1';
 function isTravelMode(){return localStorage.getItem(TRAVEL_MODE_KEY)==='on'}
@@ -323,6 +385,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   let trip=null;
   try{trip=await shell();}catch(err){console.error('App shell failed',err);}
+  try{setupGlobalRecovery();setupConnectivityStatus();}catch(err){console.warn('Production recovery setup failed',err);}
   try{setupTravelMode();}catch(err){console.warn('Travel mode setup failed',err);}
   try{unifiedJourneySwitcher();}catch(err){console.warn('Journey switcher failed',err);}
   try{await Promise.race([setupAppUpdates(),new Promise(resolve=>setTimeout(resolve,6000))]);}catch(err){console.warn('App update setup failed',err);}

@@ -1,0 +1,13 @@
+Istanbul–Viking Travel Companion v10.0.0 — Travel Ready
+
+Production release focused on reliability and recovery.
+
+New in this release:
+- Global online/offline status on every page
+- Global error recovery notice with direct Diagnostics access
+- Travel-ready production checks in Diagnostics
+- One-click private device recovery snapshot export
+- Updated PWA manifest and cache identity
+- Consolidated v10 release metadata and project-health gates
+
+The snapshot includes IVTC local device records. Encrypted Vault values remain encrypted, but the file should still be stored privately.

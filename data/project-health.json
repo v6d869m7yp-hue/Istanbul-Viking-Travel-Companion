@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "release": "9.9.5",
+  "release": "10.0.0",
   "baseline": "6.9.2",
-  "status": "travel-journal",
+  "status": "travel-ready",
   "components": [
     {
       "name": "Firebase Authentication",
@@ -58,6 +58,16 @@
       "name": "Daily Briefing",
       "state": "working",
       "verification": "Offline-first daily schedule, lodging, linked documents, countdown and device-saved checklist"
+    },
+    {
+      "name": "Production Recovery",
+      "state": "working",
+      "verification": "Global error recovery notice, diagnostics link, and device snapshot export are enabled"
+    },
+    {
+      "name": "Connectivity Awareness",
+      "state": "working",
+      "verification": "Every page reports online/offline transitions without blocking offline use"
     }
   ],
   "releaseGates": [
@@ -65,8 +75,10 @@
     "Whole-Trip Sync audit reads the canonical trip",
     "Favorites synchronize across devices",
     "Cloud Reservations shows the canonical records",
-    "Vault sync regression checks pass"
+    "Vault sync regression checks pass",
+    "Production readiness checks pass on Diagnostics",
+    "Device recovery snapshot exports successfully"
   ],
   "milestone": "Synchronize the canonical trip, itinerary, favorites and cloud reservations across devices",
-  "label": "daily-briefing"
+  "label": "travel-ready"
 }

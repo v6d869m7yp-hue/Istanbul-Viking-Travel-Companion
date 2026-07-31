@@ -1,12 +1,12 @@
 {
-  "appName": "Istanbul\u2013Viking Travel Companion",
-  "version": "9.9.5",
-  "buildId": "v9.9.5-travel-mode",
+  "appName": "Istanbul–Viking Travel Companion",
+  "version": "10.0.0",
+  "buildId": "v10.0.0-travel-ready",
   "buildDate": "2026-07-30",
-  "cacheName": "ivtc-v9.9.5-travel-mode",
-  "release": "9.9.5",
+  "cacheName": "ivtc-v10.0.0-travel-ready",
+  "release": "10.0.0",
   "pageCount": 113,
   "mapAssetCount": 27,
   "mapGuideLinkCount": 92,
-  "label": "travel-mode"
+  "label": "travel-ready"
 }

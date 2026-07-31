@@ -1,7 +1,7 @@
-const VERSION='9.9.5';
-const BUILD_ID='v9.9.5-travel-mode';
-const CACHE='ivtc-v9.9.5-travel-mode';
-const ESSENTIAL = ["./RELEASE-v9.9.5.txt","./daily-briefing.html", "./journal.html", "./assets/js/journal.js", "./assets/js/backend/journal-model.js", "./assets/js/daily-briefing.js", "./index.html", "./diagnostics.html", "./documents.html", "./trip-binder.html", "./traveler-assistant.html", "./trip-map.html", "./assets/js/trip-map.js", "./assets/js/traveler-assistant.js", "./assets/js/trip-binder.js", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/dashboard.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
+const VERSION='10.0.0';
+const BUILD_ID='v10.0.0-travel-ready';
+const CACHE='ivtc-v10.0.0-travel-ready';
+const ESSENTIAL = ["./RELEASE-v10.0.0.txt","./RELEASE-v9.9.5.txt","./daily-briefing.html", "./journal.html", "./assets/js/journal.js", "./assets/js/backend/journal-model.js", "./assets/js/daily-briefing.js", "./index.html", "./diagnostics.html", "./documents.html", "./trip-binder.html", "./traveler-assistant.html", "./trip-map.html", "./assets/js/trip-map.js", "./assets/js/traveler-assistant.js", "./assets/js/trip-binder.js", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/dashboard.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
   "./docs/PROJECT-ROADMAP.md",
