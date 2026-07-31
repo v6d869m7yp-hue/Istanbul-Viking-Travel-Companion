@@ -1,0 +1,8 @@
+Istanbul–Viking Travel Companion v9.4.0 — Travel Documents
+
+- Adds a cloud-synchronized Travel Documents library.
+- Uploads PDFs and images to trip-scoped Firebase Storage.
+- Adds categories, search, dates, confirmation numbers, notes, and reservation links.
+- Preserves a local metadata shadow for fast device-first loading.
+- Adds Firestore and Storage rules for trip members.
+- Keeps highly sensitive files directed to the encrypted Travel Vault.

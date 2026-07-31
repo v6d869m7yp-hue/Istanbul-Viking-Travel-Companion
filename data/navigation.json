@@ -21,6 +21,11 @@
       "key": "reservations"
     },
     {
+      "label": "Documents",
+      "href": "/documents.html",
+      "key": "documents"
+    },
+    {
       "label": "Istanbul",
       "href": "/istanbul/index.html",
       "key": "istanbul"
