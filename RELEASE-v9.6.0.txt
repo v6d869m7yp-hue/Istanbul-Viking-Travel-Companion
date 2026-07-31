@@ -1,0 +1,15 @@
+Istanbul–Viking Travel Companion v9.6.0
+Traveler Assistant
+
+New
+- Traveler Assistant page with plain-language trip questions.
+- Automatic Now, Next Up and Stay context cards.
+- Answers for today’s plan, current/next lodging, dining reservations, directions, boarding passes and Viking documents.
+- Unified search across reservations and travel documents.
+- Direct actions to open reservations, files, maps, calls, Timeline and Trip Binder.
+- Device-first loading followed by Firebase refresh and live synchronization.
+- Traveler Assistant added to primary navigation, dashboard quick actions, footer and offline cache.
+
+Offline behavior
+- The assistant loads the latest reservation and document device copies first.
+- Static itinerary content and the assistant interface are included in the service-worker essentials cache.

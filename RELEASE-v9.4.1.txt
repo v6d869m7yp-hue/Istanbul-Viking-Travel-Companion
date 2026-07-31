@@ -1,4 +1,4 @@
-Istanbul · Viking Travel Companion v9.5.1
+Istanbul · Viking Travel Companion v9.6.0
 Document Modal Repair
 
 Fixes:

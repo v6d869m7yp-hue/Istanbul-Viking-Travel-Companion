@@ -1,4 +1,4 @@
-Istanbul–Viking Travel Companion v9.5.1 — Trip Binder
+Istanbul–Viking Travel Companion v9.6.0 — Trip Binder
 
 New
 - Trip Binder hub groups reservations and unlinked documents by travel workflow.
@@ -9,6 +9,6 @@ New
 - Trip Binder added to primary navigation, dashboard quick actions and footer.
 
 Build
-- Version: 9.5.1
-- Build ID: v9.5.1-trip-binder
-- Cache: ivtc-v9.5.1-trip-binder
+- Version: 9.6.0
+- Build ID: v9.6.0-trip-binder
+- Cache: ivtc-v9.6.0-trip-binder

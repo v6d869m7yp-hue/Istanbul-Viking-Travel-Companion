@@ -6,6 +6,11 @@
       "key": "home"
     },
     {
+      "label": "Assistant",
+      "href": "/traveler-assistant.html",
+      "key": "assistant"
+    },
+    {
       "label": "Trip at a Glance",
       "href": "/trip-at-a-glance.html",
       "key": "glance"

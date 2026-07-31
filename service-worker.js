@@ -1,7 +1,7 @@
-const VERSION='9.5.1';
-const BUILD_ID='v9.5.1-trip-binder';
-const CACHE='ivtc-v9.5.1-trip-binder';
-const ESSENTIAL = ["./index.html", "./diagnostics.html", "./documents.html", "./trip-binder.html", "./assets/js/trip-binder.js", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/dashboard.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
+const VERSION='9.6.0';
+const BUILD_ID='v9.6.0-traveler-assistant';
+const CACHE='ivtc-v9.6.0-traveler-assistant';
+const ESSENTIAL = ["./index.html", "./diagnostics.html", "./documents.html", "./trip-binder.html", "./traveler-assistant.html", "./assets/js/traveler-assistant.js", "./assets/js/trip-binder.js", "./assets/css/app.css", "./assets/js/app.js", "./assets/js/smart-timeline.js", "./assets/js/dashboard.js", "./assets/js/core/runtime.js", "./manifest.webmanifest", "./data/build-info.json", "./data/project-health.json", "./data/trip.json", "./data/navigation.json"];
 const OPTIONAL = [
   "./RELEASE-v6.8.4.txt",
   "./docs/PROJECT-ROADMAP.md",
